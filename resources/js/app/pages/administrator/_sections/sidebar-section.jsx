@@ -20,6 +20,7 @@ import {
     FcCloseUpMode,
     FcCancel,
 } from "react-icons/fc";
+import Tooltip from "@/app/_components/tooltip";
 
 const navigation = [
     { name: "Dashboard", href: "#", icon: FcBullish, current: true },
@@ -173,24 +174,33 @@ export default function SidebarSection() {
                     <nav className="flex-1 overflow-y-auto p-2">
                         <ul className="space-y-1">
                             {navigation.map((item, i) => (
-                                <li key={i}>
-                                    <a
-                                        href={item.href}
-                                        className={classNames(
-                                            item.current
-                                                ? "bg-blue-700 text-white dark:bg-white/5 dark:text-white"
-                                                : "text-gray-700 hover:text-blue-600 hover:bg-blue-200 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white",
-                                            "flex items-center py-3 gap-x-3 rounded-md p-2 text-sm font-semibold"
-                                        )}
+                                <li key={i}  >
+                                    <Tooltip
+                                        position="right"
+                                        title={item.name}
+                                        className="w-full"
+                                        isShow={desktopCollapsed}
                                     >
-                                        <item.icon
-                                            className="w-6 h-6 shrink-0"
-                                            aria-hidden="true"
-                                        />
-                                        <span className={sidebarText}>
-                                            {item.name}
-                                        </span>
-                                    </a>
+                                        <a
+                                            href={item.href}
+                                            className={classNames(
+                                                item.current
+                                                    ? "bg-blue-700 text-white dark:bg-white/5 dark:text-white"
+                                                    : "text-gray-700 hover:text-blue-600 hover:bg-blue-200 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white",
+                                                "flex items-center py-3 gap-x-3 rounded-md p-2 w-full text-sm font-semibold"
+                                            )}
+                                        >
+                                            <div className="flex gap-3 items-start justify-start w-full">
+                                                <item.icon
+                                                    className="w-6 h-6 shrink-0"
+                                                    aria-hidden="true"
+                                                />
+                                                <span className={sidebarText}>
+                                                    {item.name}
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </Tooltip>
                                 </li>
                             ))}
                         </ul>
