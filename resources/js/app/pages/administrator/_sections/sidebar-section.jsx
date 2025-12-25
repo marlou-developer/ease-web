@@ -1,21 +1,10 @@
-import { useState, Fragment } from "react";
-import { Dialog, Transition, Menu } from "@headlessui/react";
-import {
-    CalendarIcon,
-    ChartPieIcon,
-    Cog6ToothIcon,
-    DocumentDuplicateIcon,
-    FolderIcon,
-    HomeIcon,
-    UsersIcon,
-    XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { setDesktopCollapsed, setSidebarOpen } from "@/app/redux/app-slice";
+import { setSidebarOpen } from "@/app/redux/app-slice";
 import {
     FcViewDetails,
     FcBullish,
-    FcMultipleSmartphones,
     FcDocument,
     FcOvertime,
     FcSalesPerformance,
@@ -23,21 +12,29 @@ import {
     FcBarChart,
     FcSettings,
     FcVoicePresentation,
+    FcSportsMode,
+    FcDiploma1,
+    FcCustomerSupport,
+    FcPortraitMode,
+    FcShop,
+    FcCloseUpMode,
+    FcCancel,
 } from "react-icons/fc";
+
 const navigation = [
     { name: "Dashboard", href: "#", icon: FcBullish, current: true },
     { name: "Users", href: "#", icon: FcConferenceCall, current: false },
-    { name: "Ticketing", href: "#", icon: FcViewDetails, current: false },
-    {
-        name: "Asset Management",
-        href: "#",
-        icon: FcMultipleSmartphones,
-        current: false,
-    },
+    { name: "Acivities", href: "#", icon: FcSportsMode, current: false },
+    { name: "Ticketing", href: "#", icon: FcCustomerSupport, current: false },
     { name: "Job Posting", href: "#", icon: FcDocument, current: false },
+    { name: "HR Central", href: "#", icon: FcPortraitMode, current: false },
+    { name: "RnR", href: "#", icon: FcDiploma1, current: false },
+    { name: "Store Admin", href: "#", icon: FcShop, current: false },
+    { name: "Decorations", href: "#", icon: FcCloseUpMode, current: false },
     { name: "Time Keeping", href: "#", icon: FcOvertime, current: false },
     { name: "Finance", href: "#", icon: FcSalesPerformance, current: false },
     { name: "Reports", href: "#", icon: FcBarChart, current: false },
+    { name: "Analytics", href: "#", icon: FcViewDetails, current: false },
     { name: "Messages", href: "#", icon: FcVoicePresentation, current: false },
     { name: "Settings", href: "#", icon: FcSettings, current: false },
 ];
@@ -53,8 +50,6 @@ function classNames(...classes) {
 export default function SidebarSection() {
     const { desktopCollapsed, sidebarOpen } = useSelector((store) => store.app);
     const dispatch = useDispatch();
-    //  const [sidebarOpen, setSidebarOpen] = useState(false);
-    //  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
 
     const sidebarWidth = desktopCollapsed
         ? "w-20 flex items-center justify-center"
@@ -96,16 +91,13 @@ export default function SidebarSection() {
                             leaveTo="-translate-x-full"
                         >
                             <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-white dark:bg-gray-900">
-                                <div className="absolute top-0 right-0 pt-4 pr-4">
+                                <div className="flex items-end justify-end top-0 right-0 pt-4 pr-4">
                                     <button
                                         type="button"
                                         onClick={() => open_sidebar()}
-                                        className="text-gray-700 dark:text-white"
+                                        className="text-gray-700 dark:text-white font-bold text-xl"
                                     >
-                                        <XMarkIcon
-                                            className="w-6 h-6"
-                                            aria-hidden="true"
-                                        />
+                                        X
                                     </button>
                                 </div>
                                 <div className="flex flex-col h-full p-6">
@@ -147,51 +139,6 @@ export default function SidebarSection() {
                                                     </a>
                                                 </li>
                                             ))}
-                                            <li className="mt-6">
-                                                <div className="text-xs font-semibold text-gray-400 dark:text-gray-500">
-                                                    Your teams
-                                                </div>
-                                                <ul className="mt-2 space-y-1">
-                                                    {teams.map((team) => (
-                                                        <li key={team.id}>
-                                                            <a
-                                                                href={team.href}
-                                                                className={classNames(
-                                                                    team.current
-                                                                        ? "bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white"
-                                                                        : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white",
-                                                                    "flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold"
-                                                                )}
-                                                            >
-                                                                <span
-                                                                    className={classNames(
-                                                                        team.current
-                                                                            ? "border-indigo-600 text-indigo-600 dark:border-white/20 dark:text-white"
-                                                                            : "border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 dark:border-white/10 dark:group-hover:border-white/20 dark:group-hover:text-white",
-                                                                        "flex w-6 h-6 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium dark:bg-white/5"
-                                                                    )}
-                                                                >
-                                                                    {
-                                                                        team.initial
-                                                                    }
-                                                                </span>
-                                                                <span className="truncate">
-                                                                    {team.name}
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </li>
-                                            <li className="mt-auto">
-                                                <a
-                                                    href="#"
-                                                    className="flex items-center gap-x-3 rounded-md p-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"
-                                                >
-                                                    <Cog6ToothIcon className="w-6 h-6 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white" />
-                                                    Settings
-                                                </a>
-                                            </li>
                                         </ul>
                                     </nav>
                                 </div>
