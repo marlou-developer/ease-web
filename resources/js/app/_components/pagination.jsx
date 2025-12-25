@@ -1,39 +1,104 @@
-const defaultItems = [
-  { id: 1, title: 'Back End Developer', department: 'Engineering', type: 'Full-time', location: 'Remote' },
-  { id: 2, title: 'Front End Developer', department: 'Engineering', type: 'Full-time', location: 'Remote' },
-  { id: 3, title: 'User Interface Designer', department: 'Design', type: 'Full-time', location: 'Remote' },
-];
+import {
+    ArrowLongLeftIcon,
+    ArrowLongRightIcon,
+} from "@heroicons/react/20/solid";
+import { Link } from "@inertiajs/react";
 
-export default function Pagination({ items = defaultItems, currentPage = 1, itemsPerPage = 10 }) {
-  const totalItems = items.length;
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+export default function Pagination({ data }) {
+    const queryParams = new URLSearchParams(window.location.search);
+    const currentPage = data?.current_page;
+    const lastPage = data?.last_page;
+    const maxVisiblePages = 5; // Maximum number of pages to show
+    const status = queryParams.get("status") ?? "";
+    const search = queryParams.get("search") ?? "";
+    const getPageNumbers = () => {
+        const pages = [];
 
-  return (
-    <nav
-      aria-label="Pagination"
-      className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 dark:border-white/10 dark:bg-transparent"
-    >
-      <div className="hidden sm:block">
-        <p className="text-sm text-gray-700 dark:text-gray-300">
-          Showing <span className="font-medium">{startItem}</span> to <span className="font-medium">{endItem}</span> of{' '}
-          <span className="font-medium">{totalItems}</span> results
-        </p>
-      </div>
-      <div className="flex flex-1 justify-between sm:justify-end">
-        <button
-          disabled={currentPage === 1}
-          className="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-700 inset-ring inset-ring-gray-300 hover:bg-gray-50 dark:bg-white/10 dark:text-gray-200 dark:inset-ring-white/5 dark:hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Previous
-        </button>
-        <button
-          disabled={endItem >= totalItems}
-          className="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-700 inset-ring inset-ring-gray-300 hover:bg-gray-50 dark:bg-white/10 dark:text-gray-200 dark:inset-ring-white/5 dark:hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Next
-        </button>
-      </div>
-    </nav>
-  );
+        if (lastPage <= maxVisiblePages) {
+            for (let i = 1; i <= lastPage; i++) {
+                pages.push(i);
+            }
+        } else {
+            if (currentPage <= 3) {
+                pages.push(1, 2, 3, 4, "...", lastPage);
+            } else if (currentPage > lastPage - 3) {
+                pages.push(
+                    1,
+                    "...",
+                    lastPage - 3,
+                    lastPage - 2,
+                    lastPage - 1,
+                    lastPage
+                );
+            } else {
+                pages.push(
+                    1,
+                    "...",
+                    currentPage - 1,
+                    currentPage,
+                    currentPage + 1,
+                    "...",
+                    lastPage
+                );
+            }
+        }
+
+        return pages;
+    };
+
+    return (
+        <nav className="flex items-center justify-between   px-4 sm:px-0 w-full">
+            <div className="-mt-px flex w-0 flex-1">
+                {currentPage > 1 && (
+                    <Link
+                        href={`?page=${
+                            currentPage - 1
+                        }&search=${search}&status=${status}`}
+                        className="inline-flex items-center  border-transparent bg-blue-500 p-2 text-white rounded-md text-sm font-medium"
+                    >
+                        <ArrowLongLeftIcon
+                            aria-hidden="true"
+                            className="mr-3 h-5 w-5 text-white"
+                        />
+                        Previous
+                    </Link>
+                )}
+            </div>
+            <div className="hidden md:-mt-px md:flex  gap-3">
+                {getPageNumbers().map((page, index) => (
+                    <Link
+                        key={index}
+                        href={
+                            typeof page === "number"
+                                ? `?page=${page}&search=${search}&status=${status}`
+                                : "#"
+                        }
+                        className={`inline-flex items-center  rounded-md text-center px-4 p-2 text-sm font-medium ${
+                            currentPage === page
+                                ? "text-blue-600 border-blue-600 border-2 text-blue"
+                                : "bg-blue-500  hover:bg-blue-500  text-white "
+                        }`}
+                    >
+                        {page}
+                    </Link>
+                ))}
+            </div>
+            <div className="-mt-px flex  flex-1 justify-end w-full">
+                {currentPage < lastPage && (
+                    <Link
+                        href={`?page=${
+                            currentPage + 1
+                        }&search=${search}&status=${status}`}
+                        className="inline-flex items-center  border-transparent bg-blue-500 p-2 text-white rounded-md text-sm font-medium  "
+                    >
+                        Next
+                        <ArrowLongRightIcon
+                            aria-hidden="true"
+                            className="ml-3 h-5 w-5 text-white"
+                        />
+                    </Link>
+                )}
+            </div>
+        </nav>
+    );
 }

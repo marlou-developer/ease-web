@@ -157,7 +157,7 @@ export default function SidebarSection() {
                 className={`hidden lg:fixed lg:inset-y-0 lg:flex lg:flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-white/10 transition-all duration-300 ${sidebarWidth}`}
             >
                 <div className="flex flex-col flex-1 h-full">
-                    <div className="flex items-center justify-center h-16 p-4">
+                    <div className="flex items-center mt-3 justify-center h-16 p-4">
                         <img
                             alt="Logo"
                             src="/images/logo.png"
