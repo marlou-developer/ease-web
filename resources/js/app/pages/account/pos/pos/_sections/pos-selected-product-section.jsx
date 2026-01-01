@@ -63,7 +63,7 @@ export default function POSSelectedProductSection() {
                     <tbody>
                         {cart.map((item) => (
                             <tr key={item.id} className="border-b">
-                                <td className="py-3 font-medium">
+                                <td className=" font-medium">
                                     {item.name}
                                 </td>
                                 <td className="py-3">

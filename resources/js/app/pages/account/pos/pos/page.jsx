@@ -13,7 +13,7 @@ export default function Page() {
                     <POSProductListSection />
 
                     {/* MIDDLE: CART (5 Columns) */}
-                    <section className="col-span-12 py-3 lg:col-span-5 border-r flex flex-col overflow-auto">
+                    <section className="col-span-12  lg:col-span-5 border flex flex-col overflow-auto">
                         <POSSelectedProductSection />
                     </section>
 

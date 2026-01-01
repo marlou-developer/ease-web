@@ -1,8 +1,11 @@
 import React from 'react'
 import Layout from '../layout'
+import CustomersTableSection from './_sections/customer-table-section'
 
 export default function Page() {
   return (
-    <Layout>User</Layout>
+    <Layout>
+      <CustomersTableSection />
+    </Layout>
   )
 }

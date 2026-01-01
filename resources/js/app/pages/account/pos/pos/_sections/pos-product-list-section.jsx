@@ -185,6 +185,7 @@ export default function POSProductListSection() {
                     {filteredProducts.map((product) => (
                         <div
                             key={product.id}
+                            onClick={() => addToCart(product)}
                             className="border rounded-lg p-2 text-center hover:shadow-md transition bg-gray-50"
                         >
                             <img
