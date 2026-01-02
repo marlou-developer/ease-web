@@ -79,7 +79,6 @@ export default function POSCheckout() {
                     height={20}
                 />
                 Checkout
-                {`${Number(cartDetail.grandTotal) == Number(amountPaid)}`}
             </h3>
 
             <div className="space-y-4 flex-1">
