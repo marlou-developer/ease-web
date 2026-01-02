@@ -6,9 +6,10 @@ import {
 import { Trash2 } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import NumberKeyboard from "./pos-keyboard-section";
 
 export default function POSSelectedProductSection() {
-    const { cart, cartDetail, heldSales } = useSelector(
+    const { cart, cartDetail, heldSales, amountPaid } = useSelector(
         (store) => store.pos_products
     );
     const dispatch = useDispatch();
@@ -63,9 +64,7 @@ export default function POSSelectedProductSection() {
                     <tbody>
                         {cart.map((item) => (
                             <tr key={item.id} className="border-b">
-                                <td className=" font-medium">
-                                    {item.name}
-                                </td>
+                                <td className=" font-medium">{item.name}</td>
                                 <td className="py-3">
                                     <div className="flex items-center justify-center gap-2">
                                         <button
@@ -95,7 +94,12 @@ export default function POSSelectedProductSection() {
                     </tbody>
                 </table>
             </div>
-
+            <div>
+                <NumberKeyboard
+                    value={`${amountPaid}`}
+                    onChange={(value) => dispatch(setAmountPaid(value))}
+                />
+            </div>
             <div className="p-4 bg-gray-50 border-t space-y-2">
                 <div className="flex justify-between text-sm">
                     <span>Subtotal</span>{" "}

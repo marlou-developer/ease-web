@@ -19,8 +19,6 @@ return new class extends Migration
             $table->foreignId('unit_id')->nullable()->constrained('units');
             $table->decimal('cost_price', 10, 2);
             $table->decimal('sell_price', 10, 2);
-            $table->decimal('wholesale_price', 10, 2)->nullable();
-            $table->integer('reorder_level')->default(0);
             $table->string('image')->nullable();
             $table->timestamps();
         });

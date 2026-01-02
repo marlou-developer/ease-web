@@ -12,6 +12,9 @@ export const posProductSlice = createSlice({
         },
         amountPaid: 0,
         heldSales: [],
+        searchTerm: "",
+        category: "All Categories",
+        currentPage: 1,
     },
     reducers: {
         setCart: (state, action) => {
@@ -21,14 +24,31 @@ export const posProductSlice = createSlice({
         setAmountPaid: (state, action) => {
             state.amountPaid = action.payload;
         },
-        setCartDetail:(state,action)=>{
+        setCartDetail: (state, action) => {
             state.cartDetail = action.payload;
         },
         setHeldSales: (state, action) => {
             state.heldSales = action.payload;
         },
+        setSearchTerm: (state, action) => {
+            state.searchTerm = action.payload;
+        },
+        setCategory: (state, action) => {
+            state.category = action.payload;
+        },
+        setCurrentPage: (state, action) => {
+            state.currentPage = action.payload;
+        },
     },
 });
 
-export const { setCart, setAmountPaid, setHeldSales,setCartDetail } = posProductSlice.actions;
+export const {
+    setCart,
+    setAmountPaid,
+    setHeldSales,
+    setCartDetail,
+    setSearchTerm,
+    setCategory,
+    setCurrentPage,
+} = posProductSlice.actions;
 export default posProductSlice.reducer;

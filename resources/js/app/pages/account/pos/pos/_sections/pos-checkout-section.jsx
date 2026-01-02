@@ -53,6 +53,21 @@ export default function POSCheckout() {
         dispatch(setHeldSales(heldSales.filter((h) => h.id !== sale.id)));
     };
 
+    const isDisabled = () => {
+        if (cart.length === 0) return true;
+        if (
+            cart.length != 0 &&
+            Number(cartDetail.grandTotal) > Number(amountPaid)
+        )
+            return true;
+        if (
+            cart.length != 0 &&
+            Number(cartDetail.grandTotal) == Number(amountPaid)
+        )
+            return false;
+        return false;
+    };
+
     return (
         <>
             <h3 className="font-bold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
@@ -64,6 +79,7 @@ export default function POSCheckout() {
                     height={20}
                 />
                 Checkout
+                {`${Number(cartDetail.grandTotal) == Number(amountPaid)}`}
             </h3>
 
             <div className="space-y-4 flex-1">
@@ -72,15 +88,19 @@ export default function POSCheckout() {
                         Amount Paid
                     </label>
                     <input
-                        type="number"
-                        min="0"
-                        step="any"
+                        type="text"
+                        inputMode="decimal" 
+                        value={amountPaid} 
                         onChange={(e) => {
-                            const value = parseFloat(e.target.value);
-                            // Only allow numbers >= 0
-                            dispatch(setAmountPaid(value >= 0 ? value : 0));
+                            const val = e.target.value;
+                            if (val === "" || /^\d*\.?\d*$/.test(val)) {
+                                dispatch(setAmountPaid(val));
+                            }
                         }}
-                        className="w-full p-3 border rounded text-2xl font-bold text-right focus:ring-2 focus:ring-green-500 outline-none no-spinners"
+                        onBlur={() => {
+                            const cleaned = parseFloat(amountPaid) || 0;
+                        }}
+                        className="w-full p-3 border rounded text-2xl font-bold text-right focus:ring-2 focus:ring-green-500 outline-none"
                     />
                 </div>
                 <div className="flex justify-between items-center bg-white p-3 rounded border">
@@ -90,7 +110,17 @@ export default function POSCheckout() {
                     </span>
                 </div>
 
-                <button className="w-full bg-green-600 text-white py-4 rounded-xl font-black text-xl shadow-lg hover:bg-green-700 active:scale-95 transition-all">
+                <button
+                    onClick={() => alert("Sale Completed!")}
+                    // Convert both sides to Number to ensure accurate numeric comparison
+                    disabled={isDisabled()}
+                    className={`w-full py-4 rounded-xl font-black text-xl shadow-lg transition-all
+    ${
+        isDisabled()
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-green-600 text-white hover:bg-green-700 active:scale-95"
+    }`}
+                >
                     COMPLETE SALE
                 </button>
 
