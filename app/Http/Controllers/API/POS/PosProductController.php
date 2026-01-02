@@ -26,22 +26,8 @@ class PosProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'barcode' => 'nullable|string|unique:pos_products,barcode',
-            'name' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:pos_categories,id',
-            'unit_id' => 'nullable|exists:units,id',
-            'cost_price' => 'required|numeric|min:0',
-            'sell_price' => 'required|numeric|min:0',
-            'image' => 'nullable|string', // optional image URL
-        ]);
-       
 
-        $product = PosProduct::create($request->only(
-            'name', 'barcode', 'category_id', 'unit_id', 
-            'cost_price', 'sell_price', 'image'
-        ));
-
+        $product = PosProduct::create($request->all());
         return response()->json([
             'success' => true,
             'message' => 'Product created successfully',
@@ -71,7 +57,7 @@ class PosProductController extends Controller
             'name' => 'sometimes|required|string|max:255',
             'barcode' => 'nullable|string|unique:pos_products,barcode,' . $posProduct->id,
             'category_id' => 'nullable|exists:pos_categories,id',
-            'unit_id' => 'nullable|exists:units,id',
+            'unit_id' => 'nullable|exists:pos_units,id',
             'cost_price' => 'sometimes|required|numeric|min:0',
             'sell_price' => 'sometimes|required|numeric|min:0',
             'reorder_level' => 'nullable|integer|min:0',
@@ -80,8 +66,15 @@ class PosProductController extends Controller
         ]);
 
         $posProduct->update($request->only(
-            'name', 'barcode', 'category_id', 'unit_id', 
-            'cost_price', 'sell_price', 'reorder_level', 'description', 'image'
+            'name',
+            'barcode',
+            'category_id',
+            'unit_id',
+            'cost_price',
+            'sell_price',
+            'reorder_level',
+            'description',
+            'image'
         ));
 
         return response()->json([

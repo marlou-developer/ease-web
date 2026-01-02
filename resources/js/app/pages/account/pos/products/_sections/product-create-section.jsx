@@ -1,20 +1,24 @@
+import Button from "@/app/_components/button";
 import ImageUpload from "@/app/_components/image-upload";
 import Input from "@/app/_components/input";
 import Modal from "@/app/_components/modal";
 import Select from "@/app/_components/select";
+import { setAlert } from "@/app/redux/app-slice";
+import { create_pos_product_service } from "@/app/services/pos-product-service";
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 
 export default function ProductCreateSection() {
     const [open, setOpen] = useState(false);
-
+    const dispatch = useDispatch();
     const {
         register,
         handleSubmit,
         reset,
         control,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
             barcode: "",
@@ -27,25 +31,58 @@ export default function ProductCreateSection() {
         },
     });
 
-    const onSubmit = (data) => {
-        console.log(data);
-        // TODO: send to backend (axios / fetch)
-        // reset();
-        // setOpen(false);
+    const onSubmit = async (data) => {
+        try {
+            const formData = new FormData();
+
+            // Append all fields except image dynamically
+            const { image, ...fields } = data;
+            Object.entries(fields).forEach(([key, value]) => {
+                formData.append(key, value);
+            });
+
+            // Append image if exists
+            if (image?.length) {
+                formData.append("image", image[0]);
+            }
+
+            await create_pos_product_service(formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            await setOpen(false);
+            await reset();
+            dispatch(
+                setAlert({
+                    type: "success",
+                    title: "Product Created Successfully!",
+                })
+            );
+            console.log("Product created successfully!");
+        } catch (error) {
+            dispatch(
+                setAlert({
+                    type: "error",
+                    title: "Product Created Unsuccessful!",
+                })
+            );
+            console.error("Error creating product:", error);
+        }
     };
 
     return (
         <>
-            <button
+            <Button
                 onClick={() => {
                     setOpen(true);
                     reset();
                 }}
-                className="bg-blue-500 hover:bg-blue-400 transition flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-blue-400 shadow-sm"
+                className="text-white  border-white shadow-sm  hover:bg-blue-500"
+                outlined
             >
-                <Plus size={18} /> Add Product
-            </button>
-
+                <div className="flex gap-2 items-center justify-center">
+                    <Plus size={18} /> Add Product
+                </div>
+            </Button>
             <Modal
                 width="max-w-4xl"
                 isOpen={open}
@@ -82,8 +119,8 @@ export default function ProductCreateSection() {
                             <Select
                                 label="Select Category"
                                 options={[
-                                    { value: "hello", label: "Hello" },
-                                    { value: "world", label: "World" },
+                                    { value: 1, label: "Hello" },
+                                    { value: 2, label: "World" },
                                 ]}
                                 error={errors.category_id}
                                 {...field} // passes value & onChange
@@ -97,10 +134,10 @@ export default function ProductCreateSection() {
                         rules={{ required: "Unit is required" }}
                         render={({ field }) => (
                             <Select
-                                label="Select Category"
+                                label="Select Unit"
                                 options={[
-                                    { value: "hello", label: "Hello" },
-                                    { value: "world", label: "World" },
+                                    { value: 1, label: "Hello" },
+                                    { value: 2, label: "World" },
                                 ]}
                                 error={errors.unit_id}
                                 {...field} // passes value & onChange
@@ -132,9 +169,6 @@ export default function ProductCreateSection() {
                         error={errors.sell_price}
                     />
 
-               
-                 
-
                     {/* Image */}
                     <div className="flex w-full">
                         <ImageUpload
@@ -157,19 +191,21 @@ export default function ProductCreateSection() {
 
                     {/* Actions */}
                     <div className="col-span-2 flex justify-end gap-2 mt-4">
-                        <button
-                            type="button"
+                        <Button
+                            type="submit"
+                            variant="danger"
+                            outlined
                             onClick={() => setOpen(false)}
-                            className="px-4 py-2 border rounded text-gray-800"
                         >
                             Cancel
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
-                            className="px-4 py-2 bg-blue-500 text-white rounded"
+                            variant="primary"
+                            loading={isSubmitting}
                         >
                             Save Product
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </Modal>

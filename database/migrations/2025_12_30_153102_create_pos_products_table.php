@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('pos_products', function (Blueprint $table) {
             $table->id();
+            $table->string('subscriber_id')->unique()->nullable();
             $table->string('barcode')->unique()->nullable();
             $table->string('name');
             $table->foreignId('category_id')->nullable()->constrained('categories');

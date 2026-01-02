@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class PosUnit extends Model
 {
     use HasFactory;
-
-    protected $fillable = ['name', 'description'];
+    protected $table = 'pos_units';
+    protected $fillable = ['name'];
 
     public function products()
     {
