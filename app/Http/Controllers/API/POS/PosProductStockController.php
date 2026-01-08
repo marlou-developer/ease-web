@@ -14,11 +14,7 @@ class PosProductStockController extends Controller
     public function index()
     {
         $stocks = PosProductStock::with('product')->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $stocks
-        ]);
+        return response()->json($stocks, 200);
     }
 
     /**

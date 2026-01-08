@@ -176,9 +176,7 @@ export default function ProductPaginationSection() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
      const filteredProducts = products.filter((p) => {
-        const matchesSearch = p.name
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase());
+        const matchesSearch = p?.product?.name?.toLowerCase()?.includes(searchTerm.toLowerCase());
         const matchesCat =
             category === "All Categories" || p.category === category;
         return matchesSearch && matchesCat;

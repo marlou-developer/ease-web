@@ -29,7 +29,7 @@ export default function SidebarSection() {
         const navigation = [
             { name: "Dashboard", href: "/account/pos/dashboard", icon: FcDataSheet, current: path == "dashboard" },
             { name: "POS", href: "/account/pos/pos", icon: FcSelfServiceKiosk, current: path == "pos" },
-            { name: "Products", href: "/account/pos/products", icon: FcBullish, current: path == "products" },
+            { name: "Product Stocks", href: "/account/pos/products", icon: FcBullish, current: path == "products" },
             { name: "Stack Movements", href: "/account/pos/stack_movements", icon: FcFeedIn, current: path == "stack_movements" },
             { name: "Purchases", href: "/account/pos/purchases", icon: FcDonate, current: path == "purchases" },
             { name: "Suppliers", href: "/account/pos/suppliers", icon: FcShipped, current: path == "suppliers" },

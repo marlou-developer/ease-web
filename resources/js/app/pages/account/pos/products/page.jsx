@@ -5,14 +5,14 @@ import ProductSearchSection from "./_sections/product-search-section";
 import ProductTableSection from "./_sections/product-table-section";
 import ProductPaginationSection from "./_sections/product-pagination-section";
 import store from "@/app/store/store";
-import { get_pos_products_thunk } from "@/app/redux/pos/pos-product-thunk";
+import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-product-thunk";
 
 export default function Page() {
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         async function get_data(params) {
             try {
-                await store.dispatch(get_pos_products_thunk());
+                await store.dispatch(get_pos_product_stocks_thunk());
                 setLoading(false);
             } catch (error) {
                 setLoading(false);
@@ -26,8 +26,10 @@ export default function Page() {
                 <div className=" bg-white  overflow-hidden">
                     <ProductHeaderSection />
                     <ProductSearchSection />
-                    {!loading && <ProductTableSection />}
+                    {!loading && <>
+                    <ProductTableSection />
                     <ProductPaginationSection />
+                    </>}
                 </div>
             </div>
         </Layout>

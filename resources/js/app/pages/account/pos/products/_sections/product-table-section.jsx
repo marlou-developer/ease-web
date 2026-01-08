@@ -1,3 +1,4 @@
+
 import peso_value from "@/app/lib/peso-value";
 import { Edit2, Trash2 } from "lucide-react";
 import React from "react";
@@ -13,9 +14,7 @@ export default function ProductTableSection() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const filteredProducts = INITIAL_PRODUCTS.filter((p) => {
-        const matchesSearch = p.name
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase());
+        const matchesSearch = p?.product?.name?.toLowerCase()?.includes(searchTerm.toLowerCase());
         const matchesCat =
             category === "All Categories" || p.category_id === category;
         return matchesSearch && matchesCat;
@@ -53,7 +52,7 @@ export default function ProductTableSection() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                        {filteredProducts.map((product, i) => (
+                        {filteredProducts.map((res, i) => (
                             <tr
                                 key={i}
                                 className="hover:bg-slate-50 transition group"
@@ -63,34 +62,34 @@ export default function ProductTableSection() {
                                         src={
                                             "https://cdn-icons-png.flaticon.com/128/1321/1321742.png"
                                         }
-                                        alt={product?.name}
+                                        alt={res?.product.name}
                                         className="w-10 h-10 object-contain drop-shadow-sm"
                                     />
                                 </td>
                                 <td className="px-6 py-4 font-bold text-slate-800">
-                                    {product?.name}
+                                    {res?.product.name}
                                 </td>
 
                                 <td className="px-6 py-4 text-sm">
-                                    {product?.barcode}
+                                 {res?.product.barcode}
                                 </td>
                                 <td className="px-6 py-4 font-semibold text-slate-900">
-                                    {peso_value(product?.cost_price)}
+                                    {peso_value(res?.cost_price)}
                                 </td>
                                 <td className="px-6 py-4 font-semibold text-slate-900">
-                                    {peso_value(product?.sell_price)}
+                                    {peso_value(res?.sell_price)}
                                 </td>
                                 <td className="px-6 py-4 text-sm">
-                                    {product?.category_id}
+                                    {res?.product?.category_id}
                                 </td>
                                 <td className="px-6 py-4 text-sm">
-                                    {product?.unit_id}
+                                    {res?.product?.unit_id}
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex justify-center gap-2">
                                         <button
                                             onClick={() =>
-                                                handleEdit(product?.name)
+                                                handleEdit(res?.product.name)
                                             }
                                             className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded-md text-xs font-bold hover:bg-blue-700 transition"
                                         >
@@ -98,7 +97,7 @@ export default function ProductTableSection() {
                                         </button>
                                         <button
                                             onClick={() =>
-                                                handleDelete(product?.name)
+                                                handleDelete(res?.product.name)
                                             }
                                             className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 text-white rounded-md text-xs font-bold hover:bg-red-600 transition"
                                         >

@@ -14,8 +14,8 @@ use App\Http\Controllers\API\POS\PosPurchaseItemController;
 use App\Http\Controllers\API\POS\PosSaleController;
 use App\Http\Controllers\API\POS\PosSalesItemController;
 use App\Http\Controllers\API\POS\PosStockMovementController;
-use App\Http\Controllers\API\POS\PosSupplierController;
 use App\Http\Controllers\API\POS\PosUnitController;
+use App\Http\Controllers\PosSupplierController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -29,7 +29,6 @@ Route::get('/user', function (Request $request) {
     Route::apiResource('pos-transactions', PosCashTransactionController::class);
     Route::apiResource('pos-categories', PosCategoryController::class);
     Route::apiResource('pos-customers', PosCustomerController::class);
-    Route::apiResource('pos-items', PosItemController::class);
     Route::apiResource('pos-products', PosProductController::class);
     Route::apiResource('pos-product-stocks', PosProductStockController::class);
     Route::apiResource('pos-purchases', PosPurchaseController::class);
