@@ -7,6 +7,7 @@ use App\Models\POS\PosProductStock;
 use App\Models\POS\PosSale;
 use App\Models\POS\PosSaleItem;
 use App\Models\POS\PosSalesItem;
+use App\Models\POS\PosStockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -58,9 +59,10 @@ class PosSaleController extends Controller
             'payment_type' => $request->payment_type,
             'status' => 'paid',
         ]);
+        $invoice_no = str_pad($sale->id, 8, '0', STR_PAD_LEFT);
 
         $sale->update([
-            'invoice_no' => '0000000' . $sale->id
+            'invoice_no' => $invoice_no
         ]);
         // Add sale items
         foreach ($request->items as $item) {
@@ -73,8 +75,23 @@ class PosSaleController extends Controller
                 'subtotal' => ($item['quantity'] * $item['selling_price']) - ($item['discount'] ?? 0),
             ]);
 
-            $product_stock = PosProductStock::where('id', $item['product_stock_id'])->first();
+            PosProductStock::where('id', $item['product_stock_id'])->decrement('stocks', $item['quantity']);
+
+            $product_stock = PosProductStock::find($item['product_stock_id']);
             if ($product_stock) {
+                $qty_before = $product_stock->stocks;
+                $qty_after = $qty_before - $item['quantity'];
+
+                PosStockMovement::create([
+                    'product_stock_id' => $item['product_stock_id'],
+                    'user_id' => Auth::id(),
+                    'type' => 'OUT',
+                    'reference' => $invoice_no,
+                    'qty_before' => $qty_before,
+                    'qty_change' => $item['quantity'],
+                    'qty_after' => $qty_after,
+                ]);
+
                 $product_stock->decrement('stocks', $item['quantity']);
             }
         }

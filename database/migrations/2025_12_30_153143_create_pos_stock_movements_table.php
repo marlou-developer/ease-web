@@ -17,9 +17,9 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->enum('type', ['IN', 'OUT', 'ADJUST']);
             $table->string('reference')->nullable(); // purchase, sale, manual
-            $table->decimal('qty_before', 10, 3);
-            $table->decimal('qty_change', 10, 3);
-            $table->decimal('qty_after', 10, 3);
+            $table->decimal('qty_before', 10, 2);
+            $table->decimal('qty_change', 10, 2);
+            $table->decimal('qty_after', 10, 2);
             $table->timestamps();
         });
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\POS;
 use App\Http\Controllers\Controller;
 use App\Models\POS\PosProduct;
 use App\Models\POS\PosProductStock;
+use App\Models\POS\PosStockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,7 +43,7 @@ class PosProductStockController extends Controller
             ['subscriber_id', '=', $auth->id]
         ])->first();
         if (!$pos_stock) {
-            PosProductStock::create([
+            $pos_product_stock = PosProductStock::create([
                 'product_id' => $pos_product->id,
                 'subscriber_id' => $auth->id,
                 'stocks' => $request->stocks,
@@ -50,7 +51,24 @@ class PosProductStockController extends Controller
                 'sell_price' => $request->sell_price,
                 'discount' => 0,
             ]);
+
+
+            $stock_movement = PosStockMovement::where('product_stock_id', $pos_product_stock->id)->first();
+
+            if (!$stock_movement) {
+                PosStockMovement::create([
+                    'product_stock_id' => $pos_product_stock->id,
+                    'user_id' => Auth::id(),
+                    'type' => 'IN',
+                    'reference' => 'Initial Stock Entry',
+                    'qty_before' => 0,
+                    'qty_change' => $request->stocks,
+                    'qty_after' => $request->stocks,
+                ]);
+            }
         }
+
+
 
         return response()->json([
             'success' => true,
