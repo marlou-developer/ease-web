@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../layout";
 import POSCheckout from "./_sections/pos-checkout-section";
 import POSProductListSection from "./_sections/pos-product-list-section";
 import POSSelectedProductSection from "./_sections/pos-selected-product-section";
+import store from "@/app/store/store";
+import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-product-thunk";
 
 export default function Page() {
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        async function get_data(params) {
+            try {
+                await store.dispatch(get_pos_product_stocks_thunk());
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+            }
+        }
+        get_data();
+    }, []);
     return (
         <Layout>
             <div className=" bg-gray-100  font-sans">

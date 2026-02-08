@@ -21,6 +21,6 @@ class PosProductStock extends Model
 
     public function product()
     {
-        return $this->belongsTo(PosProduct::class);
+        return $this->belongsTo(PosProduct::class)->with('category');
     }
 }

@@ -9,8 +9,6 @@ export async function create_pos_product_service(data) {
 }
 
 
-
-
 export async function get_pos_product_service(data) {
     return await axios.get("/api/pos-products");
 }

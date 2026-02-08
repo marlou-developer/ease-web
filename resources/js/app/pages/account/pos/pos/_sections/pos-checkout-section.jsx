@@ -7,11 +7,16 @@ import {
     setCartDetail,
     setHeldSales,
 } from "@/app/redux/pos/pos-product-slice";
+import { create_pos_sales_service } from "@/app/services/pos-sales-service";
+import Swal from "sweetalert2";
+import store from "@/app/store/store";
+import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-product-thunk";
 
 export default function POSCheckout() {
     const { cartDetail, heldSales, cart, amountPaid, tax } = useSelector(
-        (store) => store.pos_products
+        (store) => store.pos_products,
     );
+    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
 
     // Load held sales from localStorage on start
@@ -23,7 +28,7 @@ export default function POSCheckout() {
     useEffect(() => {
         const subtotal = cart.reduce(
             (acc, item) => acc + item.price * item.qty,
-            0
+            0,
         );
         const tax = subtotal * cartDetail.tax; // cartDetail.tax should be 0.12 for 12%
         const grandTotal = subtotal + tax;
@@ -35,7 +40,7 @@ export default function POSCheckout() {
                 subtotal,
                 grandTotal,
                 changeDue,
-            })
+            }),
         );
     }, [cart, cartDetail.tax, amountPaid]);
 
@@ -55,6 +60,7 @@ export default function POSCheckout() {
 
     const isDisabled = () => {
         if (cart.length === 0) return true;
+        if (loading) return true;
         if (
             cart.length != 0 &&
             Number(cartDetail.grandTotal) > Number(amountPaid)
@@ -67,6 +73,39 @@ export default function POSCheckout() {
             return false;
         return false;
     };
+
+    async function submit_sales(params) {
+        try {
+            setLoading(true);
+            await create_pos_sales_service({
+                customer_id: 0,
+                invoice_no: 0,
+                payment_type: "cash",
+                discount: 0,
+                amount_paid: amountPaid,
+                change_due: Number(cartDetail.changeDue).toFixed(2),
+                items: cart.map((res) => ({
+                    product_stock_id: res.id,
+                    quantity: res.qty,
+                    selling_price: Number(res.price).toFixed(2),
+                    discount: 0,
+                })),
+            });
+            await store.dispatch(get_pos_product_stocks_thunk());
+            await Swal.fire({
+                icon: "success",
+                title: "Your work has been saved",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            dispatch(setCart([]));
+            dispatch(setAmountPaid(0));
+
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+        }
+    }
 
     return (
         <>
@@ -88,8 +127,8 @@ export default function POSCheckout() {
                     </label>
                     <input
                         type="text"
-                        inputMode="decimal" 
-                        value={amountPaid} 
+                        inputMode="decimal"
+                        value={amountPaid}
                         onChange={(e) => {
                             const val = e.target.value;
                             if (val === "" || /^\d*\.?\d*$/.test(val)) {
@@ -110,7 +149,7 @@ export default function POSCheckout() {
                 </div>
 
                 <button
-                    onClick={() => alert("Sale Completed!")}
+                    onClick={() => submit_sales()}
                     // Convert both sides to Number to ensure accurate numeric comparison
                     disabled={isDisabled()}
                     className={`w-full py-4 rounded-xl font-black text-xl shadow-lg transition-all

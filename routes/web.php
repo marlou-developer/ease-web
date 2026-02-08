@@ -13,7 +13,7 @@ Route::get('/', function () {
         2 => redirect('/account/pos/dashboard'),
         default => Inertia::render('auth/login/page'),
     };
-});
+})->name('login');
 
 Route::get('/dashboard', function () {
     $user = Auth::user();

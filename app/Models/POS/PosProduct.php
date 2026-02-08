@@ -4,6 +4,7 @@ namespace App\Models\POS;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PosProduct extends Model
 {
@@ -18,9 +19,9 @@ class PosProduct extends Model
     ];
 
 
-    public function category()
+    public function category():HasOne
     {
-        return $this->belongsTo(PosCategory::class);
+        return $this->hasOne(PosCategory::class,'id','category_id');
     }
 
     public function unit()

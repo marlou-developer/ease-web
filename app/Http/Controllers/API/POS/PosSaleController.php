@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\POS;
 
 use App\Http\Controllers\Controller;
+use App\Models\POS\PosProductStock;
 use App\Models\POS\PosSale;
 use App\Models\POS\PosSaleItem;
 use App\Models\POS\PosSalesItem;
@@ -30,51 +31,57 @@ class PosSaleController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'customer_id' => 'nullable|exists:pos_customers,id',
-            'invoice_no' => 'required|string|max:100|unique:pos_sales,invoice_no',
+            'customer_id' => 'nullable',
             'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:pos_products,id',
+            'items.*.product_stock_id' => 'required|exists:pos_products,id',
             'items.*.quantity' => 'required|numeric|min:1',
             'items.*.selling_price' => 'required|numeric|min:0',
-            'payment_type' => 'required|in:cash,card',
+            'payment_type' => 'nullable|in:cash,card',
             'amount_paid' => 'required|numeric|min:0',
+            'change_due' => 'required',
         ]);
 
-        // Calculate totals
+
         $total = collect($request->items)->sum(function ($item) {
             return $item['quantity'] * $item['selling_price'];
         });
-        $change_due = max($request->amount_paid - $total, 0);
 
         $sale = PosSale::create([
-            'invoice_no' => $request->invoice_no,
+            'invoice_no' => 0,
             'customer_id' => $request->customer_id,
             'user_id' => Auth::id(),
             'total_amount' => $total,
             'discount' => $request->discount ?? 0,
             'tax' => $request->tax ?? 0,
             'amount_paid' => $request->amount_paid,
-            'change_due' => $change_due,
+            'change_due' => $request->change_due,
             'payment_type' => $request->payment_type,
             'status' => 'paid',
         ]);
 
+        $sale->update([
+            'invoice_no' => '0000000' . $sale->id
+        ]);
         // Add sale items
         foreach ($request->items as $item) {
             PosSalesItem::create([
+                'product_stock_id' => $item['product_stock_id'],
                 'sale_id' => $sale->id,
-                'product_id' => $item['product_id'],
                 'quantity' => $item['quantity'],
                 'selling_price' => $item['selling_price'],
                 'discount' => $item['discount'] ?? 0,
                 'subtotal' => ($item['quantity'] * $item['selling_price']) - ($item['discount'] ?? 0),
             ]);
+
+            $product_stock = PosProductStock::where('id', $item['product_stock_id'])->first();
+            if ($product_stock) {
+                $product_stock->decrement('stocks', $item['quantity']);
+            }
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Sale created successfully',
-            'data' => $sale->load('sale_items.product', 'customer', 'user')
         ]);
     }
 
