@@ -100,13 +100,30 @@ export default function POSCheckout() {
             });
             dispatch(setCart([]));
             dispatch(setAmountPaid(0));
-
             setLoading(false);
         } catch (error) {
             setLoading(false);
         }
     }
 
+    async function open_confirmation(params) {
+        const result = await Swal.fire({
+            title: "Payment Confirmation!",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Confirm",
+            showLoaderOnConfirm: true,
+            preConfirm: async () => {
+                await submit_sales();
+            },
+        });
+        if (result.isConfirmed) {
+            console.log("Sales submitted successfully");
+        }
+    }
     return (
         <>
             <h3 className="font-bold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
@@ -149,7 +166,7 @@ export default function POSCheckout() {
                 </div>
 
                 <button
-                    onClick={() => submit_sales()}
+                    onClick={() => open_confirmation()}
                     // Convert both sides to Number to ensure accurate numeric comparison
                     disabled={isDisabled()}
                     className={`w-full py-4 rounded-xl font-black text-xl shadow-lg transition-all
