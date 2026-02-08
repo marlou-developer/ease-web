@@ -7,24 +7,18 @@ import {
 } from "@heroicons/react/20/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { setDesktopCollapsed, setSidebarOpen } from "@/app/redux/app-slice";
+import { Link } from "@inertiajs/react";
 
-const userNavigation = [
-    { name: "Your profile", href: "#" },
-    { name: "Sign out", href: "#" },
-];
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(" ");
-}
 export default function TopbarSection() {
     const dispatch = useDispatch();
-   
+
     return (
         <>
             <div className="sticky top-0 z-40 flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm dark:border-white/10 dark:bg-gray-900">
                 <button
                     className="hidden lg:block p-2  items-center justify-center text-gray-900 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
-                    onClick={() =>dispatch(setDesktopCollapsed())}
+                    onClick={() => dispatch(setDesktopCollapsed())}
                 >
                     <Bars3Icon className="w-5 h-5" />
                 </button>
@@ -74,23 +68,28 @@ export default function TopbarSection() {
                                 leaveTo="transform opacity-0 scale-95"
                             >
                                 <Menu.Items className="absolute right-0 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg dark:bg-gray-800">
-                                    {userNavigation.map((item) => (
-                                        <Menu.Item key={item.name}>
-                                            {({ active }) => (
-                                                <a
-                                                    href={item.href}
-                                                    className={classNames(
-                                                        active
-                                                            ? "bg-gray-100 dark:bg-white/5"
-                                                            : "",
-                                                        "block px-3 py-1 text-sm text-gray-900 dark:text-white"
-                                                    )}
-                                                >
-                                                    {item.name}
-                                                </a>
-                                            )}
-                                        </Menu.Item>
-                                    ))}
+                                    <Menu.Item>
+                                        <a
+                                            as="button"
+                                            className={
+                                                "block px-3 py-1 text-sm text-gray-900 dark:text-white hover:bg-gray-100"
+                                            }
+                                        >
+                                            Profile
+                                        </a>
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        <Link
+                                            method="post"
+                                            href={route("logout")}
+                                            as="button"
+                                            className={
+                                                "block px-3 py-1 text-sm text-gray-900 dark:text-white hover:bg-gray-100"
+                                            }
+                                        >
+                                            Sign Out
+                                        </Link>
+                                    </Menu.Item>
                                 </Menu.Items>
                             </Transition>
                         </Menu>

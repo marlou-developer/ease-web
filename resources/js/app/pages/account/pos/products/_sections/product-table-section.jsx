@@ -1,4 +1,3 @@
-
 import peso_value from "@/app/lib/peso-value";
 import { Edit2, Trash2 } from "lucide-react";
 import React from "react";
@@ -14,7 +13,9 @@ export default function ProductTableSection() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const filteredProducts = INITIAL_PRODUCTS.filter((p) => {
-        const matchesSearch = p?.product?.name?.toLowerCase()?.includes(searchTerm.toLowerCase());
+        const matchesSearch = p?.product?.name
+            ?.toLowerCase()
+            ?.includes(searchTerm.toLowerCase());
         const matchesCat =
             category === "All Categories" || p.category_id === category;
         return matchesSearch && matchesCat;
@@ -41,6 +42,7 @@ export default function ProductTableSection() {
                             <th className="px-6 py-4 font-semibold">
                                 Selling Price
                             </th>
+                            <th className="px-6 py-4 font-semibold">Stocks</th>
                             <th className="px-6 py-4 font-semibold">
                                 Category
                             </th>
@@ -71,13 +73,16 @@ export default function ProductTableSection() {
                                 </td>
 
                                 <td className="px-6 py-4 text-sm">
-                                 {res?.product.barcode}
+                                    {res?.product.barcode}
                                 </td>
                                 <td className="px-6 py-4 font-semibold text-slate-900">
                                     {peso_value(res?.cost_price)}
                                 </td>
                                 <td className="px-6 py-4 font-semibold text-slate-900">
                                     {peso_value(res?.sell_price)}
+                                </td>
+                                <td className="px-6 py-4 text-sm">
+                                    {res?.stocks}
                                 </td>
                                 <td className="px-6 py-4 text-sm">
                                     {res?.product?.category_id}

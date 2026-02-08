@@ -2,24 +2,29 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    $user = Auth::user();
+    return match ($user?->role) {
+        1 => redirect('/administrator/dashboard'),
+        2 => redirect('/account/pos/dashboard'),
+        default => Inertia::render('auth/login/page'),
+    };
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    $user = Auth::user();
+    return match ($user?->role) {
+        1 => redirect('/administrator/dashboard'),
+        2 => redirect('/account/pos/dashboard'),
+        default => Inertia::render('auth/login/page'),
+    };
+})->name('dashboard');
 
-
-Route::prefix('administrator')->group(function () {
+Route::prefix('administrator')->middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('administrator/dashboard/page');
     });
@@ -35,7 +40,7 @@ Route::prefix('administrator')->group(function () {
     });
 });
 
-Route::prefix('account')->group(function () {
+Route::prefix('account')->middleware('auth')->group(function () {
     Route::prefix('pos')->group(function () {
         Route::get('/dashboard', function () {
             return Inertia::render('account/pos/dashboard/page');

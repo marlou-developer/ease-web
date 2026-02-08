@@ -4,8 +4,11 @@ import Input from "@/app/_components/input";
 import Modal from "@/app/_components/modal";
 import Select from "@/app/_components/select";
 import { setAlert } from "@/app/redux/app-slice";
-import { get_pos_products_thunk } from "@/app/redux/pos/pos-product-thunk";
-import { create_pos_product_service } from "@/app/services/pos-product-service";
+import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-product-thunk";
+import {
+    create_pos_product_service,
+    create_pos_product_stocks_product_service,
+} from "@/app/services/pos-product-service";
 import store from "@/app/store/store";
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
@@ -29,6 +32,7 @@ export default function ProductCreateSection() {
             unit_id: "",
             cost_price: "",
             sell_price: "",
+            stocks: "",
             image: "",
         },
     });
@@ -48,10 +52,10 @@ export default function ProductCreateSection() {
                 formData.append("image", image[0]);
             }
 
-            await create_pos_product_service(formData, {
+            await create_pos_product_stocks_product_service(formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-            await store.dispatch(get_pos_products_thunk());
+            await store.dispatch(get_pos_product_stocks_thunk());
             await setOpen(false);
             await reset();
             dispatch(
@@ -62,9 +66,10 @@ export default function ProductCreateSection() {
             );
             console.log("Product created successfully!");
         } catch (error) {
+            setOpen(false);
             dispatch(
                 setAlert({
-                    type: "error",
+                    type: "danger",
                     title: "Product Created Unsuccessful!",
                 })
             );
@@ -93,84 +98,103 @@ export default function ProductCreateSection() {
             >
                 <form
                     onSubmit={handleSubmit(onSubmit)}
-                    className="grid grid-cols-2 gap-4"
+                    className="flex flex-col gap-3"
                 >
                     {/* Barcode */}
-                    <Input
-                        label="Barcode"
-                        name="barcode"
-                        {...register("barcode", {
-                            required: "Barcode is required",
-                        })}
-                        error={errors.barcode}
-                    />
+                    <div className="flex gap-3">
+                        <Input
+                            label="Barcode"
+                            name="barcode"
+                            {...register("barcode", {
+                                required: "Barcode is required",
+                            })}
+                            error={errors.barcode}
+                        />
 
-                    {/* Name */}
-                    <Input
-                        label="Product Name"
-                        name="name"
-                        {...register("name", { required: "Name is required" })}
-                        error={errors.name}
-                    />
+                        {/* Name */}
+                        <Input
+                            label="Product Name"
+                            name="name"
+                            {...register("name", {
+                                required: "Name is required",
+                            })}
+                            error={errors.name}
+                        />
+                    </div>
 
-                    {/* Category */}
-                    <Controller
-                        name="category_id"
-                        control={control}
-                        rules={{ required: "Category is required" }}
-                        render={({ field }) => (
-                            <Select
-                                label="Select Category"
-                                options={[
-                                    { value: 1, label: "Hello" },
-                                    { value: 2, label: "World" },
-                                ]}
-                                error={errors.category_id}
-                                {...field} // passes value & onChange
-                            />
-                        )}
-                    />
+                    <div className="flex gap-3">
+                        {/* Category */}
+                        <Controller
+                            name="category_id"
+                            control={control}
+                            rules={{ required: "Category is required" }}
+                            render={({ field }) => (
+                                <Select
+                                    label="Select Category"
+                                    options={[
+                                        { value: 1, label: "Hello" },
+                                        { value: 2, label: "World" },
+                                    ]}
+                                    error={errors.category_id}
+                                    {...field} // passes value & onChange
+                                />
+                            )}
+                        />
 
-                    <Controller
-                        name="unit_id"
-                        control={control}
-                        rules={{ required: "Unit is required" }}
-                        render={({ field }) => (
-                            <Select
-                                label="Select Unit"
-                                options={[
-                                    { value: 1, label: "Hello" },
-                                    { value: 2, label: "World" },
-                                ]}
-                                error={errors.unit_id}
-                                {...field} // passes value & onChange
-                            />
-                        )}
-                    />
+                        <Controller
+                            name="unit_id"
+                            control={control}
+                            rules={{ required: "Unit is required" }}
+                            render={({ field }) => (
+                                <Select
+                                    label="Select Unit"
+                                    options={[
+                                        { value: 1, label: "Hello" },
+                                        { value: 2, label: "World" },
+                                    ]}
+                                    error={errors.unit_id}
+                                    {...field} // passes value & onChange
+                                />
+                            )}
+                        />
+                    </div>
+                    <div className="flex gap-3">
+                        {/* Cost Price */}
+                        <Input
+                            label="Cost Price"
+                            type="number"
+                            step="0.01"
+                            {...register("cost_price", {
+                                required: "Cost price is required",
+                            })}
+                            name="cost_price"
+                            error={errors.cost_price}
+                        />
 
-                    {/* Cost Price */}
-                    <Input
-                        label="Cost Price"
-                        type="number"
-                        step="0.01"
-                        {...register("cost_price", {
-                            required: "Cost price is required",
-                        })}
-                        name="cost_price"
-                        error={errors.cost_price}
-                    />
+                        {/* Sell Price */}
+                        <Input
+                            label="Sell Price"
+                            type="number"
+                            step="0.01"
+                            {...register("sell_price", {
+                                required: "Sell price is required",
+                            })}
+                            name="sell_price"
+                            error={errors.sell_price}
+                        />
 
-                    {/* Sell Price */}
-                    <Input
-                        label="Sell Price"
-                        type="number"
-                        step="0.01"
-                        {...register("sell_price", {
-                            required: "Sell price is required",
-                        })}
-                        name="sell_price"
-                        error={errors.sell_price}
-                    />
+                        {/* Stocks */}
+                        <Input
+                            label="Stocks"
+                            type="number"
+                            step="0.01"
+                            {...register("stocks", {
+                                required: "Stocks is required",
+                            })}
+                            name="stocks"
+                            error={errors.stocks}
+                        />
+                    </div>
 
                     {/* Image */}
                     <div className="flex w-full">

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\API\POS;
 
 use App\Http\Controllers\Controller;
+use App\Models\POS\PosProduct;
 use App\Models\POS\PosProductStock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PosProductStockController extends Controller
 {
@@ -22,20 +24,40 @@ class PosProductStockController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'product_id' => 'required|exists:pos_products,id',
-            'quantity' => 'required|numeric|min:0',
-            'location' => 'nullable|string|max:255',
-        ]);
+        $auth = Auth::user();
 
-        $stock = PosProductStock::create($request->only('product_id', 'quantity', 'location'));
+        $pos_product = PosProduct::where('barcode', $request->barcode)->first();
+
+        if (!$pos_product) {
+            $pos_product =  PosProduct::create([
+                'unit_id' => $request->unit_id,
+                'category_id' => $request->category_id,
+                'barcode' => $request->barcode,
+                'name' => $request->name,
+                'image' => $request->image
+            ]);
+        }
+        $pos_stock = PosProductStock::where([
+            ['product_id', '=', $pos_product->id],
+            ['subscriber_id', '=', $auth->id]
+        ])->first();
+        if (!$pos_stock) {
+            PosProductStock::create([
+                'product_id' => $pos_product->id,
+                'subscriber_id' => $auth->id,
+                'stocks' => $request->stocks,
+                'cost_price' => $request->cost_price,
+                'sell_price' => $request->sell_price,
+                'discount' => 0,
+            ]);
+        }
 
         return response()->json([
             'success' => true,
             'message' => 'Product stock added successfully',
-            'data' => $stock
         ]);
     }
+
 
     /**
      * Show a specific product stock.

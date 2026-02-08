@@ -23,7 +23,7 @@ Route::get('/user', function (Request $request) {
 
 
 
-// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('pos-registers', PosCashRegisterController::class);
     Route::post('pos-registers/{pos_register}/transaction', [PosCashRegisterController::class, 'addTransaction']);
     Route::apiResource('pos-transactions', PosCashTransactionController::class);
@@ -38,4 +38,4 @@ Route::get('/user', function (Request $request) {
     Route::apiResource('pos-suppliers', PosSupplierController::class);
     Route::apiResource('pos-units', PosUnitController::class);
     Route::apiResource('pos-purchase-items', PosPurchaseItemController::class);
-// });
+});
