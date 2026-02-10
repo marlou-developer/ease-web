@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\POS;
 use App\Http\Controllers\Controller;
 use App\Models\POS\PosStockMovement;
 use App\Models\POS\PosProductStock;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,11 +16,41 @@ class PosStockMovementController extends Controller
      */
     public function index()
     {
-        $movements = PosStockMovement::with('product', 'user')->latest()->get();
+        $today = Carbon::today();
+
+        $movements = PosStockMovement::with('product_stock', 'user')
+            ->latest()
+            ->get();
+
+        // Today's stats
+        $additionsToday = PosStockMovement::whereDate('created_at', $today)
+            ->where('type', 'IN')
+            ->sum('qty_change');
+
+        // Deductions today (convert to positive number for display)
+        $deductionsToday = abs(
+            PosStockMovement::whereDate('created_at', $today)
+                ->where('type', 'OUT')
+                ->sum('qty_change')
+        );
+
+        // Adjustments today
+        $adjustmentsToday = PosStockMovement::whereDate('created_at', $today)
+            ->where('type', 'ADJUST')
+            ->sum('qty_change');
+
+        // Current total stock
+        $currentStock = PosProductStock::sum('stocks');
 
         return response()->json([
             'success' => true,
-            'data' => $movements
+            'data' => $movements,
+            'stats' => [
+                'additions_today' => $additionsToday,
+                'deductions_today' => $deductionsToday,
+                'adjustments_today' => $adjustmentsToday,
+                'current_in_stock' => $currentStock,
+            ]
         ]);
     }
 

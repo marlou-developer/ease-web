@@ -54,8 +54,8 @@ Route::prefix('account')->middleware('auth')->group(function () {
         Route::get('/products', function () {
             return Inertia::render('account/pos/products/page');
         });
-        Route::get('/stack_movements', function () {
-            return Inertia::render('account/pos/stack_movements/page');
+        Route::get('/stock_movements', function () {
+            return Inertia::render('account/pos/stock_movements/page');
         });
         Route::get('/purchases', function () {
             return Inertia::render('account/pos/purchases/page');

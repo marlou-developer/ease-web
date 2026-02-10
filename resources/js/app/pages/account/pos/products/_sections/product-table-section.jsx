@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function ProductTableSection() {
     const { searchTerm, category, currentPage, products } = useSelector(
-        (store) => store.pos_products
+        (store) => store.pos_products,
     );
     const dispatch = useDispatch();
     const INITIAL_PRODUCTS = products;
@@ -22,7 +22,7 @@ export default function ProductTableSection() {
     });
     const currentItems = filteredProducts.slice(
         indexOfFirstItem,
-        indexOfLastItem
+        indexOfLastItem,
     );
     const handleDelete = (name) => alert(`Delete ${name}?`);
     const handleEdit = (name) => alert(`Edit ${name}?`);
@@ -61,9 +61,7 @@ export default function ProductTableSection() {
                             >
                                 <td className="px-6 ">
                                     <img
-                                        src={
-                                            "https://cdn-icons-png.flaticon.com/128/1321/1321742.png"
-                                        }
+                                        src={res.product.image??'/images/product_null.webp'}
                                         alt={res?.product.name}
                                         className="w-10 h-10 object-contain drop-shadow-sm"
                                     />

@@ -8,6 +8,7 @@ use App\Models\POS\PosProductStock;
 use App\Models\POS\PosStockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PosProductStockController extends Controller
 {
@@ -30,12 +31,16 @@ class PosProductStockController extends Controller
         $pos_product = PosProduct::where('barcode', $request->barcode)->first();
 
         if (!$pos_product) {
+            if ($request->hasFile('image')) {
+                $path = $request->file('image')->store('ease-web-' . date("Y"), 's3');
+                $url = Storage::disk('s3')->url($path);
+            }
             $pos_product =  PosProduct::create([
                 'unit_id' => $request->unit_id,
                 'category_id' => $request->category_id,
                 'barcode' => $request->barcode,
                 'name' => $request->name,
-                'image' => $request->image
+                'image' =>  $url
             ]);
         }
         $pos_stock = PosProductStock::where([
@@ -60,7 +65,7 @@ class PosProductStockController extends Controller
                     'product_stock_id' => $pos_product_stock->id,
                     'user_id' => Auth::id(),
                     'type' => 'IN',
-                    'reference' => 'Initial Stock Entry',
+                    'reference' => 'Initial Stock',
                     'qty_before' => 0,
                     'qty_change' => $request->stocks,
                     'qty_after' => $request->stocks,

@@ -2,8 +2,10 @@
 
 namespace App\Models\POS;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PosStockMovement extends Model
 {
@@ -19,13 +21,13 @@ class PosStockMovement extends Model
         'qty_after',
     ];
 
-    public function product()
+    public function product_stock(): HasOne
     {
-        return $this->belongsTo(PosProduct::class);
+        return $this->hasOne(PosProductStock::class, 'id', 'product_stock_id')->with('product');
     }
 
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 }

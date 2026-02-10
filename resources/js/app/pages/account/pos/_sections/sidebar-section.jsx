@@ -30,7 +30,7 @@ export default function SidebarSection() {
             { name: "Dashboard", href: "/account/pos/dashboard", icon: FcDataSheet, current: path == "dashboard" },
             { name: "POS", href: "/account/pos/pos", icon: FcSelfServiceKiosk, current: path == "pos" },
             { name: "Product Stocks", href: "/account/pos/products", icon: FcBullish, current: path == "products" },
-            { name: "Stack Movements", href: "/account/pos/stack_movements", icon: FcFeedIn, current: path == "stack_movements" },
+            { name: "Stock Movements", href: "/account/pos/stock_movements", icon: FcFeedIn, current: path == "stock_movements" },
             { name: "Purchases", href: "/account/pos/purchases", icon: FcDonate, current: path == "purchases" },
             { name: "Suppliers", href: "/account/pos/suppliers", icon: FcShipped, current: path == "suppliers" },
             { name: "Customers", href: "/account/pos/customers", icon: FcBusinesswoman, current: path == "customers" },
