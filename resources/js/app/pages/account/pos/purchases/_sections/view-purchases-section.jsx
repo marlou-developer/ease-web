@@ -100,10 +100,12 @@ export default function ViewPurchasesSection({ props_data }) {
                         <Button
                             type="button"
                             variant="danger"
+                            disabled={props_data.status == 'received'}
                         >
                             CANCEL ORDER
                         </Button>
                         <Button
+                            disabled={props_data.status == 'received'}
                             type="submit"
                             variant="success"
                             loading={isSubmitting}
