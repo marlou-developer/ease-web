@@ -20,8 +20,8 @@ class PosProductStock extends Model
     ];
 
 
-    public function product():HasOne
+    public function product(): HasOne
     {
-        return $this->hasOne(PosProduct::class,'id','pos_product_id')->with('category');
+        return $this->hasOne(PosProduct::class, 'id', 'pos_product_id')->with('category');
     }
 }

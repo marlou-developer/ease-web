@@ -39,6 +39,7 @@ class PosPurchaseController extends Controller
         $total = collect($request->purchases)->sum(function ($item) {
             return $item['quantity'] * $item['cost_price'];
         });
+        
 
         $purchase = PosPurchase::create([
             'subscriber_id' => Auth::id(),
@@ -62,7 +63,6 @@ class PosPurchaseController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Purchase created successfully',
-            'data' => $purchase->load('items.product', 'supplier')
         ]);
     }
 

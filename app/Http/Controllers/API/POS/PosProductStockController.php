@@ -25,10 +25,21 @@ class PosProductStockController extends Controller
     public function received_stock(Request $request)
     {
         $purchase = PosPurchase::where('id', $request->id)->first();
-        foreach ($request->items as $key => $value) {
-            $stock = PosProductStock::where('id', $value['pos_product_stock_id'])->first();
-            if ($stock) {
-                $stock->increment('stocks', $value['quantity']);
+        foreach ($request->items as $key => $item) {
+            $product_stock = PosProductStock::where('id', $item['pos_product_stock_id'])->first();
+            if ($product_stock) {
+                $qty_before = $product_stock->stocks;
+                $qty_after = $qty_before + $item['quantity'];
+                PosStockMovement::create([
+                    'pos_product_stock_id' => $item['pos_product_stock_id'],
+                    'subscriber_id' => Auth::id(),
+                    'type' => 'IN',
+                    'reference' => $purchase->reference_no,
+                    'qty_before' => $qty_before,
+                    'qty_change' => $item['quantity'],
+                    'qty_after' => $qty_after,
+                ]);
+                $product_stock->increment('stocks', $item['quantity']);
             }
         }
         $purchase->update([
@@ -38,6 +49,7 @@ class PosProductStockController extends Controller
             'message' => 'Product stock received successfully',
         ]);
     }
+
     public function store(Request $request)
     {
         $auth = Auth::user();
@@ -70,7 +82,6 @@ class PosProductStockController extends Controller
                 'sell_price' => $request->sell_price,
                 'discount' => 0,
             ]);
-
 
             $stock_movement = PosStockMovement::where('pos_product_stock_id', $pos_product_stock->id)->first();
 
