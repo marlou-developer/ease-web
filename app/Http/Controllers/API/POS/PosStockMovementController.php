@@ -60,7 +60,7 @@ class PosStockMovementController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pos_product_id' => 'required|exists:pos_products,id',
+            'pos_product_stock_id' => 'required|exists:pos_products,id',
             'quantity' => 'required|numeric',
             'type' => 'required|in:add,remove,transfer',
             'reason' => 'nullable|string',
@@ -70,7 +70,7 @@ class PosStockMovementController extends Controller
 
         // Create stock movement record
         $movement = PosStockMovement::create([
-            'pos_product_id' => $request->pos_product_id,
+            'pos_product_stock_id' => $request->pos_product_stock_id,
             'quantity' => $request->quantity,
             'type' => $request->type,
             'reason' => $request->reason,

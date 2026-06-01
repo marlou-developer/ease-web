@@ -7,6 +7,7 @@ use App\Models\POS\PosProductStock;
 use App\Models\POS\PosPurchase;
 use App\Models\POS\PosPurchaseItem;
 use App\Models\POS\PosSupplier;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,7 @@ class PosPurchaseController extends Controller
      */
     public function index()
     {
-        $purchases = PosPurchase::where('subscriber_id', Auth::id())->with('supplier', 'items.product')->latest()->get();
+        $purchases = PosPurchase::where('subscriber_id', Auth::id())->with('supplier', 'items.product_stock')->latest()->get();
         $suppliers = PosSupplier::where('subscriber_id', Auth::id())->latest()->get();
         $products = PosProductStock::where('subscriber_id', Auth::id())->with(['product'])->latest()->get();
         return response()->json([
@@ -33,7 +34,7 @@ class PosPurchaseController extends Controller
      */
     public function store(Request $request)
     {
-      
+
         // Calculate total
         $total = collect($request->purchases)->sum(function ($item) {
             return $item['quantity'] * $item['cost_price'];
@@ -41,8 +42,8 @@ class PosPurchaseController extends Controller
 
         $purchase = PosPurchase::create([
             'subscriber_id' => Auth::id(),
-            'supplier_id' => $request->supplier_id,
-            'reference_no' => $request->reference_no,
+            'pos_supplier_id' => $request->pos_supplier_id,
+            'reference_no' => 'REF' . Carbon::now()->format('mdYHis'),
             'total_amount' => $total,
             'status' => 'pending',
         ]);
@@ -50,8 +51,8 @@ class PosPurchaseController extends Controller
         // Add purchase items
         foreach ($request->purchases as $item) {
             PosPurchaseItem::create([
-                'purchase_id' => $purchase->id,
-                'pos_product_id' => $item['pos_product_id'],
+                'pos_purchase_id' => $purchase->id,
+                'pos_product_stock_id' => $item['pos_product_stock_id'],
                 'quantity' => $item['quantity'],
                 'cost_price' => $item['cost_price'],
                 'subtotal' => $item['quantity'] * $item['cost_price'],
@@ -84,12 +85,12 @@ class PosPurchaseController extends Controller
     public function update(Request $request, PosPurchase $posPurchase)
     {
         $request->validate([
-            'supplier_id' => 'nullable|exists:suppliers,id',
+            'pos_supplier_id' => 'nullable|exists:suppliers,id',
             'reference_no' => 'nullable|string|max:100',
             'status' => 'nullable|in:pending,received',
         ]);
 
-        $posPurchase->update($request->only('supplier_id', 'reference_no', 'status'));
+        $posPurchase->update($request->only('pos_supplier_id', 'reference_no', 'status'));
 
         return response()->json([
             'success' => true,

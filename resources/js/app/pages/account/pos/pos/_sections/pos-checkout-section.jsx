@@ -85,7 +85,7 @@ export default function POSCheckout() {
                 amount_paid: amountPaid,
                 change_due: Number(cartDetail.changeDue).toFixed(2),
                 items: cart.map((res) => ({
-                    product_stock_id: res.id,
+                    pos_product_stock_id: res.id,
                     quantity: res.qty,
                     selling_price: Number(res.price).toFixed(2),
                     discount: 0,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\POS;
 use App\Http\Controllers\Controller;
 use App\Models\POS\PosProduct;
 use App\Models\POS\PosProductStock;
+use App\Models\POS\PosPurchase;
 use App\Models\POS\PosStockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,9 +22,22 @@ class PosProductStockController extends Controller
         return response()->json($stocks, 200);
     }
 
-    /**
-     * Store a new product stock.
-     */
+    public function received_stock(Request $request)
+    {
+        $purchase = PosPurchase::where('id', $request->id)->first();
+        foreach ($request->items as $key => $value) {
+            $stock = PosProductStock::where('id', $value['pos_product_stock_id'])->first();
+            if ($stock) {
+                $stock->increment('stocks', $value['quantity']);
+            }
+        }
+        $purchase->update([
+            'status' => 'received'
+        ]);
+        return response()->json([
+            'message' => 'Product stock received successfully',
+        ]);
+    }
     public function store(Request $request)
     {
         $auth = Auth::user();
@@ -58,11 +72,11 @@ class PosProductStockController extends Controller
             ]);
 
 
-            $stock_movement = PosStockMovement::where('product_stock_id', $pos_product_stock->id)->first();
+            $stock_movement = PosStockMovement::where('pos_product_stock_id', $pos_product_stock->id)->first();
 
             if (!$stock_movement) {
                 PosStockMovement::create([
-                    'product_stock_id' => $pos_product_stock->id,
+                    'pos_product_stock_id' => $pos_product_stock->id,
                     'subscriber_id' => Auth::id(),
                     'type' => 'IN',
                     'reference' => 'Initial Stock',

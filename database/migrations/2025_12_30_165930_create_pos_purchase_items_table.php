@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pos_purchase_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pos_purchase_id')->constrained('pos_purchases');
-            $table->foreignId('pos_product_id')->constrained('pos_products');
+            $table->foreignId('pos_product_stock_id')->constrained('pos_product_stocks');
             $table->decimal('quantity', 10, 3);
             $table->decimal('cost_price', 10, 2);
             $table->decimal('subtotal', 10, 2);

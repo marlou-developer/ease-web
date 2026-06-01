@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pos_sales_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sale_id')->constrained('pos_sales');
-            $table->foreignId('product_stock_id')->constrained('pos_product_stocks');
+            $table->foreignId('pos_product_stock_id')->constrained('pos_product_stocks');
             $table->decimal('quantity', 10, 3);
             $table->decimal('selling_price', 10, 2);
             $table->decimal('discount', 10, 2)->default(0);

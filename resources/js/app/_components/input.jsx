@@ -32,7 +32,7 @@ const Input = forwardRef(({ label, id, type = "text", error, icon, required = fa
                             ? "bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed"
                             : "bg-transparent text-gray-900 " + (error
                                 ? "border-red-500 focus:border-red-500"
-                                : "border-blue-400 focus:border-blue-600 hover:border-blue-500")
+                                : "border-blue-500 focus:border-blue-600 hover:border-blue-500")
                         }
                     `}
                     {...props}

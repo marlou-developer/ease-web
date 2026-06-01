@@ -28,7 +28,7 @@ class PosSalesItemController extends Controller
     {
         $request->validate([
             'sale_id' => 'required|exists:pos_sales,id',
-            'pos_product_id' => 'required|exists:pos_products,id',
+            'pos_product_stock_id' => 'required|exists:pos_products,id',
             'quantity' => 'required|numeric|min:1',
             'selling_price' => 'required|numeric|min:0',
             'discount' => 'nullable|numeric|min:0',
@@ -36,7 +36,7 @@ class PosSalesItemController extends Controller
 
         $item = PosSalesItem::create([
             'sale_id' => $request->sale_id,
-            'pos_product_id' => $request->pos_product_id,
+            'pos_product_stock_id' => $request->pos_product_stock_id,
             'quantity' => $request->quantity,
             'selling_price' => $request->selling_price,
             'discount' => $request->discount ?? 0,

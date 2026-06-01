@@ -12,7 +12,7 @@ class PosStockMovement extends Model
     use HasFactory;
 
     protected $fillable = [
-        'product_stock_id',
+        'pos_product_stock_id',
         'subscriber_id',
         'type',
         'reference',
@@ -23,7 +23,7 @@ class PosStockMovement extends Model
 
     public function product_stock(): HasOne
     {
-        return $this->hasOne(PosProductStock::class, 'id', 'product_stock_id')->with('product');
+        return $this->hasOne(PosProductStock::class, 'id', 'pos_product_stock_id')->with('product');
     }
 
     public function user()

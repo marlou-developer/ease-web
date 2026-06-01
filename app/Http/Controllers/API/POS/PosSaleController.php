@@ -18,7 +18,7 @@ class PosSaleController extends Controller
      */
     public function index()
     {
-        $sales = PosSale::where('subscriber_id',Auth::id())->with('customer', 'sale_items.product', 'user')->latest()->get();
+        $sales = PosSale::where('subscriber_id', Auth::id())->with('customer', 'sale_items.product', 'user')->latest()->get();
 
         return response()->json([
             'success' => true,
@@ -34,7 +34,7 @@ class PosSaleController extends Controller
         $request->validate([
             'customer_id' => 'nullable',
             'items' => 'required|array|min:1',
-            'items.*.product_stock_id' => 'required|exists:pos_products,id',
+            'items.*.pos_product_stock_id' => 'required|exists:pos_products,id',
             'items.*.quantity' => 'required|numeric|min:1',
             'items.*.selling_price' => 'required|numeric|min:0',
             'payment_type' => 'nullable|in:cash,card',
@@ -67,7 +67,7 @@ class PosSaleController extends Controller
         // Add sale items
         foreach ($request->items as $item) {
             PosSalesItem::create([
-                'product_stock_id' => $item['product_stock_id'],
+                'pos_product_stock_id' => $item['pos_product_stock_id'],
                 'sale_id' => $sale->id,
                 'quantity' => $item['quantity'],
                 'selling_price' => $item['selling_price'],
@@ -75,12 +75,12 @@ class PosSaleController extends Controller
                 'subtotal' => ($item['quantity'] * $item['selling_price']) - ($item['discount'] ?? 0),
             ]);
 
-            $product_stock = PosProductStock::find($item['product_stock_id']);
+            $product_stock = PosProductStock::find($item['pos_product_stock_id']);
             if ($product_stock) {
                 $qty_before = $product_stock->stocks;
                 $qty_after = $qty_before - $item['quantity'];
                 PosStockMovement::create([
-                    'product_stock_id' => $item['product_stock_id'],
+                    'pos_product_stock_id' => $item['pos_product_stock_id'],
                     'subscriber_id' => Auth::id(),
                     'type' => 'OUT',
                     'reference' => $invoice_no,

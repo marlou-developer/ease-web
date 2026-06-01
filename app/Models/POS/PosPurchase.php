@@ -4,6 +4,8 @@ namespace App\Models\POS;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PosPurchase extends Model
 {
@@ -16,13 +18,13 @@ class PosPurchase extends Model
         'status'
     ];
 
-    public function supplier()
+    public function supplier():HasOne
     {
-        return $this->belongsTo(PosSupplier::class);
+        return $this->hasOne(PosSupplier::class,'id','pos_supplier_id');
     }
 
-    public function items()
+    public function items():HasMany
     {
-        return $this->hasMany(PosPurchaseItem::class, 'pos_purchase_id');
+        return $this->hasMany(PosPurchaseItem::class, 'pos_purchase_id','id')->with(['product_stock']);
     }
 }

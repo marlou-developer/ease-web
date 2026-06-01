@@ -29,7 +29,7 @@ export default function AddPurchasesSection() {
         defaultValues: {
             // Wrap the fields in an array to allow multiple rows
             purchases: [
-                { pos_product_id: "", quantity: "", cost_price: "", subtotal: "" }
+                { pos_product_stock_id: "", quantity: "", cost_price: "", subtotal: "" }
             ],
         },
     });
@@ -44,7 +44,7 @@ export default function AddPurchasesSection() {
 
     // --- ADDED EXPLICIT ADD & DELETE FUNCTIONS ---
     const handleAddRow = () => {
-        append({ pos_product_id: "", quantity: "", cost_price: "", subtotal: "" });
+        append({ pos_product_stock_id: "", quantity: "", cost_price: "", subtotal: "" });
     };
 
     const handleDeleteRow = (index) => {
@@ -158,7 +158,7 @@ export default function AddPurchasesSection() {
                             {/* Product Select */}
                             <div className="flex-1">
                                 <Controller
-                                    name={`purchases.${index}.pos_product_id`}
+                                    name={`purchases.${index}.pos_product_stock_id`}
                                     control={control}
                                     rules={{ required: "Product is required" }}
                                     render={({ field: controllerField }) => (
@@ -168,7 +168,7 @@ export default function AddPurchasesSection() {
                                                 value: product.id,
                                                 label: product?.product?.name,
                                             })) || []}
-                                            error={errors?.purchases?.[index]?.pos_product_id?.message}
+                                            error={errors?.purchases?.[index]?.pos_product_stock_id?.message}
                                             {...controllerField}
                                         />
                                     )}
