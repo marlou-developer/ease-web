@@ -60,7 +60,7 @@ class PosStockMovementController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:pos_products,id',
+            'pos_product_id' => 'required|exists:pos_products,id',
             'quantity' => 'required|numeric',
             'type' => 'required|in:add,remove,transfer',
             'reason' => 'nullable|string',
@@ -70,18 +70,18 @@ class PosStockMovementController extends Controller
 
         // Create stock movement record
         $movement = PosStockMovement::create([
-            'product_id' => $request->product_id,
+            'pos_product_id' => $request->pos_product_id,
             'quantity' => $request->quantity,
             'type' => $request->type,
             'reason' => $request->reason,
             'location_from' => $request->location_from,
             'location_to' => $request->location_to,
-            'user_id' => Auth::id(),
+            'subscriber_id' => Auth::id(),
         ]);
 
         // Update product stock
         $stock = PosProductStock::firstOrCreate(
-            ['product_id' => $request->product_id, 'location' => $request->location_to ?? 'default'],
+            ['pos_product_id' => $request->pos_product_id, 'location' => $request->location_to ?? 'default'],
             ['quantity' => 0]
         );
 
@@ -93,7 +93,7 @@ class PosStockMovementController extends Controller
             // Subtract from old location
             if ($request->location_from) {
                 $stockFrom = PosProductStock::firstOrCreate(
-                    ['product_id' => $request->product_id, 'location' => $request->location_from],
+                    ['pos_product_id' => $request->pos_product_id, 'location' => $request->location_from],
                     ['quantity' => 0]
                 );
                 $stockFrom->quantity -= $request->quantity;

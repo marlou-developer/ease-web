@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
 
-use App\Models\API\POS\PosSupplier;
+namespace App\Http\Controllers\API\POS;
+
+use App\Http\Controllers\Controller;
+use App\Models\POS\PosSupplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PosSupplierController extends Controller
 {
@@ -12,25 +15,29 @@ class PosSupplierController extends Controller
      */
     public function index()
     {
-        //
+        $sales = PosSupplier::where('subscriber_id', Auth::id())->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $sales
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $supplier = PosSupplier::updateOrCreate(
+            [
+                'email' => $request->email,
+                'subscriber_id' => Auth::id()
+            ],
+            $request->all()
+        );
+        return response()->json([
+            'success' => true,
+            'message' => 'Supplier successfully saved.',
+            'data'    => $supplier
+        ]);
     }
-
     /**
      * Display the specified resource.
      */

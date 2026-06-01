@@ -10,7 +10,7 @@ class PosSale extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'subscriber_id',
         'customer_id',
         'invoice_no',
         'total_amount',

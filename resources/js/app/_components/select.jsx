@@ -7,54 +7,41 @@ const Select = forwardRef(
             name,
             options = [],
             error,
+            onSelect,
             iconLeft,
             iconRight,
             disabled = false,
-            required = false,
-            readOnly = false,
             className = "",
-            value, // This is the value from React Hook Form
-            onChange, // This is the change handler from React Hook Form
+            value, // from React Hook Form
+            onChange, // from React Hook Form
+            required = false,
             ...props
         },
-        ref
+        ref,
     ) => {
-        // 1. Initialize search with the label matching the current value
         const [search, setSearch] = useState("");
         const [isOpen, setIsOpen] = useState(false);
         const containerRef = useRef();
 
-        // Sync search text when the external 'value' (from RHF) changes
+        // Sync search text with value
         useEffect(() => {
             const selectedOption = options.find((o) => o.value === value);
-            if (selectedOption) {
-                setSearch(selectedOption.label);
-            } else if (!value) {
-                setSearch("");
-            }
+            if (selectedOption) setSearch(selectedOption.label);
+            else setSearch("");
         }, [value, options]);
-
-        // Filter based on what the user is typing
-        const filteredOptions = options.filter((opt) =>
-            opt.label.toLowerCase().includes(search.toLowerCase())
-        );
 
         const handleSelect = (option) => {
             setSearch(option.label);
-            onChange(option.value); // Update React Hook Form
+            onChange(option.value);
+            onSelect && onSelect(option);
             setIsOpen(false);
         };
 
-        const handleInputChange = (e) => {
-            setSearch(e.target.value);
-            setIsOpen(true);
-            // Optional: Clear the value in RHF if the user clears the input
-            if (e.target.value === "") {
-                onChange("");
-            }
+        const handleInputClick = () => {
+            if (!disabled) setIsOpen(true);
         };
 
-        // Close dropdown when clicking outside
+        // Close dropdown on outside click
         useEffect(() => {
             const handleClickOutside = (e) => {
                 if (
@@ -62,17 +49,17 @@ const Select = forwardRef(
                     !containerRef.current.contains(e.target)
                 ) {
                     setIsOpen(false);
-                    // Sync search back to the actual selected value label on blur
-                    const selectedOption = options.find(
-                        (o) => o.value === value
-                    );
-                    setSearch(selectedOption ? selectedOption.label : "");
                 }
             };
             document.addEventListener("mousedown", handleClickOutside);
             return () =>
                 document.removeEventListener("mousedown", handleClickOutside);
-        }, [value, options]);
+        }, []);
+
+        // Filter options
+        const filteredOptions = options.filter((opt) =>
+            opt.label.toLowerCase().includes(search.toLowerCase()),
+        );
 
         return (
             <div className="w-full" ref={containerRef}>
@@ -84,43 +71,60 @@ const Select = forwardRef(
                         </div>
                     )}
 
-                    {/* Search Input */}
+                    {/* Input */}
                     <input
+                        type="search"
                         {...props}
                         autoComplete="off"
+                        required={required}
                         ref={ref}
                         id={name}
                         name={name}
                         disabled={disabled}
-                        placeholder=" " // Required for peer-placeholder-shown to work
-                        readOnly={readOnly}
                         value={search}
-                        onChange={handleInputChange}
-                        onFocus={() => setIsOpen(true)}
-                        className={`
-              peer w-full rounded-md border bg-white py-2.5 px-4 text-sm text-black
-              placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500
-              ${iconLeft ? "pl-10" : ""} ${iconRight ? "pr-10" : ""}
-              ${error ? "border-red-500 focus:ring-red-500" : "border-gray-300"}
-              ${className}
-            `}
+                        onChange={(e) => {
+                            setSearch(e.target.value);
+                            setIsOpen(true); // open dropdown while typing
+                        }}
+                        onClick={handleInputClick}
+                        placeholder=""
+                        className={`w-full rounded-md  bg-white py-3 border-2 px-4 text-sm text-black
+              focus:outline-none focus:ring-2 focus:ring-blue-500
+              ${iconLeft ? "pl-10" : ""} ${iconRight ? "pr-10" : "pr-8"}
+              ${error ? "border-red-500 focus:ring-red-500" : "border-blue-500"}
+              ${className}`}
                     />
 
                     {/* Floating Label */}
                     <label
                         htmlFor={name}
-                        className={`
-              absolute left-3 top-2.5 bg-white px-1 text-gray-500 text-sm
-              transition-all duration-200 ease-out
-              peer-placeholder-shown:top-2.5
-              peer-placeholder-shown:text-sm
-              peer-placeholder-shown:text-gray-500
-              peer-focus:-top-2 peer-focus:text-xs peer-focus:text-blue-600
-              peer-valid:-top-2 peer-valid:text-xs peer-valid:text-gray-700
-            `}
+                        className={`absolute left-3 bg-white px-1 text-sm transition-all duration-200 ease-out
+              ${search || isOpen ? "-top-2 text-xs text-blue-600" : "top-2.5 text-gray-500"}`}
                     >
-                        {label}
+                        <div className="flex gap-0.5">
+                            {label}
+                            {required && <span className="text-red-500 font-medium">*</span>}
+                        </div>
                     </label>
+
+                    {/* Dropdown Arrow */}
+                    {!iconRight && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+                            <svg
+                                className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 9l-7 7-7-7"
+                                />
+                            </svg>
+                        </div>
+                    )}
 
                     {/* Right Icon */}
                     {iconRight && (
@@ -131,15 +135,17 @@ const Select = forwardRef(
 
                     {/* Dropdown Options */}
                     {isOpen && !disabled && (
-                        <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-white shadow-lg">
+                        <ul className="absolute z-[60] mt-1 w-full max-h-60 overflow-auto rounded-md border bg-white shadow-lg">
                             {filteredOptions.length > 0 ? (
-                                filteredOptions.map((option, index) => (
+                                filteredOptions.map((option, idx) => (
                                     <li
-                                        key={index}
-                                        className="cursor-pointer px-4 py-2 hover:bg-blue-100 text-black text-sm"
+                                        key={idx}
+                                        className={`cursor-pointer px-4 py-2 hover:bg-blue-100 text-black text-sm ${value === option.value
+                                            ? "bg-blue-50 text-blue-600"
+                                            : ""
+                                            }`}
                                         onMouseDown={(e) => {
-                                            // Use onMouseDown to prevent the input blur from closing list before click
-                                            e.preventDefault();
+                                            e.preventDefault(); // prevent blur
                                             handleSelect(option);
                                         }}
                                     >
@@ -155,15 +161,27 @@ const Select = forwardRef(
                     )}
                 </div>
 
-                {/* Error Message */}
+                {/* Error */}
                 {error && (
-                    <p className="mt-1 text-xs text-red-500">
+                    <p className="mt-1.5 text-xs text-red-500 font-medium flex items-center gap-1">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                        >
+                            <path
+                                fillRule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
                         {error.message ?? error}
                     </p>
                 )}
             </div>
         );
-    }
+    },
 );
 
 Select.displayName = "Select";

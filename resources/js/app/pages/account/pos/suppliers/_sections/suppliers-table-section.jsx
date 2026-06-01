@@ -9,72 +9,21 @@ import {
     BookOpen,
     ChevronDown,
 } from "lucide-react";
+import AddSupplierSection from "./add-supplier-section";
+import { useSelector } from "react-redux";
 
 const SuppliersTableSection = () => {
-    const [suppliers] = useState([
-        {
-            id: 1,
-            name: "Fresh Produce Ltd",
-            contact: "John Smith",
-            phone: "(123) 456-7890",
-            initial: "F",
-            color: "bg-emerald-500",
-        },
-        {
-            id: 2,
-            name: "Dairy Best Co.",
-            contact: "Mary Johnson",
-            phone: "(123) 555-2345",
-            initial: "D",
-            color: "bg-sky-400",
-        },
-        {
-            id: 3,
-            name: "Bakery Supplies Inc.",
-            contact: "Michael Lee",
-            phone: "...",
-            initial: "B",
-            color: "bg-orange-400",
-        },
-        {
-            id: 4,
-            name: "Global Beverages",
-            contact: "David Wang",
-            phone: "(555) 678-1234",
-            initial: "G",
-            color: "bg-red-500",
-        },
-        {
-            id: 5,
-            name: "TechnoGroceries Ltd",
-            contact: "Sarah Smith",
-            phone: "(456) 789-4567",
-            email: "sarah@techgroceries.com",
-            initial: "T",
-            color: "bg-purple-500",
-        },
-        {
-            id: 6,
-            name: "TechnoGroceries Ltd",
-            contact: "Anh Tra",
-            phone: "(456) 789-4567",
-            email: "anhtra@groceries.com",
-            initial: "T",
-            color: "bg-purple-600",
-        },
-    ]);
-
+    const { suppliers } = useSelector((store) => store.pos)
+    console.log('suppliers',suppliers)
     return (
         <div>
             {/* Header */}
             <div className="bg-blue-600 p-4 flex justify-between items-center text-white">
-                <div className="flex items-center gap-2 text-xl font-semibold">
+                <div className="flex items-center gap-2 text-xl font-semibold flex-1">
                     <BookOpen size={24} />
                     Suppliers
                 </div>
-                <button className="bg-blue-400/40 hover:bg-blue-400/60 flex items-center gap-1 px-4 py-1.5 rounded-md border border-blue-200/30 transition text-sm">
-                    <Plus size={18} /> Add Supplier
-                </button>
+                <AddSupplierSection />
             </div>
 
             {/* Filter Bar */}
@@ -109,7 +58,7 @@ const SuppliersTableSection = () => {
                             Contact Person
                         </th>
                         <th className="px-6 py-4 font-medium uppercase text-xs tracking-wider">
-                            Phone
+                            Contact
                         </th>
                         <th className="px-6 py-4 font-medium uppercase text-xs tracking-wider">
                             Actions
@@ -117,7 +66,7 @@ const SuppliersTableSection = () => {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                    {suppliers.map((s, index) => (
+                    {suppliers?.map((res, index) => (
                         <tr
                             key={index}
                             className="hover:bg-blue-50/30 transition"
@@ -125,23 +74,23 @@ const SuppliersTableSection = () => {
                             <td className="px-6 py-4">
                                 <div className="flex items-center gap-3">
                                     <div
-                                        className={`w-8 h-8 rounded-full ${s.color} flex items-center justify-center text-xs text-white font-bold`}
+                                        className={`w-8 h-8 rounded-full ${res.color} flex items-center justify-center text-xs text-white font-bold`}
                                     >
-                                        {s.initial}
+                                        {res.initial}
                                     </div>
                                     <span className="text-gray-700 font-medium">
-                                        {s.name}
+                                        {res.name}
                                     </span>
                                 </div>
                             </td>
                             <td className="px-6 py-4 text-gray-600">
-                                {s.contact}
+                                {res.contact_person}
                             </td>
                             <td className="px-6 py-4">
-                                <div className="text-gray-600">{s.phone}</div>
-                                {s.email && (
+                                <div className="text-gray-600">{res.phone}</div>
+                                {res.email && (
                                     <div className="text-xs text-blue-500">
-                                        {s.email}
+                                        {res.email}
                                     </div>
                                 )}
                             </td>

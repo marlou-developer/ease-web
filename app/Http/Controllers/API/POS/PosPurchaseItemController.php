@@ -28,14 +28,14 @@ class PosPurchaseItemController extends Controller
     {
         $request->validate([
             'purchase_id' => 'required|exists:pos_purchases,id',
-            'product_id' => 'required|exists:pos_products,id',
+            'pos_product_id' => 'required|exists:pos_products,id',
             'quantity' => 'required|numeric|min:1',
             'cost_price' => 'required|numeric|min:0',
         ]);
 
         $item = PosPurchaseItem::create([
             'purchase_id' => $request->purchase_id,
-            'product_id' => $request->product_id,
+            'pos_product_id' => $request->pos_product_id,
             'quantity' => $request->quantity,
             'cost_price' => $request->cost_price,
             'subtotal' => $request->quantity * $request->cost_price,

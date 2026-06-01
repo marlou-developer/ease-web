@@ -13,7 +13,7 @@ class PosStockMovement extends Model
 
     protected $fillable = [
         'product_stock_id',
-        'user_id',
+        'subscriber_id',
         'type',
         'reference',
         'qty_before',

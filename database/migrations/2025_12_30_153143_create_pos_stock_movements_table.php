@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pos_stock_movements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_stock_id')->constrained('pos_product_stocks');
-            $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->foreignId('subscriber_id')->nullable()->constrained('users');
             $table->enum('type', ['IN', 'OUT', 'ADJUST']);
             $table->string('reference')->nullable(); // purchase, sale, manual
             $table->decimal('qty_before', 10, 2);

@@ -35,8 +35,8 @@ export default function SidebarSection() {
             { name: "Suppliers", href: "/account/pos/suppliers", icon: FcShipped, current: path == "suppliers" },
             { name: "Customers", href: "/account/pos/customers", icon: FcBusinesswoman, current: path == "customers" },
             { name: "Cash Register", href: "/account/pos/cash_register", icon: FcSalesPerformance, current: path == "cash_register" },
-            { name: "Reports", href: "/account/pos/reports", icon: FcPositiveDynamic, current: path == "reports" },
-            { name: "Settings", href: "/account/pos/settings", icon: FcSettings, current: path == "settings" },
+            // { name: "Reports", href: "/account/pos/reports", icon: FcPositiveDynamic, current: path == "reports" },
+            // { name: "Settings", href: "/account/pos/settings", icon: FcSettings, current: path == "settings" },
         ];
 
     const sidebarWidth = desktopCollapsed

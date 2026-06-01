@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\API\POS;
+namespace App\Models\POS;
 
 use Illuminate\Database\Eloquent\Model;
 

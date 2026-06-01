@@ -10,64 +10,12 @@ import {
     BookOpen,
     Truck,
 } from "lucide-react";
+import AddPurchasesSection from "./add-purchases-section";
+import { useSelector } from "react-redux";
 
 const PurchaseTableSection = () => {
-    const [purchases] = useState([
-        {
-            id: "PO-001",
-            supplier: "Fresh Produce Ltd",
-            initial: "F",
-            total: 1200.0,
-            status: "Completed",
-            date: "Apr 5, 2024",
-            color: "bg-blue-400",
-        },
-        {
-            id: "PO-002",
-            supplier: "Dairy Best Co.",
-            initial: "D",
-            total: 750.0,
-            status: "Pending",
-            date: "Apr 3, 2024",
-            color: "bg-sky-400",
-        },
-        {
-            id: "PO-003",
-            supplier: "Bakery Supplies Inc.",
-            initial: "B",
-            total: 1050.0,
-            status: "Received",
-            date: "Apr 1, 2024",
-            color: "bg-cyan-400",
-        },
-        {
-            id: "PO-004",
-            supplier: "Global Beverages",
-            initial: "G",
-            total: 565.0,
-            status: "Received",
-            date: "Mar 30, 2024",
-            color: "bg-indigo-400",
-        },
-        {
-            id: "PO-005",
-            supplier: "TechnoGroceries Ltd",
-            initial: "T",
-            total: 1300.0,
-            status: "Addition",
-            date: "Mar 28, 2024",
-            color: "bg-blue-500",
-        },
-        {
-            id: "PO-006",
-            supplier: "Pavérage",
-            initial: "S",
-            total: 1300.0,
-            status: "Received",
-            date: "Mar 28, 2024",
-            color: "bg-slate-400",
-        },
-    ]);
+    const { purchases } = useSelector((store) => store.pos)
+
 
     const getStatusStyle = (status) => {
         switch (status.toLowerCase()) {
@@ -88,13 +36,11 @@ const PurchaseTableSection = () => {
         <div className=" font-sans">
             {/* Header */}
             <div className="bg-blue-600 p-4 flex justify-between items-center text-white">
-                <div className="flex items-center gap-2 text-xl font-semibold">
+                <div className="flex items-center gap-2 text-xl font-semibold flex-1">
                     <BookOpen size={24} />
                     Purchases
                 </div>
-                <button className="bg-blue-400/40 hover:bg-blue-400/60 flex items-center gap-1 px-4 py-1.5 rounded-md border border-blue-200/30 transition text-sm">
-                    <Plus size={18} /> New Purchase
-                </button>
+                <AddPurchasesSection />
             </div>
 
             {/* Filters */}
@@ -147,45 +93,45 @@ const PurchaseTableSection = () => {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                    {purchases.map((po) => (
+                    {purchases.map((res) => (
                         <tr
-                            key={po.id}
+                            key={res?.id}
                             className="hover:bg-blue-50/30 transition"
                         >
                             <td className="px-6 py-4">
                                 <div className="flex items-center gap-3">
                                     <span className="text-blue-600 font-semibold">
-                                        {po.id}
+                                        {res?.id}
                                     </span>
                                     <div className="flex items-center gap-2">
                                         <div
-                                            className={`w-6 h-6 rounded-full ${po.color} flex items-center justify-center text-[10px] text-white font-bold`}
+                                            className={`w-6 h-6 rounded-full ${res?.color} flex items-center justify-center text-[10px] text-white font-bold`}
                                         >
-                                            {po.initial}
+                                            {res?.initial}
                                         </div>
                                         <span className="text-gray-700 font-medium">
-                                            {po.supplier}
+                                            {res?.supplier}
                                         </span>
                                     </div>
                                 </div>
                             </td>
                             <td className="px-6 py-4 font-bold text-gray-700">
                                 $
-                                {po.total.toLocaleString("en-US", {
+                                {res?.total?.toLocaleString("en-US", {
                                     minimumFractionDigits: 2,
                                 })}
                             </td>
                             <td className="px-6 py-4 text-center">
                                 <span
                                     className={`px-4 py-1 rounded text-[11px] font-bold inline-block w-24 uppercase ${getStatusStyle(
-                                        po.status
+                                        res?.status
                                     )}`}
                                 >
-                                    {po.status}
+                                    {res?.status}
                                 </span>
                             </td>
                             <td className="px-6 py-4 text-gray-500">
-                                {po.date}
+                                {res?.date}
                             </td>
                             <td className="px-6 py-4">
                                 <div className="flex justify-end gap-2">

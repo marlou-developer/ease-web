@@ -39,7 +39,7 @@ class PosCashTransactionController extends Controller
             'type' => $request->type,
             'amount' => $request->amount,
             'reason' => $request->reason,
-            'user_id' => Auth::id()
+            'subscriber_id' => Auth::id()
         ]);
 
         return response()->json([

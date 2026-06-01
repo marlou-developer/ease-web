@@ -33,7 +33,7 @@ class PosCashRegisterController extends Controller
         ]);
 
         $register = PosCashRegister::create([
-            'user_id' => Auth::id(),
+            'subscriber_id' => Auth::id(),
             'opened_at' => now(),
             'opening_amount' => $request->opening_amount,
             'total_sales' => 0,
@@ -109,7 +109,7 @@ class PosCashRegisterController extends Controller
             'type' => $request->type,
             'amount' => $request->amount,
             'reason' => $request->reason,
-            'user_id' => Auth::id()
+            'subscriber_id' => Auth::id()
         ]);
 
         return response()->json([

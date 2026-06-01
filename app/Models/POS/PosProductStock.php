@@ -4,13 +4,14 @@ namespace App\Models\POS;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PosProductStock extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'product_id',
+        'pos_product_id',
         'subscriber_id',
         'stocks',
         'cost_price',
@@ -19,8 +20,8 @@ class PosProductStock extends Model
     ];
 
 
-    public function product()
+    public function product():HasOne
     {
-        return $this->belongsTo(PosProduct::class)->with('category');
+        return $this->hasOne(PosProduct::class,'id','pos_product_id')->with('category');
     }
 }

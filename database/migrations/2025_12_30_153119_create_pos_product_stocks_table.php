@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pos_product_stocks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('pos_products');
+            $table->foreignId('pos_product_id')->constrained('pos_products');
             $table->foreignId('subscriber_id')->constrained('pos_subscribers');
             $table->bigInteger('stocks')->nullable();
             $table->decimal('cost_price', 10, 2)->nullable();

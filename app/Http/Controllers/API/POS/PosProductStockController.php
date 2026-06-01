@@ -44,12 +44,12 @@ class PosProductStockController extends Controller
             ]);
         }
         $pos_stock = PosProductStock::where([
-            ['product_id', '=', $pos_product->id],
+            ['pos_product_id', '=', $pos_product->id],
             ['subscriber_id', '=', $auth->id]
         ])->first();
         if (!$pos_stock) {
             $pos_product_stock = PosProductStock::create([
-                'product_id' => $pos_product->id,
+                'pos_product_id' => $pos_product->id,
                 'subscriber_id' => $auth->id,
                 'stocks' => $request->stocks,
                 'cost_price' => $request->cost_price,
@@ -63,7 +63,7 @@ class PosProductStockController extends Controller
             if (!$stock_movement) {
                 PosStockMovement::create([
                     'product_stock_id' => $pos_product_stock->id,
-                    'user_id' => Auth::id(),
+                    'subscriber_id' => Auth::id(),
                     'type' => 'IN',
                     'reference' => 'Initial Stock',
                     'qty_before' => 0,

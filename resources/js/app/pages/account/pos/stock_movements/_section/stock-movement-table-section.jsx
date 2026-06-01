@@ -26,15 +26,15 @@ const StockMovementTableSection = () => {
     const movements =
         stock_movements?.data?.map((res) => ({
             id: res.id,
-            product: res.product_stock.product.name,
+            product: res.product_stock?.product?.name,
             type: res.type,
             qty_change: res.qty_change,
             qty_before: res.qty_before,
             qty_after: res.qty_after,
             reference: res.reference,
-            user: res.user.name,
+            user: res?.user?.name,
             date: moment(res.created_at).format("LLL"),
-            img: res.product_stock.product.image,
+            img: res.product_stock?.product?.image,
             // img: "🧼",
         })) ?? [];
 

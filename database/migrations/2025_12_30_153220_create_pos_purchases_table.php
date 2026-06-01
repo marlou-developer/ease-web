@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('pos_purchases', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('supplier_id')->nullable()->constrained('pos_suppliers');
+            $table->foreignId('subscriber_id')->nullable()->constrained('users');
+            $table->foreignId('pos_supplier_id')->nullable()->constrained('pos_suppliers');
             $table->string('reference_no')->nullable();
             $table->decimal('total_amount', 10, 2);
             $table->enum('status', ['pending', 'received'])->default('pending');

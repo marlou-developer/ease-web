@@ -18,7 +18,7 @@ class PosSaleController extends Controller
      */
     public function index()
     {
-        $sales = PosSale::with('customer', 'sale_items.product', 'user')->latest()->get();
+        $sales = PosSale::where('subscriber_id',Auth::id())->with('customer', 'sale_items.product', 'user')->latest()->get();
 
         return response()->json([
             'success' => true,
@@ -50,7 +50,7 @@ class PosSaleController extends Controller
         $sale = PosSale::create([
             'invoice_no' => 0,
             'customer_id' => $request->customer_id,
-            'user_id' => Auth::id(),
+            'subscriber_id' => Auth::id(),
             'total_amount' => $total,
             'discount' => $request->discount ?? 0,
             'tax' => $request->tax ?? 0,
@@ -75,23 +75,19 @@ class PosSaleController extends Controller
                 'subtotal' => ($item['quantity'] * $item['selling_price']) - ($item['discount'] ?? 0),
             ]);
 
-            PosProductStock::where('id', $item['product_stock_id'])->decrement('stocks', $item['quantity']);
-
             $product_stock = PosProductStock::find($item['product_stock_id']);
             if ($product_stock) {
                 $qty_before = $product_stock->stocks;
                 $qty_after = $qty_before - $item['quantity'];
-
                 PosStockMovement::create([
                     'product_stock_id' => $item['product_stock_id'],
-                    'user_id' => Auth::id(),
+                    'subscriber_id' => Auth::id(),
                     'type' => 'OUT',
                     'reference' => $invoice_no,
                     'qty_before' => $qty_before,
                     'qty_change' => $item['quantity'],
                     'qty_after' => $qty_after,
                 ]);
-
                 $product_stock->decrement('stocks', $item['quantity']);
             }
         }

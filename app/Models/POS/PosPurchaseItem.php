@@ -10,8 +10,8 @@ class PosPurchaseItem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'purchase_id',
-        'product_id',
+        'pos_purchase_id',
+        'pos_product_id',
         'quantity',
         'cost_price',
         'subtotal'
@@ -19,7 +19,7 @@ class PosPurchaseItem extends Model
 
     public function purchase()
     {
-        return $this->belongsTo(PosPurchase::class, 'purchase_id');
+        return $this->belongsTo(PosPurchase::class, 'pos_purchase_id');
     }
 
     public function product()

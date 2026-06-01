@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\API\POS;
 
 use App\Http\Controllers\Controller;
+use App\Models\POS\PosProductStock;
 use App\Models\POS\PosPurchase;
 use App\Models\POS\PosPurchaseItem;
+use App\Models\POS\PosSupplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PosPurchaseController extends Controller
 {
@@ -14,11 +17,14 @@ class PosPurchaseController extends Controller
      */
     public function index()
     {
-        $purchases = PosPurchase::with('supplier', 'items.product')->latest()->get();
-
+        $purchases = PosPurchase::where('subscriber_id', Auth::id())->with('supplier', 'items.product')->latest()->get();
+        $suppliers = PosSupplier::where('subscriber_id', Auth::id())->latest()->get();
+        $products = PosProductStock::where('subscriber_id', Auth::id())->with(['product'])->latest()->get();
         return response()->json([
             'success' => true,
-            'data' => $purchases
+            'purchases' => $purchases,
+            'suppliers' => $suppliers,
+            'products' => $products
         ]);
     }
 
@@ -27,21 +33,14 @@ class PosPurchaseController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'supplier_id' => 'nullable|exists:suppliers,id',
-            'reference_no' => 'nullable|string|max:100',
-            'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:pos_products,id',
-            'items.*.quantity' => 'required|numeric|min:0',
-            'items.*.cost_price' => 'required|numeric|min:0',
-        ]);
-
+      
         // Calculate total
-        $total = collect($request->items)->sum(function ($item) {
+        $total = collect($request->purchases)->sum(function ($item) {
             return $item['quantity'] * $item['cost_price'];
         });
 
         $purchase = PosPurchase::create([
+            'subscriber_id' => Auth::id(),
             'supplier_id' => $request->supplier_id,
             'reference_no' => $request->reference_no,
             'total_amount' => $total,
@@ -49,10 +48,10 @@ class PosPurchaseController extends Controller
         ]);
 
         // Add purchase items
-        foreach ($request->items as $item) {
+        foreach ($request->purchases as $item) {
             PosPurchaseItem::create([
                 'purchase_id' => $purchase->id,
-                'product_id' => $item['product_id'],
+                'pos_product_id' => $item['pos_product_id'],
                 'quantity' => $item['quantity'],
                 'cost_price' => $item['cost_price'],
                 'subtotal' => $item['quantity'] * $item['cost_price'],

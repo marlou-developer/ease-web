@@ -2,7 +2,6 @@
 
 namespace App\Models\POS;
 
-use App\Models\API\POS\PosSupplier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +9,8 @@ class PosPurchase extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'supplier_id',
+        'subscriber_id',
+        'pos_supplier_id',
         'reference_no',
         'total_amount',
         'status'
@@ -23,6 +23,6 @@ class PosPurchase extends Model
 
     public function items()
     {
-        return $this->hasMany(PosPurchaseItem::class, 'purchase_id');
+        return $this->hasMany(PosPurchaseItem::class, 'pos_purchase_id');
     }
 }
