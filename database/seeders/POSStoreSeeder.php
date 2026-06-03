@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\POS\PosStore;
+use App\Models\POS\PosWarehouse;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -24,10 +25,16 @@ class POSStoreSeeder extends Seeder
             PosStore::updateOrCreate(
                 ['name' => $store['name']],
                 [
+                    'pos_warehouse_id' => 1,
                     'subscriber_id' => 2,
                     'location' => $store['location']
                 ]
             );
         }
+        PosWarehouse::create([
+            'subscriber_id' => 2,
+            'name' => 'SCC Warehouse',
+            'location' => 'San Carlos City',
+        ]);
     }
 }

@@ -4,7 +4,7 @@ import Modal from "@/app/_components/modal";
 import Select from "@/app/_components/select";
 import { setAlert } from "@/app/redux/app-slice";
 import { get_pos_purchases_thunk } from "@/app/redux/pos/pos-thunk";
-import { add_pos_purchases_service } from "@/app/services/pos-purchases-service";
+import { add_pos_purchases_service } from "@/app/services/pos/pos-purchases-service";
 import store from "@/app/store/store";
 import { Plus, Trash2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
@@ -29,7 +29,7 @@ export default function AddPurchasesSection() {
         defaultValues: {
             // Wrap the fields in an array to allow multiple rows
             purchases: [
-                { pos_product_stock_id: "", quantity: "", cost_price: "", subtotal: "" }
+                { pos_warehouse_stock_id: "", quantity: "", cost_price: "", subtotal: "" }
             ],
         },
     });
@@ -44,7 +44,7 @@ export default function AddPurchasesSection() {
 
     // --- ADDED EXPLICIT ADD & DELETE FUNCTIONS ---
     const handleAddRow = () => {
-        append({ pos_product_stock_id: "", quantity: "", cost_price: "", subtotal: "" });
+        append({ pos_warehouse_stock_id: "", quantity: "", cost_price: "", subtotal: "" });
     };
 
     const handleDeleteRow = (index) => {
@@ -158,7 +158,7 @@ export default function AddPurchasesSection() {
                             {/* Product Select */}
                             <div className="flex-1">
                                 <Controller
-                                    name={`purchases.${index}.pos_product_stock_id`}
+                                    name={`purchases.${index}.pos_warehouse_stock_id`}
                                     control={control}
                                     rules={{ required: "Product is required" }}
                                     render={({ field: controllerField }) => (
@@ -168,7 +168,7 @@ export default function AddPurchasesSection() {
                                                 value: product.id,
                                                 label: product?.product?.name,
                                             })) || []}
-                                            error={errors?.purchases?.[index]?.pos_product_stock_id?.message}
+                                            error={errors?.purchases?.[index]?.pos_warehouse_stock_id?.message}
                                             {...controllerField}
                                         />
                                     )}

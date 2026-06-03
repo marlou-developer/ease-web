@@ -5,7 +5,7 @@ import Modal from "@/app/_components/modal";
 import Select from "@/app/_components/select";
 import { setAlert } from "@/app/redux/app-slice";
 import { get_pos_suppliers_thunk } from "@/app/redux/pos/pos-thunk";
-import { add_pos_suppliers_service } from "@/app/services/pos-supplier-service";
+import { add_pos_suppliers_service } from "@/app/services/pos/pos-supplier-service";
 import store from "@/app/store/store";
 import { Plus } from "lucide-react";
 import React, { useState } from "react";

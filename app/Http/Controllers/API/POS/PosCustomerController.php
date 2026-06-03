@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\POS;
 use App\Http\Controllers\Controller;
 use App\Models\POS\PosCustomer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PosCustomerController extends Controller
 {
@@ -13,7 +14,7 @@ class PosCustomerController extends Controller
      */
     public function index()
     {
-        $customers = PosCustomer::all();
+        $customers = PosCustomer::where('subscriber_id', Auth::id())->get();
 
         return response()->json([
             'success' => true,
@@ -26,14 +27,12 @@ class PosCustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:100|unique:pos_customers,email',
-            'address' => 'nullable|string'
-        ]);
 
-        $customer = PosCustomer::create($request->only('name', 'phone', 'email', 'address'));
+
+        $customer = PosCustomer::create([
+            ...$request->all(),
+            'subscriber_id' => Auth::id()
+        ]);
 
         return response()->json([
             'success' => true,

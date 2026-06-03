@@ -7,7 +7,7 @@ import {
     setCartDetail,
     setHeldSales,
 } from "@/app/redux/pos/pos-product-slice";
-import { create_pos_sales_service } from "@/app/services/pos-sales-service";
+import { create_pos_sales_service } from "@/app/services/pos/pos-sales-service";
 import Swal from "sweetalert2";
 import store from "@/app/store/store";
 import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-product-thunk";

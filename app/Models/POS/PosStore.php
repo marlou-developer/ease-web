@@ -10,6 +10,7 @@ class PosStore extends Model
     use HasFactory;
     protected $fillable = [
         'subscriber_id',
+        'pos_warehouse_id',
         'name',
         'location',
     ];

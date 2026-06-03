@@ -27,19 +27,19 @@ export default function SidebarSection() {
     const { desktopCollapsed, sidebarOpen } = useSelector((store) => store.app);
     const dispatch = useDispatch();
     const path = window.location.pathname.split("/")[3];
-        const navigation = [
-            { name: "Dashboard", href: "/account/pos/dashboard", icon: FcDataSheet, current: path == "dashboard" },
-            { name: "POS", href: "/account/pos/pos", icon: FcSelfServiceKiosk, current: path == "pos" },
-            { name: "Product Stocks", href: "/account/pos/products", icon: FcBullish, current: path == "products" },
-            { name: "Stock Movements", href: "/account/pos/stock_movements", icon: FcFeedIn, current: path == "stock_movements" },
-            { name: "Purchases", href: "/account/pos/purchases", icon: FcDonate, current: path == "purchases" },
-            { name: "Suppliers", href: "/account/pos/suppliers", icon: FcShipped, current: path == "suppliers" },
-            { name: "Warehouse", href: "/account/pos/warehouse", icon: FcDeployment, current: path == "warehouse" },
-            { name: "Customers", href: "/account/pos/customers", icon: FcBusinesswoman, current: path == "customers" },
-            { name: "Cash Register", href: "/account/pos/cash_register", icon: FcSalesPerformance, current: path == "cash_register" },
-            // { name: "Reports", href: "/account/pos/reports", icon: FcPositiveDynamic, current: path == "reports" },
-            // { name: "Settings", href: "/account/pos/settings", icon: FcSettings, current: path == "settings" },
-        ];
+    const navigation = [
+        { name: "Dashboard", href: "/account/pos/dashboard", icon: FcDataSheet, current: path == "dashboard" },
+        { name: "POS", href: "/account/pos/pos", icon: FcSelfServiceKiosk, current: path == "pos" },
+        { name: "Stock Movements", href: "/account/pos/stock_movements", icon: FcFeedIn, current: path == "stock_movements" },
+        { name: "Purchases", href: "/account/pos/purchases", icon: FcDonate, current: path == "purchases" },
+        { name: "Suppliers", href: "/account/pos/suppliers", icon: FcShipped, current: path == "suppliers" },
+        { name: "Product Stocks", href: "/account/pos/products", icon: FcBullish, current: path == "products" },
+        { name: "Warehouse Stocks", href: "/account/pos/warehouse", icon: FcDeployment, current: path == "warehouse" },
+        { name: "Customers", href: "/account/pos/customers", icon: FcBusinesswoman, current: path == "customers" },
+        // { name: "Cash Register", href: "/account/pos/cash_register", icon: FcSalesPerformance, current: path == "cash_register" },
+        // { name: "Reports", href: "/account/pos/reports", icon: FcPositiveDynamic, current: path == "reports" },
+        // { name: "Settings", href: "/account/pos/settings", icon: FcSettings, current: path == "settings" },
+    ];
 
     const sidebarWidth = desktopCollapsed
         ? "w-20 flex items-center justify-center"

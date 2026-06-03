@@ -26,6 +26,6 @@ class PosPurchase extends Model
 
     public function items():HasMany
     {
-        return $this->hasMany(PosPurchaseItem::class, 'pos_purchase_id','id')->with(['product_stock']);
+        return $this->hasMany(PosPurchaseItem::class, 'pos_purchase_id','id')->with(['pos_warehouse_stock']);
     }
 }

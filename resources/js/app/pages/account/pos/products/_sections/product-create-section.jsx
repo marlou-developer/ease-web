@@ -8,7 +8,7 @@ import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-product-thunk"
 import {
     create_pos_product_service,
     create_pos_product_stocks_product_service,
-} from "@/app/services/pos-product-service";
+} from "@/app/services/pos/pos-product-service";
 import store from "@/app/store/store";
 import { Plus } from "lucide-react";
 import React, { useState } from "react";

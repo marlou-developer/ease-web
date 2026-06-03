@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\POS;
 
+use App\Http\Controllers\Controller;
+use App\Models\POS\PosStore;
 use App\Models\POS\PosWarehouseStock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PosWarehouseStockController extends Controller
 {
@@ -12,7 +15,14 @@ class PosWarehouseStockController extends Controller
      */
     public function index()
     {
-        //
+        $pos_store = PosStore::where('id', session('pos_store_id'))->first();
+        $stocks = PosWarehouseStock::where('pos_warehouse_id', $pos_store->pos_warehouse_id)
+            ->where('subscriber_id', Auth::id())
+            ->with('product')->get();
+        return response()->json([
+            'success' => true,
+            'data' => $stocks
+        ]);
     }
 
     /**

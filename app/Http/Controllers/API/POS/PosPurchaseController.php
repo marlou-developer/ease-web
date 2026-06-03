@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\POS\PosProductStock;
 use App\Models\POS\PosPurchase;
 use App\Models\POS\PosPurchaseItem;
+use App\Models\POS\PosStore;
 use App\Models\POS\PosSupplier;
+use App\Models\POS\PosWarehouseStock;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,12 +22,16 @@ class PosPurchaseController extends Controller
     {
         $purchases = PosPurchase::where('pos_store_id', session('pos_store_id'))
             ->where('subscriber_id', Auth::id())
-            ->with('supplier', 'items.product_stock')
+            ->with('supplier', 'items.pos_warehouse_stock')
             ->latest()->get();
+
         $suppliers = PosSupplier::where('subscriber_id', Auth::id())->latest()->get();
-        $products = PosProductStock::where('pos_store_id', session('pos_store_id'))
+        $pos_store = PosStore::where('id', session('pos_store_id'))->first();
+
+        $products = PosWarehouseStock::where('pos_warehouse_id', $pos_store->pos_warehouse_id)
             ->where('subscriber_id', Auth::id())->with(['product'])
             ->latest()->get();
+
         return response()->json([
             'success' => true,
             'purchases' => $purchases,
@@ -59,7 +65,7 @@ class PosPurchaseController extends Controller
         foreach ($request->purchases as $item) {
             PosPurchaseItem::create([
                 'pos_purchase_id' => $purchase->id,
-                'pos_product_stock_id' => $item['pos_product_stock_id'],
+                'pos_warehouse_stock_id' => $item['pos_warehouse_stock_id'],
                 'quantity' => $item['quantity'],
                 'cost_price' => $item['cost_price'],
                 'subtotal' => $item['quantity'] * $item['cost_price'],

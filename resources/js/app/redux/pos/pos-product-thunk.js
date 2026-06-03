@@ -1,6 +1,6 @@
-import { get_pos_product_service } from "@/app/services/pos-product-service";
+import { get_pos_product_service } from "@/app/services/pos/pos-product-service";
 import { posProductSlice } from "./pos-product-slice";
-import { get_pos_product_stocks_service } from "@/app/services/pos-product-stock";
+import { get_pos_product_stocks_service } from "@/app/services/pos/pos-product-stock";
 
 
 export function get_pos_products_thunk() {

@@ -3,7 +3,7 @@ import Modal from "@/app/_components/modal";
 import Table from "@/app/_components/table";
 import { setAlert } from "@/app/redux/app-slice";
 import { get_pos_purchases_thunk } from "@/app/redux/pos/pos-thunk";
-import { received_pos_product_stocks_service } from "@/app/services/pos-product-stock";
+import { received_pos_product_stocks_service } from "@/app/services/pos/pos-product-stock";
 import store from "@/app/store/store";
 import React, { useState, useEffect } from "react";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
@@ -91,9 +91,9 @@ export default function ViewPurchasesSection({ props_data }) {
                         ]}
                         data={props_data?.items.map(res => ({
                             ...res,
-                            name: res?.product_stock?.product?.name,
+                            name: res?.pos_warehouse_stock?.product?.name,
                             supplier: props_data?.supplier?.name,
-                            barcode: res?.product_stock?.product?.barcode,
+                            barcode: res?.pos_warehouse_stock?.product?.barcode,
                         }))}
                     />
                     <div className="w-full flex items-center justify-end gap-3">

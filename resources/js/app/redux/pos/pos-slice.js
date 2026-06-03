@@ -6,6 +6,7 @@ export const posSlice = createSlice({
         suppliers: [],
         purchases: [],
         products: [],
+        customers: [],
     },
     reducers: {
         setSuppliers: (state, action) => {
@@ -17,8 +18,12 @@ export const posSlice = createSlice({
         setProducts: (state, action) => {
             state.products = action.payload;
         },
+        setCustomers: (state, action) => {
+            state.customers = action.payload;
+        },
     },
 });
 
-export const { setSuppliers, setPurchases } = posSlice.actions;
+export const { setSuppliers, setPurchases, setCustomers, setProducts } =
+    posSlice.actions;
 export default posSlice.reducer;
