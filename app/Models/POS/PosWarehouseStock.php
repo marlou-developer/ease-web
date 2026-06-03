@@ -13,6 +13,7 @@ class PosWarehouseStock extends Model
         'pos_warehouse_id',
         'pos_product_id',
         'subscriber_id',
+        'cost_price',
         'stocks',
     ];
 

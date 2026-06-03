@@ -30,9 +30,20 @@ class PosProductStockController extends Controller
     public function received_stock(Request $request)
     {
         $purchase = PosPurchase::where('id', $request->id)->first();
+        dd($request->all());
         foreach ($request->items as $key => $item) {
             $warehouse_stock = PosWarehouseStock::where('id', $item['pos_warehouse_stock_id'])->first();
             if ($warehouse_stock) {
+                // if ($warehouse_stock->cost_price != $item['cost_price']) {
+                //     $pos_product_stock = PosProductStock::create([
+                //         'pos_store_id' => session('pos_store_id'),
+                //         'pos_product_id' => $warehouse_stock->pos_product_id,
+                //         'subscriber_id' => Auth::id(),
+                //         'stocks' => 0,
+                //         'cost_price' => $item['cost_price'],
+                //         'discount' => 0,
+                //     ]);
+                // }
                 // $qty_before = $warehouse_stock->stocks;
                 // $qty_after = $qty_before + $item['quantity'];
                 // PosStockMovement::create([
@@ -91,6 +102,7 @@ class PosProductStockController extends Controller
                 'pos_warehouse_id' => $pos_store->pos_warehouse_id,
                 'pos_product_id' => $pos_product->id,
                 'subscriber_id' => $auth->id,
+                'cost_price' => $request->cost_price,
                 'stocks' => 0,
             ]);
         }

@@ -86,6 +86,7 @@ export default function ViewPurchasesSection({ props_data }) {
                             { header: 'Product Name', accessor: 'name' },
                             { header: 'Barcode', accessor: 'barcode' },
                             { header: 'Supplier', accessor: 'supplier' },
+                            { header: 'Cost Price', accessor: 'cost_price' },
 
                             { header: 'Quantity', accessor: 'quantity' },
                         ]}
