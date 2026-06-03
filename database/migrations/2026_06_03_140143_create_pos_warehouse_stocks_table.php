@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pos_product_stocks', function (Blueprint $table) {
+        Schema::create('pos_warehouse_stocks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pos_store_id')->constrained('pos_stores'); 
+            $table->foreignId('pos_warehouse_id')->constrained('pos_warehouses');
             $table->foreignId('pos_product_id')->constrained('pos_products');
-            $table->foreignId('subscriber_id')->constrained('pos_subscribers');
+            $table->foreignId('subscriber_id')->constrained('users');
             $table->bigInteger('stocks')->nullable();
-            $table->decimal('cost_price', 10, 2)->nullable();
-            $table->decimal('sell_price', 10, 2)->nullable();
-            $table->decimal('discount', 10, 2)->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pos_product_stocks');
+        Schema::dropIfExists('pos_warehouse_stocks');
     }
 };

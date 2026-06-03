@@ -16,8 +16,8 @@
     @viteReactRefresh
     @vite(['resources/js/app.jsx', "resources/js/app/pages/{$page['component']}.jsx"])
     <!-- DigitalPersona Web SDK -->
-    <script src="/websdk/websdk.client.bundle.min.js"></script>
-    <script src="/websdk/WebSdk.js"></script>
+    <!-- <script src="/websdk/websdk.client.bundle.min.js"></script>
+    <script src="/websdk/WebSdk.js"></script> -->
 
     @inertiaHead
 </head>

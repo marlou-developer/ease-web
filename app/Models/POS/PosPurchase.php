@@ -11,6 +11,7 @@ class PosPurchase extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'pos_store_id',
         'subscriber_id',
         'pos_supplier_id',
         'reference_no',

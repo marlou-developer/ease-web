@@ -18,7 +18,9 @@ class PosProductStockController extends Controller
      */
     public function index()
     {
-        $stocks = PosProductStock::with('product')->get();
+        $stocks = PosProductStock::where('pos_store_id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::id())
+            ->with('product')->get();
         return response()->json($stocks, 200);
     }
 
@@ -75,6 +77,7 @@ class PosProductStockController extends Controller
         ])->first();
         if (!$pos_stock) {
             $pos_product_stock = PosProductStock::create([
+                'pos_store_id' => session('pos_store_id'),
                 'pos_product_id' => $pos_product->id,
                 'subscriber_id' => $auth->id,
                 'stocks' => $request->stocks,
@@ -87,6 +90,7 @@ class PosProductStockController extends Controller
 
             if (!$stock_movement) {
                 PosStockMovement::create([
+                    'pos_store_id' => session('pos_store_id'),
                     'pos_product_stock_id' => $pos_product_stock->id,
                     'subscriber_id' => Auth::id(),
                     'type' => 'IN',

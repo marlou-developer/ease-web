@@ -42,6 +42,10 @@ Route::prefix('administrator')->middleware('auth')->group(function () {
 
 Route::prefix('account')->middleware('auth')->group(function () {
     Route::prefix('pos')->group(function () {
+        $storeId = session('pos_store_id');
+        if (!$storeId) {
+            session(['pos_store_id' => 1]);
+        }
         Route::get('/dashboard', function () {
             return Inertia::render('account/pos/dashboard/page');
         });
@@ -68,6 +72,9 @@ Route::prefix('account')->middleware('auth')->group(function () {
         });
         Route::get('/cash_register', function () {
             return Inertia::render('account/pos/cash_register/page');
+        });
+         Route::get('/warehouse', function () {
+            return Inertia::render('account/pos/warehouse/page');
         });
         Route::get('/reports', function () {
             return Inertia::render('account/pos/reports/page');

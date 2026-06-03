@@ -10,6 +10,7 @@ class PosCashRegister extends Model
     use HasFactory;
 
     protected $fillable = [
+        'pos_store_id',
         'subscriber_id',
         'opening_amount',
         'closing_amount',

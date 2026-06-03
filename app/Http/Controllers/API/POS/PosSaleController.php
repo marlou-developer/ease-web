@@ -48,6 +48,7 @@ class PosSaleController extends Controller
         });
 
         $sale = PosSale::create([
+            'pos_store_id' => session('pos_store_id'),
             'invoice_no' => 0,
             'customer_id' => $request->customer_id,
             'subscriber_id' => Auth::id(),
@@ -67,6 +68,7 @@ class PosSaleController extends Controller
         // Add sale items
         foreach ($request->items as $item) {
             PosSalesItem::create([
+                'pos_store_id' => session('pos_store_id'),
                 'pos_product_stock_id' => $item['pos_product_stock_id'],
                 'sale_id' => $sale->id,
                 'quantity' => $item['quantity'],
@@ -80,6 +82,7 @@ class PosSaleController extends Controller
                 $qty_before = $product_stock->stocks;
                 $qty_after = $qty_before - $item['quantity'];
                 PosStockMovement::create([
+                    'pos_store_id' => session('pos_store_id'),
                     'pos_product_stock_id' => $item['pos_product_stock_id'],
                     'subscriber_id' => Auth::id(),
                     'type' => 'OUT',

@@ -8,6 +8,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { setDesktopCollapsed, setSidebarOpen } from "@/app/redux/app-slice";
 import { Link } from "@inertiajs/react";
+import SelectStoreSection from "./select-store-section";
 
 
 export default function TopbarSection() {
@@ -32,6 +33,7 @@ export default function TopbarSection() {
 
                 <div className="flex-1 flex items-center gap-x-4">
                     <form className="flex-1 relative  mx-5">
+                        <SelectStoreSection />
                         {/* <input
                             name="search"
                             placeholder="Search"

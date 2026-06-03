@@ -1,0 +1,5 @@
+php artisan make:model ER/EmployeeChangeForm -mcr
+
+
+where('pos_store_id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::id())

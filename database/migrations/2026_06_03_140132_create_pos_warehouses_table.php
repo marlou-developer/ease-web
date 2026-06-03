@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pos_purchases', function (Blueprint $table) {
+        Schema::create('pos_warehouses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pos_store_id')->constrained('pos_stores');
             $table->foreignId('subscriber_id')->nullable()->constrained('users');
-            $table->foreignId('pos_supplier_id')->nullable()->constrained('pos_suppliers');
-            $table->string('reference_no')->nullable();
-            $table->decimal('total_amount', 10, 2);
-            $table->enum('status', ['pending', 'received'])->default('pending');
+            $table->string('name')->nullable();
+            $table->string('location')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pos_purchases');
+        Schema::dropIfExists('pos_warehouses');
     }
 };

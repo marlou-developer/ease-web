@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('pos_stock_movements', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('pos_store_id')->constrained('pos_stores');
             $table->foreignId('pos_product_stock_id')->constrained('pos_product_stocks');
             $table->foreignId('subscriber_id')->nullable()->constrained('users');
             $table->enum('type', ['IN', 'OUT', 'ADJUST']);

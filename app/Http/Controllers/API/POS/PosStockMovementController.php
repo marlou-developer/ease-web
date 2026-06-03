@@ -18,29 +18,39 @@ class PosStockMovementController extends Controller
     {
         $today = Carbon::today();
 
-        $movements = PosStockMovement::with('product_stock', 'user')
+        $movements = PosStockMovement::where('pos_store_id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::id())
+            ->with('product_stock', 'user')
             ->latest()
             ->get();
 
         // Today's stats
-        $additionsToday = PosStockMovement::whereDate('created_at', $today)
+        $additionsToday = PosStockMovement::where('pos_store_id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::id())
+            ->whereDate('created_at', $today)
             ->where('type', 'IN')
             ->sum('qty_change');
 
         // Deductions today (convert to positive number for display)
         $deductionsToday = abs(
-            PosStockMovement::whereDate('created_at', $today)
+            PosStockMovement::where('pos_store_id', session('pos_store_id'))
+                ->where('subscriber_id', Auth::id())
+                ->whereDate('created_at', $today)
                 ->where('type', 'OUT')
                 ->sum('qty_change')
         );
 
         // Adjustments today
-        $adjustmentsToday = PosStockMovement::whereDate('created_at', $today)
+        $adjustmentsToday = PosStockMovement::where('pos_store_id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::id())
+            ->whereDate('created_at', $today)
             ->where('type', 'ADJUST')
             ->sum('qty_change');
 
         // Current total stock
-        $currentStock = PosProductStock::sum('stocks');
+        $currentStock = PosProductStock::where('pos_store_id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::id())
+            ->sum('stocks');
 
         return response()->json([
             'success' => true,
@@ -70,6 +80,7 @@ class PosStockMovementController extends Controller
 
         // Create stock movement record
         $movement = PosStockMovement::create([
+            'pos_store_id' => session('pos_store_id'),
             'pos_product_stock_id' => $request->pos_product_stock_id,
             'quantity' => $request->quantity,
             'type' => $request->type,
@@ -81,7 +92,11 @@ class PosStockMovementController extends Controller
 
         // Update product stock
         $stock = PosProductStock::firstOrCreate(
-            ['pos_product_id' => $request->pos_product_id, 'location' => $request->location_to ?? 'default'],
+            [
+                'pos_store_id' => session('pos_store_id'),
+                'pos_product_id' => $request->pos_product_id,
+                'location' => $request->location_to ?? 'default'
+            ],
             ['quantity' => 0]
         );
 

@@ -13,6 +13,7 @@ import {
     FcFeedIn,
     FcDonate,
     FcDataSheet,
+    FcDeployment,
 } from "react-icons/fc";
 import Tooltip from "@/app/_components/tooltip";
 import { Link } from "@inertiajs/react";
@@ -33,6 +34,7 @@ export default function SidebarSection() {
             { name: "Stock Movements", href: "/account/pos/stock_movements", icon: FcFeedIn, current: path == "stock_movements" },
             { name: "Purchases", href: "/account/pos/purchases", icon: FcDonate, current: path == "purchases" },
             { name: "Suppliers", href: "/account/pos/suppliers", icon: FcShipped, current: path == "suppliers" },
+            { name: "Warehouse", href: "/account/pos/warehouse", icon: FcDeployment, current: path == "warehouse" },
             { name: "Customers", href: "/account/pos/customers", icon: FcBusinesswoman, current: path == "customers" },
             { name: "Cash Register", href: "/account/pos/cash_register", icon: FcSalesPerformance, current: path == "cash_register" },
             // { name: "Reports", href: "/account/pos/reports", icon: FcPositiveDynamic, current: path == "reports" },

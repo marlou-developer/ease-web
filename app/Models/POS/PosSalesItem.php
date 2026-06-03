@@ -11,6 +11,7 @@ class PosSalesItem extends Model
 
     protected $fillable = [
         'sale_id',
+        'pos_store_id',
         'pos_product_stock_id',
         'quantity',
         'selling_price',

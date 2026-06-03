@@ -18,9 +18,14 @@ class PosPurchaseController extends Controller
      */
     public function index()
     {
-        $purchases = PosPurchase::where('subscriber_id', Auth::id())->with('supplier', 'items.product_stock')->latest()->get();
+        $purchases = PosPurchase::where('pos_store_id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::id())
+            ->with('supplier', 'items.product_stock')
+            ->latest()->get();
         $suppliers = PosSupplier::where('subscriber_id', Auth::id())->latest()->get();
-        $products = PosProductStock::where('subscriber_id', Auth::id())->with(['product'])->latest()->get();
+        $products = PosProductStock::where('pos_store_id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::id())->with(['product'])
+            ->latest()->get();
         return response()->json([
             'success' => true,
             'purchases' => $purchases,
@@ -39,9 +44,10 @@ class PosPurchaseController extends Controller
         $total = collect($request->purchases)->sum(function ($item) {
             return $item['quantity'] * $item['cost_price'];
         });
-        
+
 
         $purchase = PosPurchase::create([
+            'pos_store_id' => session('pos_store_id'),
             'subscriber_id' => Auth::id(),
             'pos_supplier_id' => $request->pos_supplier_id,
             'reference_no' => 'REF' . Carbon::now()->format('mdYHis'),

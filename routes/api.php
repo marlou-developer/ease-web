@@ -16,18 +16,26 @@ use App\Http\Controllers\API\POS\PosSalesItemController;
 use App\Http\Controllers\API\POS\PosStockMovementController;
 use App\Http\Controllers\API\POS\PosSupplierController;
 use App\Http\Controllers\API\POS\PosUnitController;
+use App\Http\Controllers\API\POS\PosStoreController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
+
+Route::get('/session', function (Request $request) {
+    return  session('pos_store_id');
+});
 
 
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('user', UserController::class);
     Route::apiResource('pos-registers', PosCashRegisterController::class);
+    Route::apiResource('pos-store', PosStoreController::class);
     Route::post('pos-registers/{pos_register}/transaction', [PosCashRegisterController::class, 'addTransaction']);
     Route::apiResource('pos-transactions', PosCashTransactionController::class);
     Route::apiResource('pos-categories', PosCategoryController::class);

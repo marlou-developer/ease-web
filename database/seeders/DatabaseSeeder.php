@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             POSUnitSeeder::class,
             UserSeeder::class,
+            POSStoreSeeder::class,
         ]);
     }
 }

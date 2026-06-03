@@ -12,6 +12,7 @@ class PosStockMovement extends Model
     use HasFactory;
 
     protected $fillable = [
+        'pos_store_id',
         'pos_product_stock_id',
         'subscriber_id',
         'type',
