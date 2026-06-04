@@ -31,7 +31,6 @@ export default function ProductCreateSection() {
             category_id: "",
             unit_id: "",
             cost_price: "",
-            sell_price: "",
             stocks: "",
             image: "",
         },
@@ -88,7 +87,7 @@ export default function ProductCreateSection() {
                 outlined
             >
                 <div className="flex gap-2 items-center justify-center">
-                    <Plus size={18} /> Add Product
+                    <Plus size={18} />Product Registration
                 </div>
             </Button>
             <Modal
@@ -169,18 +168,6 @@ export default function ProductCreateSection() {
                             })}
                             name="cost_price"
                             error={errors.cost_price}
-                        />
-
-                        {/* Sell Price */}
-                        <Input
-                            label="Sell Price"
-                            type="number"
-                            step="0.01"
-                            {...register("sell_price", {
-                                required: "Sell price is required",
-                            })}
-                            name="sell_price"
-                            error={errors.sell_price}
                         />
 
                         {/* Stocks */}

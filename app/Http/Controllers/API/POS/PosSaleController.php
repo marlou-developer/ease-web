@@ -34,7 +34,7 @@ class PosSaleController extends Controller
         $request->validate([
             'customer_id' => 'nullable',
             'items' => 'required|array|min:1',
-            'items.*.pos_product_stock_id' => 'required|exists:pos_products,id',
+            'items.*.pos_product_stock_id' => 'required|exists:pos_product_stocks,id',
             'items.*.quantity' => 'required|numeric|min:1',
             'items.*.selling_price' => 'required|numeric|min:0',
             'payment_type' => 'nullable|in:cash,card',
@@ -79,18 +79,18 @@ class PosSaleController extends Controller
 
             $product_stock = PosProductStock::find($item['pos_product_stock_id']);
             if ($product_stock) {
-                $qty_before = $product_stock->stocks;
-                $qty_after = $qty_before - $item['quantity'];
-                PosStockMovement::create([
-                    'pos_store_id' => session('pos_store_id'),
-                    'pos_product_stock_id' => $item['pos_product_stock_id'],
-                    'subscriber_id' => Auth::id(),
-                    'type' => 'OUT',
-                    'reference' => $invoice_no,
-                    'qty_before' => $qty_before,
-                    'qty_change' => $item['quantity'],
-                    'qty_after' => $qty_after,
-                ]);
+                // $qty_before = $product_stock->stocks;
+                // $qty_after = $qty_before - $item['quantity'];
+                // PosStockMovement::create([
+                //     'pos_store_id' => session('pos_store_id'),
+                //     'pos_product_stock_id' => $item['pos_product_stock_id'],
+                //     'subscriber_id' => Auth::id(),
+                //     'type' => 'OUT',
+                //     'reference' => $invoice_no,
+                //     'qty_before' => $qty_before,
+                //     'qty_change' => $item['quantity'],
+                //     'qty_after' => $qty_after,
+                // ]);
                 $product_stock->decrement('stocks', $item['quantity']);
             }
         }

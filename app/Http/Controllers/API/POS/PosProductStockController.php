@@ -26,12 +26,31 @@ class PosProductStockController extends Controller
         return response()->json($stocks, 200);
     }
 
+    public function add_new_stock_in_store(Request $request)
+    {
+
+        $warehouse_stock = PosWarehouseStock::findOrFail($request->id);
+        $warehouse_stock->decrement('stocks', $request->stocks);
+        $store_stock = PosProductStock::firstOrNew([
+            'pos_store_id'   => session('pos_store_id'),
+            'pos_product_id' => $warehouse_stock->pos_product_id,
+            'subscriber_id'  => Auth::id(),
+            'cost_price'       => $request->cost_price,
+            'sell_price'       => $request->sell_price,
+        ], ['stocks' => 0]);
+        $store_stock->stocks += $request->stocks;
+        $store_stock->sell_price = $request->sell_price;
+        $store_stock->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Stock successfully transferred to the retail store store.',
+        ]);
+    }
 
     public function received_stock(Request $request)
     {
         foreach ($request->items as $item) {
             $base = PosWarehouseStock::findOrFail($item['pos_warehouse_stock_id']);
-
             $stock = PosWarehouseStock::firstOrNew([
                 'pos_warehouse_id' => $base->pos_warehouse_id,
                 'pos_product_id'   => $base->pos_product_id,
@@ -42,7 +61,7 @@ class PosProductStockController extends Controller
             $stock->stocks += $item['quantity'];
             $stock->save();
         }
-        
+
         PosPurchase::where('id', $request->id)->update(['status' => 'received']);
 
         return response()->json([
@@ -86,7 +105,7 @@ class PosProductStockController extends Controller
                 'pos_warehouse_id' => $pos_store->pos_warehouse_id,
                 'pos_product_id' => $pos_product->id,
                 'subscriber_id' => $auth->id,
-                'cost_price' => $request->cost_price,
+                'cost_price' => 0,
                 'stocks' => 0,
             ]);
         }
@@ -97,23 +116,23 @@ class PosProductStockController extends Controller
                 'pos_product_id' => $pos_product->id,
                 'subscriber_id' => $auth->id,
                 'stocks' => $request->stocks,
-                'cost_price' => $request->cost_price,
-                'sell_price' => $request->sell_price,
+                'cost_price' => 0,
+                'sell_price' => 0,
                 'discount' => 0,
             ]);
-            $stock_movement = PosStockMovement::where('pos_product_stock_id', $pos_product_stock->id)->first();
-            if (!$stock_movement) {
-                PosStockMovement::create([
-                    'pos_store_id' => session('pos_store_id'),
-                    'pos_product_stock_id' => $pos_product_stock->id,
-                    'subscriber_id' => Auth::id(),
-                    'type' => 'IN',
-                    'reference' => 'Initial Stock',
-                    'qty_before' => 0,
-                    'qty_change' => $request->stocks,
-                    'qty_after' => $request->stocks,
-                ]);
-            }
+            // $stock_movement = PosStockMovement::where('pos_product_stock_id', $pos_product_stock->id)->first();
+            // if (!$stock_movement) {
+            //     PosStockMovement::create([
+            //         'pos_store_id' => session('pos_store_id'),
+            //         'pos_product_stock_id' => $pos_product_stock->id,
+            //         'subscriber_id' => Auth::id(),
+            //         'type' => 'IN',
+            //         'reference' => 'Initial Stock',
+            //         'qty_before' => 0,
+            //         'qty_change' => $request->stocks,
+            //         'qty_after' => $request->stocks,
+            //     ]);
+            // }
         }
 
 

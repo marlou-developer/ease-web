@@ -79,16 +79,16 @@ class PosStockMovementController extends Controller
         ]);
 
         // Create stock movement record
-        $movement = PosStockMovement::create([
-            'pos_store_id' => session('pos_store_id'),
-            'pos_product_stock_id' => $request->pos_product_stock_id,
-            'quantity' => $request->quantity,
-            'type' => $request->type,
-            'reason' => $request->reason,
-            'location_from' => $request->location_from,
-            'location_to' => $request->location_to,
-            'subscriber_id' => Auth::id(),
-        ]);
+        // $movement = PosStockMovement::create([
+        //     'pos_store_id' => session('pos_store_id'),
+        //     'pos_product_stock_id' => $request->pos_product_stock_id,
+        //     'quantity' => $request->quantity,
+        //     'type' => $request->type,
+        //     'reason' => $request->reason,
+        //     'location_from' => $request->location_from,
+        //     'location_to' => $request->location_to,
+        //     'subscriber_id' => Auth::id(),
+        // ]);
 
         // Update product stock
         $stock = PosProductStock::firstOrCreate(

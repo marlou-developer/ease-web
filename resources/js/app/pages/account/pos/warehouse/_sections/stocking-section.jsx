@@ -4,7 +4,8 @@ import Modal from "@/app/_components/modal";
 import Select from "@/app/_components/select";
 import { setAlert } from "@/app/redux/app-slice";
 import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-product-thunk";
-import { create_pos_product_stocks_product_service } from "@/app/services/pos/pos-product-service";
+import { get_pos_warehouse_stock_thunk } from "@/app/redux/pos/pos-thunk";
+import { add_new_stock_in_store_service } from "@/app/services/pos/pos-warehouse-service";
 import store from "@/app/store/store";
 import { Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -22,22 +23,17 @@ export default function StockingSection({ props_data }) {
         control,
         formState: { errors, isSubmitting },
     } = useForm({
-        // 1. FIXED: Changed 'defaultValues' to 'values' to make it fully reactive to props_data updates
         values: {
+            id: props_data.id,
             barcode: props_data?.product?.barcode || "",
-            name: props_data?.product?.name || "", // Falls back to your default string if props_data is empty
-            category_id: props_data?.category_id || "",
-            unit_id: props_data?.unit_id || "",
+            name: props_data?.product?.name || "",
             cost_price: props_data?.cost_price || "",
-            sell_price: props_data?.sell_price || "",
-            stocks: props_data?.stocks || "",
+            sell_price: null,
+            stocks: null,
+            current_stock: props_data?.stocks || 0,
             image: "",
         },
     });
-
-    console.log('props_data',props_data)
-    
-    // 2. FIXED: Completely removed the bug-prone useEffect hook that was overwriting form fields
 
     const onSubmit = async (data) => {
         try {
@@ -51,11 +47,10 @@ export default function StockingSection({ props_data }) {
                 formData.append("image", image[0]);
             }
 
-            await create_pos_product_stocks_product_service(formData, {
+            await add_new_stock_in_store_service(formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-
-            await store.dispatch(get_pos_product_stocks_thunk());
+            await store.dispatch(get_pos_warehouse_stock_thunk())
             setOpen(false);
             reset();
 
@@ -82,7 +77,7 @@ export default function StockingSection({ props_data }) {
             <Button
                 onClick={() => {
                     setOpen(true);
-                    reset(); // Clears any modified user inputs back to the reactive values template
+                    reset();
                 }}
                 variant="primary"
                 outlined
@@ -101,7 +96,7 @@ export default function StockingSection({ props_data }) {
                     onSubmit={handleSubmit(onSubmit)}
                     className="flex flex-col gap-3"
                 >
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Add New Stock Item</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Add New Stock to Store</h3>
 
                     <div className="flex gap-3">
                         <Input
@@ -113,49 +108,18 @@ export default function StockingSection({ props_data }) {
                         />
 
                         <Input
-                        disabled
+                            disabled
                             label="Product Name"
                             name="name"
                             {...register("name", { required: "Name is required" })}
                             error={errors?.name?.message}
                         />
-                    </div>
-
-                    <div className="flex gap-3">
-                        <Controller
-                            name="category_id"
-                            control={control}
-                            rules={{ required: "Category is required" }}
-                            render={({ field }) => (
-                                <Select
-                                disabled
-                                    label="Select Category"
-                                    options={props_data?.categories?.map(cat => ({
-                                        value: cat.id,
-                                        label: cat.name
-                                    })) || []}
-                                    error={errors?.category_id?.message}
-                                    {...field}
-                                />
-                            )}
-                        />
-
-                        <Controller
-                            name="unit_id"
-                            control={control}
-                            rules={{ required: "Unit is required" }}
-                            render={({ field }) => (
-                                <Select
-                                disabled
-                                    label="Select Unit"
-                                    options={props_data?.units?.map(unit => ({
-                                        value: unit.id,
-                                        label: unit.name
-                                    })) || []}
-                                    error={errors?.unit_id?.message}
-                                    {...field}
-                                />
-                            )}
+                        <Input
+                            disabled
+                            label="Current Stock"
+                            name="current_stock"
+                            {...register("current_stock", { required: "Current stock is required" })}
+                            error={errors?.current_stock?.message}
                         />
                     </div>
 
@@ -170,21 +134,37 @@ export default function StockingSection({ props_data }) {
                             error={errors?.cost_price?.message}
                         />
 
+                        {/* --- FIXED: Added custom cost price comparison validation --- */}
                         <Input
                             label="Sell Price"
                             type="number"
                             step="0.01"
-                            {...register("sell_price", { required: "Sell price is required" })}
+                            {...register("sell_price", {
+                                required: "Sell price is required",
+                                validate: (value, formValues) => {
+                                    const sell = parseFloat(value) || 0;
+                                    const cost = parseFloat(formValues.cost_price) || 0;
+
+                                    // Blocks submission if sell price is lower or equal to cost price
+                                    return sell > cost || `Sell price must be greater than cost price ($${cost})`;
+                                }
+                            })}
                             name="sell_price"
                             error={errors?.sell_price?.message}
                         />
 
                         <Input
-                            label="Stocks"
+                            label="Transfer Quantity"
                             type="number"
                             step="0.01"
-                            disabled
-                            {...register("stocks", { required: "Stocks is required" })}
+                            {...register("stocks", {
+                                required: "Stocks is required",
+                                validate: (value, formValues) => {
+                                    const requestedAmount = parseFloat(value) || 0;
+                                    const availableAmount = parseFloat(formValues.current_stock) || 0;
+                                    return requestedAmount <= availableAmount || `Cannot exceed current stock (${availableAmount})`;
+                                }
+                            })}
                             name="stocks"
                             error={errors?.stocks?.message}
                         />

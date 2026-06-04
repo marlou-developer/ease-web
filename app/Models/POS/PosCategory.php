@@ -9,7 +9,7 @@ class PosCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['subscriber_id','name', 'description'];
 
     public function products()
     {

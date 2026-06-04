@@ -15,7 +15,6 @@ export default function AddPurchasesSection() {
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
 
-    // Pull your dynamic products list from Redux
     const { products, suppliers } = useSelector((state) => state.pos);
     const {
         register,
@@ -27,34 +26,27 @@ export default function AddPurchasesSection() {
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
-            // Wrap the fields in an array to allow multiple rows
             purchases: [
                 { pos_warehouse_stock_id: "", quantity: "", cost_price: "", subtotal: "" }
             ],
         },
     });
 
-    console.log('products',products)
-
-    // Initialize the dynamic field array
     const { fields, append, remove } = useFieldArray({
         control,
         name: "purchases",
     });
 
-    // --- ADDED EXPLICIT ADD & DELETE FUNCTIONS ---
     const handleAddRow = () => {
         append({ pos_warehouse_stock_id: "", quantity: "", cost_price: "", subtotal: "" });
     };
 
     const handleDeleteRow = (index) => {
-        // Double-check to prevent deleting the very last row
         if (fields.length > 1) {
             remove(index);
         }
     };
 
-    // Watch all purchases to perform dynamic calculations
     const watchPurchases = watch("purchases");
 
     // Auto-calculate subtotal for EACH row dynamically
@@ -64,21 +56,14 @@ export default function AddPurchasesSection() {
             const price = parseFloat(row.cost_price) || 0;
             const calculatedSubtotal = (qty * price).toFixed(2);
 
-            // Only update if the calculated value is different to prevent infinite re-renders
             if (row.subtotal !== calculatedSubtotal && (qty > 0 || price > 0)) {
                 setValue(`purchases.${index}.subtotal`, calculatedSubtotal);
             }
         });
     }, [watchPurchases, setValue]);
 
-    // Calculate the Grand Total
-    const grandTotal = watchPurchases.reduce((acc, current) => {
-        return acc + (parseFloat(current.subtotal) || 0);
-    }, 0).toFixed(2);
-
     const onSubmit = async (formData) => {
         try {
-            // formData.purchases will now hold an array of all the rows added
             await add_pos_purchases_service(formData);
             await store.dispatch(get_pos_purchases_thunk());
             setOpen(false);
@@ -100,7 +85,6 @@ export default function AddPurchasesSection() {
         }
     };
 
-    console.log('suppliers', suppliers)
     return (
         <>
             <Button
@@ -126,7 +110,6 @@ export default function AddPurchasesSection() {
                     onSubmit={handleSubmit(onSubmit)}
                     className="flex flex-col gap-4"
                 >
-                    {/* Wired up the new add product button you inserted */}
                     <Button
                         type="button"
                         className="w-52"
@@ -138,7 +121,7 @@ export default function AddPurchasesSection() {
                     </Button>
 
                     <Controller
-                        name={`pos_supplier_id`}
+                        name="pos_supplier_id"
                         control={control}
                         rules={{ required: "supplier is required" }}
                         render={({ field: controllerField }) => (
@@ -153,16 +136,17 @@ export default function AddPurchasesSection() {
                             />
                         )}
                     />
+
                     {/* Render Dynamic Rows */}
                     {fields.map((field, index) => (
-                        <div key={field.id} className="flex gap-3 items-center justify-end ">
+                        <div key={field.id} className="flex gap-3 items-center justify-end">
                             {/* Product Select */}
                             <div className="flex-1">
                                 <Controller
                                     name={`purchases.${index}.pos_warehouse_stock_id`}
                                     control={control}
                                     rules={{ required: "Product is required" }}
-                                    render={({ field: controllerField }) => (
+                                    render={({ field: { onChange, value, ...restField } }) => (
                                         <Select
                                             label="Select Product"
                                             options={products?.map((product) => ({
@@ -170,7 +154,23 @@ export default function AddPurchasesSection() {
                                                 label: product?.product?.name,
                                             })) || []}
                                             error={errors?.purchases?.[index]?.pos_warehouse_stock_id?.message}
-                                            {...controllerField}
+                                            value={value}
+                                            {...restField}
+                                            // Intercepting onChange handler to extract and set the price
+                                            onChange={(selectedValue) => {
+                                                onChange(selectedValue); // 1. Update standard field value
+
+                                                // 2. Find the selected item's price from Redux store data
+                                                const selectedProduct = products?.find(
+                                                    (prod) => String(prod.id) === String(selectedValue)
+                                                );
+
+                                                if (selectedProduct) {
+                                                    // Safe fallback checks depending on how your state nesting is configured
+                                                    const autoPrice = selectedProduct.cost_price ?? selectedProduct.product?.cost_price ?? "";
+                                                    setValue(`purchases.${index}.cost_price`, autoPrice);
+                                                }
+                                            }}
                                         />
                                     )}
                                 />
@@ -211,7 +211,7 @@ export default function AddPurchasesSection() {
                                 <button
                                     type="button"
                                     onClick={() => handleDeleteRow(index)}
-                                    disabled={fields.length === 1} // Prevent deleting the very last row
+                                    disabled={fields.length === 1}
                                     className="p-2 text-red-500 hover:bg-red-100 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                     title="Remove row"
                                 >
@@ -221,7 +221,6 @@ export default function AddPurchasesSection() {
                         </div>
                     ))}
 
-                    {/* Add New Row Button */}
                     <div>
                         <Button
                             type="button"
@@ -234,13 +233,6 @@ export default function AddPurchasesSection() {
                             </div>
                         </Button>
                     </div>
-
-                    {/* Grand Total */}
-                    {/* <div className="flex justify-end pr-14 mt-2">
-                        <div className="text-lg font-semibold text-gray-800">
-                            Grand Total: <span className="text-blue-600">${grandTotal}</span>
-                        </div>
-                    </div> */}
 
                     <hr className="my-2" />
 

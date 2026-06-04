@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('pos_categories', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('subscriber_id')->constrained('pos_subscribers');
             $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();

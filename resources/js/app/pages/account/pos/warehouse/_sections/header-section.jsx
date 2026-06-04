@@ -1,6 +1,7 @@
 import { BookOpen } from 'lucide-react'
 import React from 'react'
 import { useSelector } from 'react-redux';
+import ProductCreateSection from './product-create-section';
 
 export default function HeaderSection() {
     const { products } = useSelector((store) => store.pos);
@@ -11,7 +12,7 @@ export default function HeaderSection() {
                     <BookOpen size={24} />
                     Warehouse: {products?.pos_warehouse?.name} - {products?.pos_warehouse?.location}
                 </div>
-                {/* <AddSupplierSection /> */}
+              <ProductCreateSection />
             </div>
         </>
     )

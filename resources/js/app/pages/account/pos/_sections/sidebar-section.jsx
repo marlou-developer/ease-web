@@ -31,10 +31,10 @@ export default function SidebarSection() {
     const navigation = [
         { name: "Dashboard", href: "/account/pos/dashboard", icon: FcDataSheet, current: path == "dashboard" },
         { name: "POS", href: "/account/pos/pos", icon: FcSelfServiceKiosk, current: path == "pos" },
-        { name: "Purchases", href: "/account/pos/purchases", icon: FcDonate, current: path == "purchases" },
         { name: "Store Stocks", href: "/account/pos/products", icon: FcShop, current: path == "products" },
         { name: "Warehouse Stocks", href: "/account/pos/warehouse", icon: FcDeployment, current: path == "warehouse" },
-        { name: "Stock Movements", href: "/account/pos/stock_movements", icon: FcFeedIn, current: path == "stock_movements" },
+        { name: "Purchases", href: "/account/pos/purchases", icon: FcDonate, current: path == "purchases" },
+        // { name: "Stock Movements", href: "/account/pos/stock_movements", icon: FcFeedIn, current: path == "stock_movements" },
         { name: "Suppliers", href: "/account/pos/suppliers", icon: FcShipped, current: path == "suppliers" },
         { name: "Customers", href: "/account/pos/customers", icon: FcBusinesswoman, current: path == "customers" },
         // { name: "Cash Register", href: "/account/pos/cash_register", icon: FcSalesPerformance, current: path == "cash_register" },

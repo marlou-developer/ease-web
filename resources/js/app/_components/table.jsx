@@ -30,7 +30,7 @@ const Table = ({ columns, data }) => {
     };
 
     return (
-        <div className="w-full">
+        <div className="w-full px-3 sm:px-0">
             {/* --- Mobile Sorting Controls --- */}
             <div className="md:hidden flex items-center justify-between mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100 shadow-sm">
                 <div className="flex-1 mr-3 flex items-center space-x-2">
