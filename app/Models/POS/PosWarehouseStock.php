@@ -22,4 +22,8 @@ class PosWarehouseStock extends Model
     {
         return $this->hasOne(PosProduct::class, 'id', 'pos_product_id');
     }
+    public function pos_warehouse(): HasOne
+    {
+        return $this->hasOne(PosWarehouse::class, 'id', 'pos_warehouse_id');
+    }
 }

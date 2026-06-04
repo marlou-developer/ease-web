@@ -29,38 +29,22 @@ class PosProductStockController extends Controller
 
     public function received_stock(Request $request)
     {
-        $purchase = PosPurchase::where('id', $request->id)->first();
-        dd($request->all());
-        foreach ($request->items as $key => $item) {
-            $warehouse_stock = PosWarehouseStock::where('id', $item['pos_warehouse_stock_id'])->first();
-            if ($warehouse_stock) {
-                // if ($warehouse_stock->cost_price != $item['cost_price']) {
-                //     $pos_product_stock = PosProductStock::create([
-                //         'pos_store_id' => session('pos_store_id'),
-                //         'pos_product_id' => $warehouse_stock->pos_product_id,
-                //         'subscriber_id' => Auth::id(),
-                //         'stocks' => 0,
-                //         'cost_price' => $item['cost_price'],
-                //         'discount' => 0,
-                //     ]);
-                // }
-                // $qty_before = $warehouse_stock->stocks;
-                // $qty_after = $qty_before + $item['quantity'];
-                // PosStockMovement::create([
-                //     'pos_product_stock_id' => $item['pos_product_stock_id'],
-                //     'subscriber_id' => Auth::id(),
-                //     'type' => 'IN',
-                //     'reference' => $purchase->reference_no,
-                //     'qty_before' => $qty_before,
-                //     'qty_change' => $item['quantity'],
-                //     'qty_after' => $qty_after,
-                // ]);
-                $warehouse_stock->increment('stocks', $item['quantity']);
-            }
+        foreach ($request->items as $item) {
+            $base = PosWarehouseStock::findOrFail($item['pos_warehouse_stock_id']);
+
+            $stock = PosWarehouseStock::firstOrNew([
+                'pos_warehouse_id' => $base->pos_warehouse_id,
+                'pos_product_id'   => $base->pos_product_id,
+                'cost_price'       => $item['cost_price'],
+                'subscriber_id'    => Auth::id(),
+            ], ['stocks' => 0]);
+
+            $stock->stocks += $item['quantity'];
+            $stock->save();
         }
-        $purchase->update([
-            'status' => 'received'
-        ]);
+        
+        PosPurchase::where('id', $request->id)->update(['status' => 'received']);
+
         return response()->json([
             'message' => 'Product stock received successfully',
         ]);

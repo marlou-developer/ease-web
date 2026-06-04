@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import Table from "@/app/_components/table";
+import StockingSection from "./stocking-section";
 
 const WarehouseTableSection = () => {
     const { products } = useSelector((store) => store.pos);
@@ -30,7 +31,7 @@ const WarehouseTableSection = () => {
         },
         {
             header: 'Products',
-            accessor: 'product',
+            accessor: 'product_name',
             className: 'font-bold text-gray-700'
         },
         {
@@ -39,9 +40,18 @@ const WarehouseTableSection = () => {
             className: 'font-bold text-gray-700'
         },
         {
+            header: 'Cost Price',
+            accessor: 'cost_price',
+            className: 'font-bold text-gray-700'
+        },
+        {
             header: 'Action',
             accessor: 'action',
-            className: 'font-bold text-gray-700'
+            align: 'center',
+            className: 'font-bold text-gray-700',
+            render: (row) => {
+                return <><StockingSection props_data={row} /></>
+            }
         },
         // {
         //     header: 'Status',
@@ -56,12 +66,12 @@ const WarehouseTableSection = () => {
 
     ];
 
-    console.log('products', products)
+    console.log('products', products?.pos_warehouse?.pos_warehouse_stocks)
     return (
         <div className="font-sans">
-            <Table columns={columns} data={products.map(res => ({
+            <Table columns={columns} data={products?.pos_warehouse?.pos_warehouse_stocks?.map(res => ({
                 ...res,
-                product: res.product.name,
+                product_name: res.product.name,
 
             }))} />
         </div>

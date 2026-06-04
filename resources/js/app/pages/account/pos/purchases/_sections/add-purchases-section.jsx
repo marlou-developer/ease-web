@@ -131,6 +131,7 @@ export default function AddPurchasesSection() {
                         type="button"
                         className="w-52"
                         variant="primary"
+                        outlined
                         onClick={handleAddRow}
                     >
                         + ADD PRODUCT
@@ -235,11 +236,11 @@ export default function AddPurchasesSection() {
                     </div>
 
                     {/* Grand Total */}
-                    <div className="flex justify-end pr-14 mt-2">
+                    {/* <div className="flex justify-end pr-14 mt-2">
                         <div className="text-lg font-semibold text-gray-800">
                             Grand Total: <span className="text-blue-600">${grandTotal}</span>
                         </div>
-                    </div>
+                    </div> */}
 
                     <hr className="my-2" />
 

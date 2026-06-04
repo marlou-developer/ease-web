@@ -15,13 +15,11 @@ class PosWarehouseStockController extends Controller
      */
     public function index()
     {
-        $pos_store = PosStore::where('id', session('pos_store_id'))->first();
-        $stocks = PosWarehouseStock::where('pos_warehouse_id', $pos_store->pos_warehouse_id)
-            ->where('subscriber_id', Auth::id())
-            ->with('product')->get();
+        $pos_store = PosStore::where('id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::id())->with(['pos_warehouse'])->first();
         return response()->json([
             'success' => true,
-            'data' => $stocks
+            'data' => $pos_store
         ]);
     }
 
