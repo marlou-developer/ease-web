@@ -36,8 +36,8 @@ export default function SalesTableSection() {
             accessor: 'invoice_no'
         },
         {
-            header: 'Products',
-            accessor: 'product_name',
+            header: 'Cashier',
+            accessor: 'cashier',
             className: 'font-bold text-gray-700',
             render: (row) => row.product?.name
         },

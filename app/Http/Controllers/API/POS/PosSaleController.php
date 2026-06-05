@@ -52,6 +52,7 @@ class PosSaleController extends Controller
             'invoice_no' => 0,
             'customer_id' => $request->customer_id,
             'subscriber_id' => Auth::id(),
+            'cashier_id' => Auth::id(),
             'total_amount' => $total,
             'discount' => $request->discount ?? 0,
             'tax' => $request->tax ?? 0,
