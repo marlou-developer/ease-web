@@ -90,13 +90,10 @@ export default function SalesTableSection() {
             accessor: 'profit',
             className: 'font-bold text-gray-700',
             render: (row) => {
-                const total_discounted_price = row?.sale_items?.reduce((accumulator, currentItem) => {
-                    return (accumulator + Number(currentItem.discounted_price));
+                const total_profit = row?.sale_items?.reduce((accumulator, currentItem) => {
+                    return (accumulator + Number(currentItem.profit));
                 }, 0);
-                const total_cost_price = row?.sale_items?.reduce((accumulator, currentItem) => {
-                    return (accumulator + Number(currentItem.cost_price)) * currentItem.quantity;
-                }, 0);
-                return peso_value(total_discounted_price - total_cost_price);
+                return peso_value(total_profit);
             }
         },
         {
