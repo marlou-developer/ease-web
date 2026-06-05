@@ -55,6 +55,7 @@ class PosProductStockController extends Controller
                 'pos_warehouse_id' => $base->pos_warehouse_id,
                 'pos_product_id'   => $base->pos_product_id,
                 'cost_price'       => $item['cost_price'],
+                'selling_price'       => $item['selling_price'],
                 'subscriber_id'    => Auth::id(),
             ], ['stocks' => 0]);
 

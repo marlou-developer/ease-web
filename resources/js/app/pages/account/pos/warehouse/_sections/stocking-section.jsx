@@ -27,7 +27,7 @@ export default function StockingSection({ props_data }) {
             barcode: props_data?.product?.barcode || "",
             name: props_data?.product?.name || "",
             cost_price: props_data?.cost_price || "",
-            sell_price: null,
+            selling_price: props_data?.selling_price || "",
             stocks: null,
             current_stock: props_data?.stocks || 0,
             image: "",
@@ -78,6 +78,7 @@ export default function StockingSection({ props_data }) {
                     setOpen(true);
                     reset();
                 }}
+                disabled={!props_data?.cost_price || !props_data?.selling_price}
                 variant="primary"
                 outlined
             >
@@ -133,23 +134,14 @@ export default function StockingSection({ props_data }) {
                             error={errors?.cost_price?.message}
                         />
 
-                        {/* --- FIXED: Added custom cost price comparison validation --- */}
                         <Input
-                            label="Sell Price"
+                            label="Selling Price"
+                            disabled
                             type="number"
                             step="0.01"
-                            {...register("sell_price", {
-                                required: "Sell price is required",
-                                validate: (value, formValues) => {
-                                    const sell = parseFloat(value) || 0;
-                                    const cost = parseFloat(formValues.cost_price) || 0;
-
-                                    // Blocks submission if sell price is lower or equal to cost price
-                                    return sell > cost || `Sell price must be greater than cost price ($${cost})`;
-                                }
-                            })}
-                            name="sell_price"
-                            error={errors?.sell_price?.message}
+                            {...register("selling_price", { required: "Selling Price is required" })}
+                            name="selling_price"
+                            error={errors?.selling_price?.message}
                         />
 
                         <Input

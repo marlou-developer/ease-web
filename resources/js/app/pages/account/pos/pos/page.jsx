@@ -5,19 +5,11 @@ import POSProductListSection from "./_sections/pos-product-list-section";
 import POSSelectedProductSection from "./_sections/pos-selected-product-section";
 import store from "@/app/store/store";
 import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-thunk";
+import loadingApi from "@/app/lib/loading-api";
 
 export default function Page() {
-    const [loading, setLoading] = useState(true);
     useEffect(() => {
-        async function get_data(params) {
-            try {
-                await store.dispatch(get_pos_product_stocks_thunk());
-                setLoading(false);
-            } catch (error) {
-                setLoading(false);
-            }
-        }
-        get_data();
+        loadingApi(store.dispatch(get_pos_product_stocks_thunk()))
     }, []);
     return (
         <Layout>

@@ -6,12 +6,13 @@ import { get_pos_suppliers_thunk } from '@/app/redux/pos/pos-thunk'
 import SupplierHeaderSection from './_sections/supplier-header-section'
 import SupplierSearchSection from './_sections/product-search-section'
 import SupplierPaginationSection from './_sections/supplier-pagination-section'
+import loadingApi from '@/app/lib/loading-api'
 
 export default function Page() {
 
 
     useEffect(() => {
-        store.dispatch(get_pos_suppliers_thunk())
+        loadingApi(store.dispatch(get_pos_suppliers_thunk()))
     }, [])
     return (
         <Layout>

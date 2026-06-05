@@ -6,12 +6,13 @@ import store from '@/app/store/store'
 import { get_pos_customer_thunk } from '@/app/redux/pos/pos-thunk'
 import CustomersSearchSection from './_sections/customers-search-section'
 import CustomersPaginationSection from './_sections/customers-pagination-section'
+import loadingApi from '@/app/lib/loading-api'
 
 export default function Page() {
 
-    useEffect(()=>{
-        store.dispatch(get_pos_customer_thunk())
-    },[])
+    useEffect(() => {
+        loadingApi(store.dispatch(get_pos_customer_thunk()))
+    }, [])
     return (
         <Layout>
             <HeaderSection />

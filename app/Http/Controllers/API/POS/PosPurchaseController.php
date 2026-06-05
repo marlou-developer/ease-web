@@ -46,29 +46,20 @@ class PosPurchaseController extends Controller
     public function store(Request $request)
     {
 
-        // Calculate total
-        $total = collect($request->purchases)->sum(function ($item) {
-            return $item['quantity'] * $item['cost_price'];
-        });
-
-
         $purchase = PosPurchase::create([
             'pos_store_id' => session('pos_store_id'),
             'subscriber_id' => Auth::id(),
             'pos_supplier_id' => $request->pos_supplier_id,
             'reference_no' => 'REF' . Carbon::now()->format('mdYHis'),
-            'total_amount' => $total,
+            'total_amount' => 0,
             'status' => 'pending',
         ]);
 
-        // Add purchase items
         foreach ($request->purchases as $item) {
             PosPurchaseItem::create([
                 'pos_purchase_id' => $purchase->id,
                 'pos_warehouse_stock_id' => $item['pos_warehouse_stock_id'],
                 'quantity' => $item['quantity'],
-                'cost_price' => $item['cost_price'],
-                'subtotal' => $item['quantity'] * $item['cost_price'],
             ]);
         }
 

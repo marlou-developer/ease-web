@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function POSProductListSection() {
     const [searchTerm, setSearchTerm] = useState("");
-    const { cart = [], products = [] } = useSelector(
+    const { cart = [], store_stocks = [] } = useSelector(
         (store) => store.pos,
     );
     const dispatch = useDispatch();
 
     const PRODUCTS =
-        products?.map((res) => ({
+        store_stocks?.map((res) => ({
             id: res.id,
             name: res.product?.name ?? "Unknown",
             stocks: res.stocks ?? "Unknown",

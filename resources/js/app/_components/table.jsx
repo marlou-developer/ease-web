@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Skeleton from './skeleton';
 
 const Table = ({ columns, data }) => {
-    const { loading } = useSelector((store) => store.pos)
+    const { loading } = useSelector((store) => store.app)
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
     const sortedData = useMemo(() => {

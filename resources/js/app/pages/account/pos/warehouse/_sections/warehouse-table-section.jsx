@@ -50,6 +50,11 @@ export default function WarehouseTableSection() {
             accessor: 'cost_price',
             className: 'font-bold text-gray-700'
         },
+          {
+            header: 'Selling Price',
+            accessor: 'selling_price',
+            className: 'font-bold text-gray-700'
+        },
         {
             header: 'Action',
             accessor: 'action',

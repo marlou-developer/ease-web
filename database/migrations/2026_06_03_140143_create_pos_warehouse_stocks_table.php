@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('pos_product_id')->constrained('pos_products');
             $table->foreignId('subscriber_id')->constrained('users');
             $table->decimal('cost_price', 10, 2)->default(0);
+            $table->decimal('selling_price', 10, 2)->default(0);
             $table->bigInteger('stocks')->default(0);
             $table->timestamps();
         });

@@ -6,12 +6,14 @@ import WarehouseSearchSection from './_sections/warehouse-search-section'
 import store from '@/app/store/store'
 import { get_pos_warehouse_stock_thunk } from '@/app/redux/pos/pos-thunk'
 import WarehousePaginationSection from './_sections/product-pagination-section'
+import loadingApi from '@/app/lib/loading-api'
 
 export default function Page() {
 
     useEffect(() => {
-        store.dispatch(get_pos_warehouse_stock_thunk())
+        loadingApi(store.dispatch(get_pos_warehouse_stock_thunk()))
     }, [])
+
     return (
         <Layout>
             <HeaderSection />

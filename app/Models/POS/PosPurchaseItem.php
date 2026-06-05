@@ -15,6 +15,7 @@ class PosPurchaseItem extends Model
         'pos_warehouse_stock_id',
         'quantity',
         'cost_price',
+        'selling_price',
         'subtotal'
     ];
 

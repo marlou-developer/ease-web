@@ -38,7 +38,7 @@ export default function AddPurchasesSection() {
     });
 
     const handleAddRow = () => {
-        append({ pos_warehouse_stock_id: "", quantity: "", cost_price: "", subtotal: "" });
+        append({ pos_warehouse_stock_id: "", quantity: "", cost_price: "" });
     };
 
     const handleDeleteRow = (index) => {
@@ -47,20 +47,20 @@ export default function AddPurchasesSection() {
         }
     };
 
-    const watchPurchases = watch("purchases");
+    // const watchPurchases = watch("purchases");
 
     // Auto-calculate subtotal for EACH row dynamically
-    useEffect(() => {
-        watchPurchases.forEach((row, index) => {
-            const qty = parseFloat(row.quantity) || 0;
-            const price = parseFloat(row.cost_price) || 0;
-            const calculatedSubtotal = (qty * price).toFixed(2);
+    // useEffect(() => {
+    //     watchPurchases.forEach((row, index) => {
+    //         const qty = parseFloat(row.quantity) || 0;
+    //         const price = parseFloat(row.cost_price) || 0;
+    //         const calculatedSubtotal = (qty * price).toFixed(2);
 
-            if (row.subtotal !== calculatedSubtotal && (qty > 0 || price > 0)) {
-                setValue(`purchases.${index}.subtotal`, calculatedSubtotal);
-            }
-        });
-    }, [watchPurchases, setValue]);
+    //         if (row.subtotal !== calculatedSubtotal && (qty > 0 || price > 0)) {
+    //             setValue(`purchases.${index}.subtotal`, calculatedSubtotal);
+    //         }
+    //     });
+    // }, [watchPurchases, setValue]);
 
     const onSubmit = async (formData) => {
         try {
@@ -192,7 +192,7 @@ export default function AddPurchasesSection() {
                             </div>
 
                             {/* Cost Price */}
-                            <div className="w-52">
+                            {/* <div className="w-52">
                                 <Input
                                     label="Cost Price"
                                     name={`purchases.${index}.cost_price`}
@@ -202,9 +202,10 @@ export default function AddPurchasesSection() {
                                     {...register(`purchases.${index}.cost_price`, {
                                         required: "Required",
                                     })}
+                                    disabled
                                     error={errors?.purchases?.[index]?.cost_price?.message}
                                 />
-                            </div>
+                            </div> */}
 
                             {/* Remove Row Button */}
                             <div className="pb-1">

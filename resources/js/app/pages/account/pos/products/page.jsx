@@ -6,10 +6,11 @@ import ProductTableSection from "./_sections/product-table-section";
 import ProductPaginationSection from "./_sections/product-pagination-section";
 import store from "@/app/store/store";
 import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-thunk";
+import loadingApi from "@/app/lib/loading-api";
 
 export default function Page() {
     useEffect(() => {
-         store.dispatch(get_pos_product_stocks_thunk());
+        loadingApi(store.dispatch(get_pos_product_stocks_thunk()))
     }, []);
     return (
         <Layout>

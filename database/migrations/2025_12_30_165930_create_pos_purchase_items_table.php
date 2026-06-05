@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pos_purchase_id')->constrained('pos_purchases');
             $table->foreignId('pos_warehouse_stock_id')->constrained('pos_warehouse_stocks');
-            $table->decimal('quantity', 10, 3);
-            $table->decimal('cost_price', 10, 2);
-            $table->decimal('subtotal', 10, 2);
+            $table->decimal('quantity', 10, 3)->default(0);
+            $table->decimal('cost_price', 10, 2)->default(0);
+            $table->decimal('selling_price', 10, 2)->default(0);
+            $table->decimal('subtotal', 10, 2)->default(0);
             $table->timestamps();
         });
     }

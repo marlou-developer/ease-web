@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const appSlice = createSlice({
     name: "app",
     initialState: {
+        loading: true,
         user: {},
         app: {},
         sidebarOpen: false,
@@ -18,9 +19,12 @@ export const appSlice = createSlice({
         searchTerm: "",
         category: "All Categories",
         currentPage: 1,
-        products:[],
+        products: [],
     },
     reducers: {
+        setLoading: (state, action) => {
+            state.loading = action.payload;
+        },
         setUser: (state, action) => {
             state.user = action.payload;
         },
@@ -42,6 +46,7 @@ export const appSlice = createSlice({
     },
 });
 export const {
+    setLoading,
     setUser,
     setSidebarOpen,
     setDesktopCollapsed,
