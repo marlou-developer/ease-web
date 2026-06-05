@@ -50,6 +50,9 @@ Route::prefix('account')->middleware('auth')->group(function () {
         Route::get('/dashboard', function () {
             return Inertia::render('account/pos/dashboard/page');
         });
+        Route::get('/sales', function () {
+            return Inertia::render('account/pos/sales/page');
+        });
         Route::get('/cashiering', function () {
             return Inertia::render('account/pos/cashiering/page');
         });
@@ -74,7 +77,7 @@ Route::prefix('account')->middleware('auth')->group(function () {
         Route::get('/cash_register', function () {
             return Inertia::render('account/pos/cash_register/page');
         });
-         Route::get('/warehouse', function () {
+        Route::get('/warehouse', function () {
             return Inertia::render('account/pos/warehouse/page');
         });
         Route::get('/reports', function () {

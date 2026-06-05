@@ -14,9 +14,12 @@ class PosSalesItem extends Model
         'pos_store_id',
         'pos_product_stock_id',
         'quantity',
+        'cost_price',
         'selling_price',
+        'total',
         'discount',
-        'subtotal'
+        'discounted_price',
+        'profit'
     ];
 
     public function sale()

@@ -31,6 +31,7 @@ export default function SidebarSection() {
     const navigation = [
         { name: "Dashboard", href: "/account/pos/dashboard", icon: FcDataSheet, current: path == "dashboard" },
         { name: "POS", href: "/account/pos/pos", icon: FcSelfServiceKiosk, current: path == "pos" },
+        { name: "Sales", href: "/account/pos/sales", icon: FcSalesPerformance, current: path == "sales" },
         { name: "Store Stocks", href: "/account/pos/products", icon: FcShop, current: path == "products" },
         { name: "Warehouse Stocks", href: "/account/pos/warehouse", icon: FcDeployment, current: path == "warehouse" },
         { name: "Purchases", href: "/account/pos/purchases", icon: FcDonate, current: path == "purchases" },

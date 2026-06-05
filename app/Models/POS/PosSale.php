@@ -4,6 +4,7 @@ namespace App\Models\POS;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PosSale extends Model
 {
@@ -29,9 +30,9 @@ class PosSale extends Model
         return $this->belongsTo(PosCustomer::class);
     }
 
-    public function sale_items()
+    public function sale_items():HasMany
     {
-        return $this->hasMany(PosSalesItem::class);
+        return $this->hasMany(PosSalesItem::class,'sale_id','id');
     }
 
     public function user()

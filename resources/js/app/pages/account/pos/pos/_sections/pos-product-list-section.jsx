@@ -8,6 +8,7 @@ export default function POSProductListSection() {
     const { cart = [], store_stocks = [] } = useSelector(
         (store) => store.pos,
     );
+
     const dispatch = useDispatch();
 
     const PRODUCTS =
@@ -18,6 +19,8 @@ export default function POSProductListSection() {
             price: Number(res.sell_price).toFixed(2),
             category: res.product?.category?.name ?? "N/A",
             img: res.product.image,
+            cost_price: res.cost_price,
+            discount: res.discount,
         })) || [];
 
     const filteredProducts = PRODUCTS.filter((p) =>
@@ -68,7 +71,7 @@ export default function POSProductListSection() {
                                 {product.name}
                             </p>
                             <p className="text-blue-600 text-xs">
-                                ${product.price}
+                                ₱{product.price}
                             </p>
                             <p className="font-thin text-sm  mb-2">
                                 Quantity:{product.stocks}

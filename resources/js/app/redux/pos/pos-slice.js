@@ -15,13 +15,14 @@ export const posSlice = createSlice({
         amountPaid: 0,
         cart: [],
         cartDetail: {
-            tax: 0.06,
+            tax: 0,
             grandTotal: 0,
             changeDue: 0,
             subtotal: 0,
         },
         heldSales: [],
-        store_stocks:[]
+        store_stocks: [],
+        sales: [],
     },
     reducers: {
         setStoreStocks: (state, action) => {
@@ -30,7 +31,7 @@ export const posSlice = createSlice({
         setSuppliers: (state, action) => {
             state.suppliers = action.payload;
         },
-       
+
         setPurchases: (state, action) => {
             state.purchases = action.payload;
         },
@@ -61,11 +62,15 @@ export const posSlice = createSlice({
         setHeldSales: (state, action) => {
             state.heldSales = action.payload;
         },
+        setSales: (state, action) => {
+            state.sales = action.payload;
+        },
     },
 });
 
 export const {
     setCart,
+    setSales,
     setStoreStocks,
     setCartDetail,
     setHeldSales,

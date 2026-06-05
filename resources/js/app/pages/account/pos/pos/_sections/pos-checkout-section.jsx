@@ -87,8 +87,9 @@ export default function POSCheckout() {
                 items: cart.map((res) => ({
                     pos_product_stock_id: res.id,
                     quantity: res.qty,
+                    cost_price: Number(res.cost_price).toFixed(2),
                     selling_price: Number(res.price).toFixed(2),
-                    discount: 0,
+                    discount: res.discount,
                 })),
             });
             await store.dispatch(get_pos_product_stocks_thunk());
@@ -161,7 +162,7 @@ export default function POSCheckout() {
                 <div className="flex justify-between items-center bg-white p-3 rounded border">
                     <span className="text-sm text-gray-500">Change Due</span>
                     <span className="text-2xl font-black text-green-600">
-                        ${cartDetail.changeDue.toFixed(2)}
+                        ₱{cartDetail.changeDue.toFixed(2)}
                     </span>
                 </div>
 
@@ -170,11 +171,10 @@ export default function POSCheckout() {
                     // Convert both sides to Number to ensure accurate numeric comparison
                     disabled={isDisabled()}
                     className={`w-full py-4 rounded-xl font-black text-xl shadow-lg transition-all
-    ${
-        isDisabled()
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-green-600 text-white hover:bg-green-700 active:scale-95"
-    }`}
+    ${isDisabled()
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-green-600 text-white hover:bg-green-700 active:scale-95"
+                        }`}
                 >
                     COMPLETE SALE
                 </button>

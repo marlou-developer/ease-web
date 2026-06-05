@@ -18,6 +18,7 @@ class PosProductStock extends Model
         'cost_price',
         'sell_price',
         'discount',
+        'discounted_price'
     ];
 
 

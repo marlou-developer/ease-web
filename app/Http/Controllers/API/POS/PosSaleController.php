@@ -18,7 +18,7 @@ class PosSaleController extends Controller
      */
     public function index()
     {
-        $sales = PosSale::where('subscriber_id', Auth::id())->with('customer', 'sale_items.product', 'user')->latest()->get();
+        $sales = PosSale::where('subscriber_id', Auth::id())->with(['sale_items'])->latest()->get();
 
         return response()->json([
             'success' => true,
@@ -37,11 +37,11 @@ class PosSaleController extends Controller
             'items.*.pos_product_stock_id' => 'required|exists:pos_product_stocks,id',
             'items.*.quantity' => 'required|numeric|min:1',
             'items.*.selling_price' => 'required|numeric|min:0',
+            'items.*.discount' => 'nullable|numeric|min:0',
             'payment_type' => 'nullable|in:cash,card',
             'amount_paid' => 'required|numeric|min:0',
             'change_due' => 'required',
         ]);
-
 
         $total = collect($request->items)->sum(function ($item) {
             return $item['quantity'] * $item['selling_price'];
@@ -67,34 +67,38 @@ class PosSaleController extends Controller
         ]);
         // Add sale items
         foreach ($request->items as $item) {
+            $quantity = $item['quantity'];
+            $sellingPrice = $item['selling_price'];
+            $costPrice = $item['cost_price'];
+            $discount = $item['discount'] ?? 0;
+
+            // Calculate the line total (Revenue) first
+            $total = ($quantity * $sellingPrice) - $discount;
+
+            // Calculate discounted price per unit (safeguard against division by zero)
+            $discountedPrice = $quantity > 0 ? ($total / $quantity) : 0;
+
+            // Calculate profit: Total Revenue - Total Cost
+            $profit = $total - ($quantity * $costPrice);
+
             PosSalesItem::create([
-                'pos_store_id' => session('pos_store_id'),
+                'pos_store_id'         => session('pos_store_id'),
                 'pos_product_stock_id' => $item['pos_product_stock_id'],
-                'sale_id' => $sale->id,
-                'quantity' => $item['quantity'],
-                'selling_price' => $item['selling_price'],
-                'discount' => $item['discount'] ?? 0,
-                'subtotal' => ($item['quantity'] * $item['selling_price']) - ($item['discount'] ?? 0),
+                'sale_id'              => $sale->id,
+                'quantity'             => $quantity,
+                'selling_price'        => $sellingPrice,
+                'cost_price'           => $costPrice,
+                'discount'             => $discount,
+                'total'                => $total,
+                'discounted_price'     => $discountedPrice,
+                'profit'               => $profit, // <--- Added profit here
             ]);
 
             $product_stock = PosProductStock::find($item['pos_product_stock_id']);
             if ($product_stock) {
-                // $qty_before = $product_stock->stocks;
-                // $qty_after = $qty_before - $item['quantity'];
-                // PosStockMovement::create([
-                //     'pos_store_id' => session('pos_store_id'),
-                //     'pos_product_stock_id' => $item['pos_product_stock_id'],
-                //     'subscriber_id' => Auth::id(),
-                //     'type' => 'OUT',
-                //     'reference' => $invoice_no,
-                //     'qty_before' => $qty_before,
-                //     'qty_change' => $item['quantity'],
-                //     'qty_after' => $qty_after,
-                // ]);
-                $product_stock->decrement('stocks', $item['quantity']);
+                $product_stock->decrement('stocks', $quantity);
             }
         }
-
         return response()->json([
             'success' => true,
             'message' => 'Sale created successfully',

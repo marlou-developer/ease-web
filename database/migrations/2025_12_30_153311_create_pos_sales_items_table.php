@@ -16,10 +16,13 @@ return new class extends Migration
             $table->foreignId('pos_store_id')->constrained('pos_stores');
             $table->foreignId('sale_id')->constrained('pos_sales');
             $table->foreignId('pos_product_stock_id')->constrained('pos_product_stocks');
-            $table->decimal('quantity', 10, 3);
-            $table->decimal('selling_price', 10, 2);
+            $table->integer('quantity')->default(0);
+            $table->decimal('cost_price', 10, 2)->default(0);
+            $table->decimal('selling_price', 10, 2)->default(0);
+            $table->decimal('total', 10, 2)->default(0);
             $table->decimal('discount', 10, 2)->default(0);
-            $table->decimal('subtotal', 10, 2);
+            $table->decimal('discounted_price', 10, 2)->default(0);
+            $table->decimal('profit', 10, 2)->default(0);
             $table->timestamps();
         });
     }

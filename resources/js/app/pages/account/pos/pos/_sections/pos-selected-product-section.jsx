@@ -7,12 +7,17 @@ import { Trash2 } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import NumberKeyboard from "./pos-keyboard-section";
+import peso_value from "@/app/lib/peso-value";
 
 export default function POSSelectedProductSection() {
     const { cart, cartDetail, heldSales, amountPaid } = useSelector(
         (store) => store.pos
     );
     const dispatch = useDispatch();
+    const total_total_discount = cart?.reduce((accumulator, currentItem) => {
+        return (accumulator + Number(currentItem.discount));
+    }, 0);
+    // console.log('total_total_discount',total_total_discount)
     const holdSale = () => {
         if (cart.length === 0) return alert("Cannot hold an empty cart");
         const newHold = {
@@ -43,6 +48,22 @@ export default function POSSelectedProductSection() {
         );
     };
 
+    const updateDiscount = (id, value) => {
+        const numericValue = parseFloat(value) || 0;
+        dispatch(
+            setCart(
+                cart.map((item) => {
+                    if (item.id === id) {
+                        // Cap the discount so it doesn't exceed the price, and isn't less than 0
+                        const validDiscount = Math.max(0, Math.min(numericValue, item.price * item.qty));
+                        return { ...item, discount: validDiscount };
+                    }
+                    return item;
+                })
+            )
+        );
+    };
+
     return (
         <>
             <div className="bg-blue-600 text-white p-3 font-bold flex justify-between">
@@ -57,6 +78,7 @@ export default function POSSelectedProductSection() {
                     <thead className="text-gray-500 border-b">
                         <tr>
                             <th className="py-2 text-left">Item</th>
+                            <th className="py-2 text-left">Discount</th>
                             <th className="py-2 text-center">Qty</th>
                             <th className="py-2 text-right">Price</th>
                         </tr>
@@ -64,22 +86,31 @@ export default function POSSelectedProductSection() {
                     <tbody>
                         {cart.map((item) => (
                             <tr key={item.id} className="border-b">
-                                <td className=" font-medium">{item.name}</td>
+                                <td className="font-medium">{item.name}</td>
+                                <td className="py-3">
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max={item.price} // Added max attribute for UI bounds
+                                        value={item.discount || ""}
+                                        onChange={(e) =>
+                                            updateDiscount(item.id, e.target.value)
+                                        }
+                                        placeholder="0.00"
+                                        className="w-24 h-8 px-2 border border-gray-300 rounded"
+                                    />
+                                </td>
                                 <td className="py-3">
                                     <div className="flex items-center justify-center gap-2">
                                         <button
-                                            onClick={() =>
-                                                updateQty(item.id, -1)
-                                            }
+                                            onClick={() => updateQty(item.id, -1)}
                                             className="px-2 border rounded bg-white"
                                         >
                                             -
                                         </button>
                                         <span>{item.qty}</span>
                                         <button
-                                            onClick={() =>
-                                                updateQty(item.id, 1)
-                                            }
+                                            onClick={() => updateQty(item.id, 1)}
                                             className="px-2 border rounded bg-white"
                                         >
                                             +
@@ -87,7 +118,7 @@ export default function POSSelectedProductSection() {
                                     </div>
                                 </td>
                                 <td className="py-3 text-right font-bold">
-                                    ${(item.price * item.qty).toFixed(2)}
+                                    ₱{(item.price * item.qty).toFixed(2)}
                                 </td>
                             </tr>
                         ))}
@@ -102,16 +133,13 @@ export default function POSSelectedProductSection() {
             </div>
             <div className="p-4 bg-gray-50 border-t space-y-2">
                 <div className="flex justify-between text-sm">
-                    <span>Subtotal</span>{" "}
-                    <span>${cartDetail.subtotal.toFixed(2)}</span>
+                    <span>Subtotal</span> <span>{peso_value(cartDetail.subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                    <span>Tax (6%)</span>{" "}
-                    <span>${cartDetail.tax.toFixed(2)}</span>
+                    <span>Total Discount</span> <span>{peso_value(total_total_discount)}</span>
                 </div>
                 <div className="flex justify-between text-xl font-black border-t pt-2">
-                    <span>Total</span>{" "}
-                    <span>${cartDetail.grandTotal.toFixed(2)}</span>
+                    <span>Total</span> <span>{peso_value(cartDetail.grandTotal.toFixed(2) - total_total_discount??0)}</span>
                 </div>
                 <div className="flex gap-2 pt-2">
                     <button
