@@ -3,7 +3,6 @@ import Input from "@/app/_components/input";
 import Modal from "@/app/_components/modal";
 import Select from "@/app/_components/select";
 import { setAlert } from "@/app/redux/app-slice";
-import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-product-thunk";
 import { get_pos_warehouse_stock_thunk } from "@/app/redux/pos/pos-thunk";
 import { add_new_stock_in_store_service } from "@/app/services/pos/pos-warehouse-service";
 import store from "@/app/store/store";

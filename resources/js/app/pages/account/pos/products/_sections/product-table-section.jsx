@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function ProductTableSection() {
     const { searchTerm, category, currentPage, products } = useSelector(
-        (store) => store.pos_products
+        (store) => store.pos
     );
     const dispatch = useDispatch();
 
@@ -111,10 +111,9 @@ export default function ProductTableSection() {
 
     return (
         <>
-            {/* Notice how incredibly clean this is now! */}
             <Table 
                 columns={columns} 
-                data={currentItems} // Using currentItems for pagination
+                data={currentItems} 
             />
         </>
     );

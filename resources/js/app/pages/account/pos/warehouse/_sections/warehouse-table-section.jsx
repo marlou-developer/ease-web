@@ -1,28 +1,33 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import moment from "moment";
 import Table from "@/app/_components/table";
+import peso_value from "@/app/lib/peso-value";
+import { Edit2, Trash2 } from "lucide-react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import StockingSection from "./stocking-section";
+// import StockingSection from "..."; // Make sure to import this if you use it!
 
-const WarehouseTableSection = () => {
-    const { products } = useSelector((store) => store.pos);
+export default function WarehouseTableSection() {
+    const { searchTerm, category, currentPage, products } = useSelector(
+        (store) => store.pos
+    );
+    const dispatch = useDispatch();
+    const itemsPerPage = 10;
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-    // Merged and unified status styles
-    const getStatusStyle = (status) => {
-        switch (status?.toLowerCase()) {
-            case "completed":
-            case "paid":
-                return "bg-emerald-100 text-emerald-700 border border-emerald-200";
-            case "pending":
-                return "bg-orange-100 text-orange-700 border border-orange-200";
-            case "received":
-                return "bg-sky-100 text-sky-700 border border-sky-200";
-            case "addition":
-                return "bg-blue-100 text-blue-700 border border-blue-200";
-            default:
-                return "bg-gray-100 text-gray-700 border border-gray-200";
-        }
-    };
+    const filteredProducts = products?.pos_warehouse?.pos_warehouse_stocks?.filter((p) => {
+        const matchesSearch = p?.product?.name
+            ?.toLowerCase()
+            ?.includes(searchTerm?.toLowerCase());
+        const matchesCat =
+            category === "All Categories" || p.category_id === category;
+        return matchesSearch && matchesCat;
+    });
+
+    const currentItems = filteredProducts?.slice(
+        indexOfFirstItem,
+        indexOfLastItem
+    );
 
     const columns = [
         {
@@ -32,7 +37,8 @@ const WarehouseTableSection = () => {
         {
             header: 'Products',
             accessor: 'product_name',
-            className: 'font-bold text-gray-700'
+            className: 'font-bold text-gray-700',
+            render: (row) => row.product?.name
         },
         {
             header: 'Stocks',
@@ -66,17 +72,12 @@ const WarehouseTableSection = () => {
 
     ];
 
-    console.log('products', products?.pos_warehouse?.pos_warehouse_stocks)
     return (
-        <div className="font-sans">
-            <Table columns={columns} data={products?.pos_warehouse?.pos_warehouse_stocks?.map(res => ({
-                ...res,
-                product_name: res.product.name,
-
-            }))} />
-        </div>
+        <>
+            <Table
+                columns={columns}
+                data={currentItems}
+            />
+        </>
     );
-};
-
-
-export default WarehouseTableSection;
+}

@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function ProductPaginationSection() {
+export default function WarehousePaginationSection() {
     const { searchTerm, category, currentPage, products } = useSelector(
         (store) => store.pos
     );
@@ -11,7 +11,7 @@ export default function ProductPaginationSection() {
     const itemsPerPage = 10;
 
     // Safety check just in case products is ever undefined
-    const safeProducts = products || [];
+    const safeProducts = products?.pos_warehouse?.pos_warehouse_stocks || [];
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;

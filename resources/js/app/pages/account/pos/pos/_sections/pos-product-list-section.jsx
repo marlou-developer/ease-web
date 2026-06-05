@@ -1,4 +1,4 @@
-import { setCart } from "@/app/redux/pos/pos-product-slice";
+import { setCart } from "@/app/redux/pos/pos-slice";
 import { Search } from "lucide-react";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 export default function POSProductListSection() {
     const [searchTerm, setSearchTerm] = useState("");
     const { cart = [], products = [] } = useSelector(
-        (store) => store.pos_products,
+        (store) => store.pos,
     );
     const dispatch = useDispatch();
 

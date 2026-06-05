@@ -7,6 +7,20 @@ export const posSlice = createSlice({
         purchases: [],
         products: [],
         customers: [],
+        categories: [],
+        searchTerm: "",
+        category: "All Categories",
+        currentPage: 1,
+        products: [],
+        amountPaid: 0,
+        cart: [],
+        cartDetail: {
+            tax: 0.06,
+            grandTotal: 0,
+            changeDue: 0,
+            subtotal: 0,
+        },
+        heldSales: [],
     },
     reducers: {
         setSuppliers: (state, action) => {
@@ -21,9 +35,41 @@ export const posSlice = createSlice({
         setCustomers: (state, action) => {
             state.customers = action.payload;
         },
+        setSearchTerm: (state, action) => {
+            state.searchTerm = action.payload;
+        },
+        setCategory: (state, action) => {
+            state.category = action.payload;
+        },
+        setCurrentPage: (state, action) => {
+            state.currentPage = action.payload;
+        },
+        setAmountPaid: (state, action) => {
+            state.amountPaid = action.payload;
+        },
+        setCart: (state, action) => {
+            state.cart = action.payload;
+        },
+        setCartDetail: (state, action) => {
+            state.cartDetail = action.payload;
+        },
+        setHeldSales: (state, action) => {
+            state.heldSales = action.payload;
+        },
     },
 });
 
-export const { setSuppliers, setPurchases, setCustomers, setProducts } =
-    posSlice.actions;
+export const {
+    setCart,
+    setCartDetail,
+    setHeldSales,
+    setSuppliers,
+    setPurchases,
+    setCustomers,
+    setProducts,
+    setSearchTerm,
+    setCategory,
+    setCurrentPage,
+    setAmountPaid,
+} = posSlice.actions;
 export default posSlice.reducer;

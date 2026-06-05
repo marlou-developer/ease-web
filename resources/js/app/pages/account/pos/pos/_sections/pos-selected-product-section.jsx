@@ -2,7 +2,7 @@ import {
     setAmountPaid,
     setCart,
     setHeldSales,
-} from "@/app/redux/pos/pos-product-slice";
+} from "@/app/redux/pos/pos-slice";
 import { Trash2 } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +10,7 @@ import NumberKeyboard from "./pos-keyboard-section";
 
 export default function POSSelectedProductSection() {
     const { cart, cartDetail, heldSales, amountPaid } = useSelector(
-        (store) => store.pos_products
+        (store) => store.pos
     );
     const dispatch = useDispatch();
     const holdSale = () => {

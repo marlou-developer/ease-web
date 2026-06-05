@@ -5,7 +5,7 @@ import ProductSearchSection from "./_sections/product-search-section";
 import ProductTableSection from "./_sections/product-table-section";
 import ProductPaginationSection from "./_sections/product-pagination-section";
 import store from "@/app/store/store";
-import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-product-thunk";
+import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-thunk";
 
 export default function Page() {
     const [loading, setLoading] = useState(true);
@@ -27,8 +27,8 @@ export default function Page() {
                     <ProductHeaderSection />
                     <ProductSearchSection />
                     {!loading && <>
-                    <ProductTableSection />
-                    <ProductPaginationSection />
+                        <ProductTableSection />
+                        <ProductPaginationSection />
                     </>}
                 </div>
             </div>

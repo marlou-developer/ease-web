@@ -10,7 +10,7 @@ import React from "react";
 import { FcSearch } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function ProductSearchSection() {
+export default function WarehouseSearchSection() {
     const { app } = useSelector(
         (store) => store.app
     );

@@ -4,7 +4,7 @@ import Input from "@/app/_components/input";
 import Modal from "@/app/_components/modal";
 import Select from "@/app/_components/select";
 import { setAlert } from "@/app/redux/app-slice";
-import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-product-thunk";
+import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-thunk";
 import {
     create_pos_product_service,
     create_pos_product_stocks_product_service,

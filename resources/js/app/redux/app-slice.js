@@ -14,6 +14,11 @@ export const appSlice = createSlice({
             message: "",
             open: false,
         },
+        categories: [],
+        searchTerm: "",
+        category: "All Categories",
+        currentPage: 1,
+        products:[],
     },
     reducers: {
         setUser: (state, action) => {
@@ -31,9 +36,18 @@ export const appSlice = createSlice({
         setAlert: (state, action) => {
             state.alert = action.payload;
         },
+        setCategories: (state, action) => {
+            state.categories = action.payload;
+        },
     },
 });
-export const { setUser, setSidebarOpen, setDesktopCollapsed, setAlert,setApp } =
-    appSlice.actions;
+export const {
+    setUser,
+    setSidebarOpen,
+    setDesktopCollapsed,
+    setAlert,
+    setApp,
+    setCategories,
+} = appSlice.actions;
 
 export default appSlice.reducer;

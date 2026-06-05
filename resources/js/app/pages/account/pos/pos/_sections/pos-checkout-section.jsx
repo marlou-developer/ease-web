@@ -6,15 +6,15 @@ import {
     setCart,
     setCartDetail,
     setHeldSales,
-} from "@/app/redux/pos/pos-product-slice";
+} from "@/app/redux/pos/pos-slice";
 import { create_pos_sales_service } from "@/app/services/pos/pos-sales-service";
 import Swal from "sweetalert2";
 import store from "@/app/store/store";
-import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-product-thunk";
+import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-thunk";
 
 export default function POSCheckout() {
     const { cartDetail, heldSales, cart, amountPaid, tax } = useSelector(
-        (store) => store.pos_products,
+        (store) => store.pos,
     );
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
