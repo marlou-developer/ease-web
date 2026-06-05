@@ -3,21 +3,21 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function ProductPaginationSection() {
-    const { searchTerm, category, currentPage, store_stocks } = useSelector(
+export default function CustomersPaginationSection() {
+    const { searchTerm, category, currentPage, customers } = useSelector(
         (store) => store.pos
     );
     const dispatch = useDispatch();
     const itemsPerPage = 10;
 
     // Safety check just in case products is ever undefined
-    const safeProducts = store_stocks || [];
+    const safeProducts = customers || [];
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
     const filteredProducts = safeProducts.filter((p) => {
-        const matchesSearch = p?.product?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase() || "");
+        const matchesSearch = p?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase() || "");
         const matchesCat = category === "All Categories" || p.category === category;
         return matchesSearch && matchesCat;
     });

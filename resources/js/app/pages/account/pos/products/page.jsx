@@ -8,17 +8,8 @@ import store from "@/app/store/store";
 import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-thunk";
 
 export default function Page() {
-    const [loading, setLoading] = useState(true);
     useEffect(() => {
-        async function get_data(params) {
-            try {
-                await store.dispatch(get_pos_product_stocks_thunk());
-                setLoading(false);
-            } catch (error) {
-                setLoading(false);
-            }
-        }
-        get_data();
+         store.dispatch(get_pos_product_stocks_thunk());
     }, []);
     return (
         <Layout>
@@ -26,10 +17,9 @@ export default function Page() {
                 <div className=" bg-white  overflow-hidden">
                     <ProductHeaderSection />
                     <ProductSearchSection />
-                    {!loading && <>
-                        <ProductTableSection />
-                        <ProductPaginationSection />
-                    </>}
+                    <ProductTableSection />
+                    <ProductPaginationSection />
+
                 </div>
             </div>
         </Layout>

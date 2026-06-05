@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const posSlice = createSlice({
     name: "app",
     initialState: {
+        loading: true,
         suppliers: [],
         purchases: [],
         products: [],
@@ -21,10 +22,17 @@ export const posSlice = createSlice({
             subtotal: 0,
         },
         heldSales: [],
+        store_stocks:[]
     },
     reducers: {
+        setStoreStocks: (state, action) => {
+            state.store_stocks = action.payload;
+        },
         setSuppliers: (state, action) => {
             state.suppliers = action.payload;
+        },
+        setLoading: (state, action) => {
+            state.loading = action.payload;
         },
         setPurchases: (state, action) => {
             state.purchases = action.payload;
@@ -61,6 +69,8 @@ export const posSlice = createSlice({
 
 export const {
     setCart,
+    setStoreStocks,
+    setLoading,
     setCartDetail,
     setHeldSales,
     setSuppliers,

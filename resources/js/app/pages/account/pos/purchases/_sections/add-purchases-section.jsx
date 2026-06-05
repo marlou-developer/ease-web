@@ -92,7 +92,7 @@ export default function AddPurchasesSection() {
                     setOpen(true);
                     reset();
                 }}
-                className="text-white border-white shadow-sm hover:bg-blue-500"
+                variant="primary"
                 outlined
             >
                 <div className="flex gap-2 items-center justify-center">

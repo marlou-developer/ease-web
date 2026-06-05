@@ -1,28 +1,37 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import moment from "moment";
 import Table from "@/app/_components/table";
+import peso_value from "@/app/lib/peso-value";
+import { Edit2, Trash2 } from "lucide-react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+// import StockingSection from "..."; // Make sure to import this if you use it!
 
-const CustomersTableSection = () => {
-    const { customers } = useSelector((store) => store.pos);
+export default function ProductTableSection() {
+    const { searchTerm, category, currentPage, customers } = useSelector(
+        (store) => store.pos
+    );
+    const dispatch = useDispatch();
 
-    // Merged and unified status styles
-    const getStatusStyle = (status) => {
-        switch (status?.toLowerCase()) {
-            case "completed":
-            case "paid":
-                return "bg-emerald-100 text-emerald-700 border border-emerald-200";
-            case "pending":
-                return "bg-orange-100 text-orange-700 border border-orange-200";
-            case "received":
-                return "bg-sky-100 text-sky-700 border border-sky-200";
-            case "addition":
-                return "bg-blue-100 text-blue-700 border border-blue-200";
-            default:
-                return "bg-gray-100 text-gray-700 border border-gray-200";
-        }
-    };
+    const itemsPerPage = 10;
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const filteredProducts = customers?.filter((p) => {
+        const matchesSearch = p?.name
+            ?.toLowerCase()
+            ?.includes(searchTerm.toLowerCase());
+        const matchesCat =
+            category === "All Categories" || p.category_id === category;
+        return matchesSearch && matchesCat;
+    });
 
+    const currentItems = filteredProducts?.slice(
+        indexOfFirstItem,
+        indexOfLastItem
+    );
+
+    const handleDelete = (name) => alert(`Delete ${name}?`);
+    const handleEdit = (name) => alert(`Edit ${name}?`);
+
+    // Define exactly how each column should look and behave
     const columns = [
         {
             header: 'Customer #',
@@ -61,13 +70,12 @@ const CustomersTableSection = () => {
 
     ];
 
-    console.log('customers', customers)
     return (
-        <div className="font-sans">
-            <Table columns={columns} data={customers} />
-        </div>
+        <>
+            <Table
+                columns={columns}
+                data={currentItems}
+            />
+        </>
     );
-};
-
-
-export default CustomersTableSection;
+}

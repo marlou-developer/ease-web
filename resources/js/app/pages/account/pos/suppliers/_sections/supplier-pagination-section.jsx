@@ -3,26 +3,26 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function ProductPaginationSection() {
-    const { searchTerm, category, currentPage, store_stocks } = useSelector(
+export default function SupplierPaginationSection() {
+    const { searchTerm, category, currentPage, suppliers } = useSelector(
         (store) => store.pos
     );
     const dispatch = useDispatch();
     const itemsPerPage = 10;
 
-    // Safety check just in case products is ever undefined
-    const safeProducts = store_stocks || [];
+    // Safety check just in case suppliers is ever undefined
+    const safeSuppliers = suppliers || [];
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-    const filteredProducts = safeProducts.filter((p) => {
-        const matchesSearch = p?.product?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase() || "");
+    const filteredSuppliers = safeSuppliers.filter((p) => {
+        const matchesSearch = p?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase() || "");
         const matchesCat = category === "All Categories" || p.category === category;
         return matchesSearch && matchesCat;
     });
 
-    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredSuppliers.length / itemsPerPage);
 
     // --- Dynamic Page Numbers Logic ---
     const getPageNumbers = () => {
@@ -50,8 +50,8 @@ export default function ProductPaginationSection() {
         return pages;
     };
 
-    // Don't render pagination if there are no products to show
-    if (filteredProducts.length === 0) return null;
+    // Don't render pagination if there are no suppliers to show
+    if (filteredSuppliers.length === 0) return null;
 
     return (
         <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -59,11 +59,11 @@ export default function ProductPaginationSection() {
                 Showing{" "}
                 <span className="font-bold">{indexOfFirstItem + 1}</span> to{" "}
                 <span className="font-bold">
-                    {Math.min(indexOfLastItem, filteredProducts.length)}
+                    {Math.min(indexOfLastItem, filteredSuppliers.length)}
                 </span>{" "}
                 of{" "}
-                <span className="font-bold">{filteredProducts.length}</span>{" "}
-                products
+                <span className="font-bold">{filteredSuppliers.length}</span>{" "}
+                suppliers
             </p>
 
             <div className="flex items-center gap-1">

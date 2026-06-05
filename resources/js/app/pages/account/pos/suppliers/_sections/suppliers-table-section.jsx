@@ -1,16 +1,37 @@
-import React, { useState } from "react";
-import {
-    Edit2,
-    Trash2,
-} from "lucide-react";
-import { useSelector } from "react-redux";
-import Table from "@/app/_components/table"; // <-- Import the reusable Table
+import Table from "@/app/_components/table";
+import peso_value from "@/app/lib/peso-value";
+import { Edit2, Trash2 } from "lucide-react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+// import StockingSection from "..."; // Make sure to import this if you use it!
 
-const SuppliersTableSection = () => {
-    const { suppliers } = useSelector((store) => store.pos);
-    console.log('suppliers', suppliers);
+export default function ProductTableSection() {
+    const { searchTerm, category, currentPage, suppliers } = useSelector(
+        (store) => store.pos
+    );
+    const dispatch = useDispatch();
 
-    // Define the columns for the reusable table
+    const itemsPerPage = 10;
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const filteredProducts = suppliers?.filter((p) => {
+        const matchesSearch = p?.name
+            ?.toLowerCase()
+            ?.includes(searchTerm.toLowerCase());
+        const matchesCat =
+            category === "All Categories" || p.category_id === category;
+        return matchesSearch && matchesCat;
+    });
+
+    const currentItems = filteredProducts?.slice(
+        indexOfFirstItem,
+        indexOfLastItem
+    );
+
+    const handleDelete = (name) => alert(`Delete ${name}?`);
+    const handleEdit = (name) => alert(`Edit ${name}?`);
+
+    // Define exactly how each column should look and behave
     const columns = [
         {
             header: 'Name',
@@ -61,14 +82,14 @@ const SuppliersTableSection = () => {
                 </div>
             )
         }
-    ];
+    ];;
 
     return (
-        <div>
-            {/* The clean, reusable Table component */}
-            <Table columns={columns} data={suppliers} />
-        </div>
+        <>
+            <Table
+                columns={columns}
+                data={currentItems}
+            />
+        </>
     );
-};
-
-export default SuppliersTableSection;
+}

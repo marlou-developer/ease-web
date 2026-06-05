@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import StockingSection from "..."; // Make sure to import this if you use it!
 
 export default function ProductTableSection() {
-    const { searchTerm, category, currentPage, products } = useSelector(
+    const { searchTerm, category, currentPage, store_stocks } = useSelector(
         (store) => store.pos
     );
     const dispatch = useDispatch();
@@ -14,8 +14,7 @@ export default function ProductTableSection() {
     const itemsPerPage = 10;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    const filteredProducts = products.filter((p) => {
+    const filteredProducts = store_stocks?.filter((p) => {
         const matchesSearch = p?.product?.name
             ?.toLowerCase()
             ?.includes(searchTerm.toLowerCase());
@@ -24,7 +23,7 @@ export default function ProductTableSection() {
         return matchesSearch && matchesCat;
     });
 
-    const currentItems = filteredProducts.slice(
+    const currentItems = filteredProducts?.slice(
         indexOfFirstItem,
         indexOfLastItem
     );

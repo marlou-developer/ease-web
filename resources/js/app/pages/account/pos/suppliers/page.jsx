@@ -3,6 +3,9 @@ import Layout from '../layout'
 import SuppliersTableSection from './_sections/suppliers-table-section'
 import store from '@/app/store/store'
 import { get_pos_suppliers_thunk } from '@/app/redux/pos/pos-thunk'
+import SupplierHeaderSection from './_sections/supplier-header-section'
+import SupplierSearchSection from './_sections/product-search-section'
+import SupplierPaginationSection from './_sections/supplier-pagination-section'
 
 export default function Page() {
 
@@ -12,7 +15,10 @@ export default function Page() {
     }, [])
     return (
         <Layout>
+            <SupplierHeaderSection />
+            <SupplierSearchSection />
             <SuppliersTableSection />
+            <SupplierPaginationSection />
         </Layout>
     )
 }

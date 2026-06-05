@@ -7,38 +7,52 @@ import { get_pos_product_stocks_service } from "@/app/services/pos/pos-product-s
 
 export function get_pos_suppliers_thunk() {
     return async function (dispatch, getState) {
+        dispatch(posSlice.actions.setSearchTerm(""));
+        dispatch(posSlice.actions.setLoading(true));
         const res = await get_pos_suppliers_service();
         dispatch(posSlice.actions.setSuppliers(res.data));
+        dispatch(posSlice.actions.setLoading(false));
     };
 }
 
 export function get_pos_purchases_thunk() {
     return async function (dispatch, getState) {
+        dispatch(posSlice.actions.setLoading(true));
         const res = await get_pos_purchases_service();
+        dispatch(posSlice.actions.setSearchTerm(""));
         dispatch(posSlice.actions.setPurchases(res?.purchases));
         dispatch(posSlice.actions.setSuppliers(res?.suppliers));
         dispatch(posSlice.actions.setProducts(res?.products));
+        dispatch(posSlice.actions.setLoading(false));
     };
 }
 
 export function get_pos_warehouse_stock_thunk() {
     return async function (dispatch, getState) {
+        dispatch(posSlice.actions.setLoading(true));
         const res = await get_pos_warehouse_stock_service();
+        dispatch(posSlice.actions.setSearchTerm(""));
         dispatch(posSlice.actions.setProducts(res.data));
+        dispatch(posSlice.actions.setLoading(false));
     };
 }
 
 export function get_pos_customer_thunk() {
     return async function (dispatch, getState) {
+        dispatch(posSlice.actions.setSearchTerm(""));
+        dispatch(posSlice.actions.setLoading(true));
         const res = await get_pos_customer_service();
         dispatch(posSlice.actions.setCustomers(res.data));
+        dispatch(posSlice.actions.setLoading(false));
     };
 }
 
-
 export function get_pos_product_stocks_thunk() {
     return async function (dispatch, getState) {
+        dispatch(posSlice.actions.setLoading(true));
         const res = await get_pos_product_stocks_service();
-        dispatch(posSlice.actions.setProducts(res.data));
+        dispatch(posSlice.actions.setSearchTerm(""));
+        dispatch(posSlice.actions.setStoreStocks(res.data));
+        dispatch(posSlice.actions.setLoading(false));
     };
 }
