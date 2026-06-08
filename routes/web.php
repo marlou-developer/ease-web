@@ -77,8 +77,13 @@ Route::prefix('account')->middleware('auth')->group(function () {
         Route::get('/cash_register', function () {
             return Inertia::render('account/pos/cash_register/page');
         });
-        Route::get('/warehouse', function () {
-            return Inertia::render('account/pos/warehouse/page');
+        Route::prefix('warehouse')->group(function () {
+            Route::get('/', function () {
+                return Inertia::render('account/pos/warehouse/page');
+            });
+            Route::get('/categories', function () {
+                return Inertia::render('account/pos/warehouse/categories/page');
+            });
         });
         Route::get('/reports', function () {
             return Inertia::render('account/pos/reports/page');

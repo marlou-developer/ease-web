@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function ProductTableSection() {
     const { searchTerm, category, currentPage, customers } = useSelector(
-        (store) => store.pos
+        (store) => store.pos,
     );
     const dispatch = useDispatch();
 
@@ -25,7 +25,7 @@ export default function ProductTableSection() {
 
     const currentItems = filteredProducts?.slice(
         indexOfFirstItem,
-        indexOfLastItem
+        indexOfLastItem,
     );
 
     const handleDelete = (name) => alert(`Delete ${name}?`);
@@ -34,28 +34,33 @@ export default function ProductTableSection() {
     // Define exactly how each column should look and behave
     const columns = [
         {
-            header: 'Customer #',
-            accessor: 'id'
+            header: "Customer #",
+            accessor: "id",
         },
         {
-            header: 'Customers',
-            accessor: 'name',
-            className: 'font-bold text-gray-700'
+            header: "Customers",
+            accessor: "name",
+            className: "font-bold text-gray-700",
         },
         {
-            header: 'Email',
-            accessor: 'email',
-            className: 'font-bold text-gray-700'
+            header: "Email",
+            accessor: "email",
+            className: "font-bold text-gray-700",
         },
         {
-            header: 'Contact',
-            accessor: 'phone',
-            className: 'font-bold text-gray-700'
+            header: "Contact",
+            accessor: "phone",
+            className: "font-bold text-gray-700",
         },
         {
-            header: 'Address',
-            accessor: 'address',
-            className: 'font-bold text-gray-700'
+            header: "Address",
+            accessor: "address",
+            className: "font-bold text-gray-700",
+        },
+        {
+            header: "Actions",
+            accessor: "actions",
+            className: "font-bold text-gray-700",
         },
         // {
         //     header: 'Status',
@@ -67,15 +72,11 @@ export default function ProductTableSection() {
         //         </span>
         //     )
         // },
-
     ];
 
     return (
         <>
-            <Table
-                columns={columns}
-                data={currentItems}
-            />
+            <Table columns={columns} data={currentItems} />
         </>
     );
 }

@@ -9,11 +9,10 @@ import { Search } from "lucide-react";
 import React from "react";
 import { FcSearch } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
+import ViewCategoriesSection from "./view-categories-section";
 
 export default function WarehouseSearchSection() {
-    const { app } = useSelector(
-        (store) => store.app
-    );
+    const { app } = useSelector((store) => store.app);
     const dispatch = useDispatch();
     return (
         <>
@@ -26,22 +25,26 @@ export default function WarehouseSearchSection() {
                         }}
                         name="categories"
                         label="Select Categories"
-                        options={app?.categories?.map((product) => ({
-                            value: product.id,
-                            label: product.name,
-                        })) || []}
+                        options={
+                            app?.categories?.map((product) => ({
+                                value: product.id,
+                                label: product.name,
+                            })) || []
+                        }
                     />
+                    <button>
+                        <ViewCategoriesSection />
+                    </button>
                 </div>
                 <div className=" flex-1">
                     <Input
-                        icon={<FcSearch
-                            className="text-2xl"
-                        />}
+                        icon={<FcSearch className="text-2xl" />}
                         onChange={(e) => {
                             dispatch(setSearchTerm(e.target.value));
                             dispatch(setCurrentPage(1));
                         }}
-                        label="Search products..." />
+                        label="Search products..."
+                    />
                 </div>
             </div>
         </>

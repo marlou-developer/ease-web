@@ -30,22 +30,22 @@ export default function CreateCustomerSection() {
 
     const onSubmit = async (formData) => {
         try {
-            create_pos_customer_service(formData)
-            await store.dispatch(get_pos_customer_thunk())
+            create_pos_customer_service(formData);
+            await store.dispatch(get_pos_customer_thunk());
             setOpen(false);
             reset();
             dispatch(
                 setAlert({
                     type: "success",
                     title: "Customer created successfully!",
-                })
+                }),
             );
         } catch (error) {
             dispatch(
                 setAlert({
                     type: "danger",
                     title: "Failed to create customer.",
-                })
+                }),
             );
             console.error("Error creating customer:", error);
         }
@@ -82,7 +82,9 @@ export default function CreateCustomerSection() {
                             label="Customer Name"
                             type="text"
                             placeholder="John Doe"
-                            {...register("name", { required: "Name is required" })}
+                            {...register("name", {
+                                required: "Name is required",
+                            })}
                             error={errors?.name?.message}
                         />
                         <Input
@@ -94,8 +96,9 @@ export default function CreateCustomerSection() {
                                 pattern: {
                                     // Validates both local (09XXXXXXXXX) and international (+639XXXXXXXXX) formats
                                     value: /^(09|\+639)\d{9}$/,
-                                    message: "Invalid format. Use 09171234567 or +639171234567"
-                                }
+                                    message:
+                                        "Invalid format. Use 09171234567 or +639171234567",
+                                },
                             })}
                             error={errors?.phone?.message}
                         />

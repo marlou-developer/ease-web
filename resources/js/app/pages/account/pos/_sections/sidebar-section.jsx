@@ -19,8 +19,6 @@ import {
 import Tooltip from "@/app/_components/tooltip";
 import { Link } from "@inertiajs/react";
 
-
-
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
@@ -29,15 +27,55 @@ export default function SidebarSection() {
     const dispatch = useDispatch();
     const path = window.location.pathname.split("/")[3];
     const navigation = [
-        { name: "Dashboard", href: "/account/pos/dashboard", icon: FcDataSheet, current: path == "dashboard" },
-        { name: "POS", href: "/account/pos/pos", icon: FcSelfServiceKiosk, current: path == "pos" },
-        { name: "Sales", href: "/account/pos/sales", icon: FcSalesPerformance, current: path == "sales" },
-        { name: "Store Stocks", href: "/account/pos/products", icon: FcShop, current: path == "products" },
-        { name: "Warehouse Stocks", href: "/account/pos/warehouse", icon: FcDeployment, current: path == "warehouse" },
-        { name: "Purchases", href: "/account/pos/purchases", icon: FcDonate, current: path == "purchases" },
+        {
+            name: "Dashboard",
+            href: "/account/pos/dashboard",
+            icon: FcDataSheet,
+            current: path == "dashboard",
+        },
+        {
+            name: "POS",
+            href: "/account/pos/pos",
+            icon: FcSelfServiceKiosk,
+            current: path == "pos",
+        },
+        {
+            name: "Sales",
+            href: "/account/pos/sales",
+            icon: FcSalesPerformance,
+            current: path == "sales",
+        },
+        {
+            name: "Store Stocks",
+            href: "/account/pos/products",
+            icon: FcShop,
+            current: path == "products",
+        },
+        {
+            name: "Warehouse Stocks",
+            href: "/account/pos/warehouse",
+            icon: FcDeployment,
+            current: path == "warehouse",
+        },
+        {
+            name: "Purchases",
+            href: "/account/pos/purchases",
+            icon: FcDonate,
+            current: path == "purchases",
+        },
         // { name: "Stock Movements", href: "/account/pos/stock_movements", icon: FcFeedIn, current: path == "stock_movements" },
-        { name: "Suppliers", href: "/account/pos/suppliers", icon: FcShipped, current: path == "suppliers" },
-        { name: "Customers", href: "/account/pos/customers", icon: FcBusinesswoman, current: path == "customers" },
+        {
+            name: "Suppliers",
+            href: "/account/pos/suppliers",
+            icon: FcShipped,
+            current: path == "suppliers",
+        },
+        {
+            name: "Customers",
+            href: "/account/pos/customers",
+            icon: FcBusinesswoman,
+            current: path == "customers",
+        },
         // { name: "Cash Register", href: "/account/pos/cash_register", icon: FcSalesPerformance, current: path == "cash_register" },
         // { name: "Reports", href: "/account/pos/reports", icon: FcPositiveDynamic, current: path == "reports" },
         // { name: "Settings", href: "/account/pos/settings", icon: FcSettings, current: path == "settings" },
@@ -115,7 +153,7 @@ export default function SidebarSection() {
                                                             item.current
                                                                 ? "bg-gray-50 text-indigo-600 "
                                                                 : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600 ",
-                                                            "group flex gap-x-3 rounded-md p-2 text-sm font-semibold"
+                                                            "group flex gap-x-3 rounded-md p-2 text-sm font-semibold",
                                                         )}
                                                     >
                                                         <item.icon
@@ -124,7 +162,7 @@ export default function SidebarSection() {
                                                                 item.current
                                                                     ? "text-indigo-600"
                                                                     : "text-gray-400 group-hover:text-indigo-600 ",
-                                                                "w-6 h-6 shrink-0"
+                                                                "w-6 h-6 shrink-0",
                                                             )}
                                                         />
                                                         {item.name}
@@ -165,7 +203,7 @@ export default function SidebarSection() {
                     <nav className="flex-1 overflow-y-auto p-2">
                         <ul className="space-y-1">
                             {navigation.map((item, i) => (
-                                <li key={i}  >
+                                <li key={i}>
                                     <Tooltip
                                         position="right"
                                         title={item.name}
@@ -178,7 +216,7 @@ export default function SidebarSection() {
                                                 item.current
                                                     ? "bg-blue-700 text-white "
                                                     : "text-gray-700 hover:text-blue-600 hover:bg-blue-200 ",
-                                                "flex items-center py-3 gap-x-3 rounded-md p-2 w-full text-sm font-semibold"
+                                                "flex items-center py-3 gap-x-3 rounded-md p-2 w-full text-sm font-semibold",
                                             )}
                                         >
                                             <div className="flex gap-3 items-start justify-start w-full">
