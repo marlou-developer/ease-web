@@ -1,6 +1,7 @@
 import Button from "@/app/_components/button";
 import Input from "@/app/_components/input";
 import Modal from "@/app/_components/modal";
+import { create_pos_category_service } from "@/app/services/pos/pos-categories-service";
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -18,35 +19,35 @@ export default function CreateCategorySection() {
     } = useForm({
         defaultValues: {
             name: "",
-        },
+        },  
     });
 
     const onSubmit = async (data) => {
-        // try {
-        //     const formData = new FormData();
-        //     await create_pos_product_stocks_product_service(formData, {
-        //         headers: { "Content-Type": "multipart/form-data" },
-        //     });
-        //     await store.dispatch(get_pos_product_stocks_thunk());
-        //     await setOpen(false);
-        //     await reset();
-        //     dispatch(
-        //         setAlert({
-        //             type: "success",
-        //             title: "Product Created Successfully!",
-        //         }),
-        //     );
-        //     console.log("Product created successfully!");
-        // } catch (error) {
-        //     setOpen(false);
-        //     dispatch(
-        //         setAlert({
-        //             type: "danger",
-        //             title: "Product Created Unsuccessful!",
-        //         }),
-        //     );
-        //     console.error("Error creating product:", error);
-        // }
+        try {
+            const formData = new FormData();
+            await create_pos_category_service(formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            await store.dispatch(get_pos_product_stocks_thunk());
+            await setOpen(false);
+            await reset();
+            dispatch(
+                setAlert({  
+                    type: "success",
+                    title: "Category Created Successfully!",
+                }),
+            );
+            console.log("Category created successfully!");
+        } catch (error) {
+            setOpen(false);
+            dispatch(
+                setAlert({
+                    type: "danger",
+                    title: "Category Created Unsuccessful!",
+                }),
+            );
+            console.error("Error creating category:", error);
+        }
     };
 
     return (
