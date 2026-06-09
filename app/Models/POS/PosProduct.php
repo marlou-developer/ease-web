@@ -19,14 +19,14 @@ class PosProduct extends Model
     ];
 
 
-    public function category():HasOne
+    public function category(): HasOne
     {
-        return $this->hasOne(PosCategory::class,'id','category_id');
+        return $this->hasOne(PosCategory::class, 'id', 'category_id');
     }
 
-    public function unit()
+    public function unit(): HasOne
     {
-        return $this->belongsTo(PosUnit::class);
+        return $this->hasOne(PosUnit::class, 'id', 'unit_id');
     }
 
     public function stocks()

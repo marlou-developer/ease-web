@@ -5,18 +5,15 @@ import Modal from "@/app/_components/modal";
 import Select from "@/app/_components/select";
 import { setAlert } from "@/app/redux/app-slice";
 import { get_pos_warehouse_stock_thunk } from "@/app/redux/pos/pos-thunk";
-import {
-    create_pos_product_service,
-    create_pos_product_stocks_product_service,
-} from "@/app/services/pos/pos-product-service";
+import { edit_pos_warehouse_stocks_product_service } from "@/app/services/pos/pos-warehouse-service";
 import store from "@/app/store/store";
-import { Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function ProductCreateSection() {
-    const { categories } = useSelector(
+export default function EditStockSection({ props_data }) {
+    const { categories, units } = useSelector(
         (store) => store.pos
     );
     const [open, setOpen] = useState(false);
@@ -26,19 +23,26 @@ export default function ProductCreateSection() {
         handleSubmit,
         reset,
         control,
+        watch,
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
-            barcode: "",
-            name: "",
-            category_id: "",
-            unit_id: "",
-            cost_price: "",
-            stocks: "",
+            id: props_data?.id,
+            subscriber_id: props_data?.subscriber_id || "",
+            pos_product_id: props_data?.pos_product_id || "",
+            pos_warehouse_id: props_data?.pos_warehouse_id || "",
+            barcode: props_data?.product?.barcode || "",
+            name: props_data?.product?.name || "",
+            category_id: props_data?.product?.category_id || "",
+            unit_id: props_data?.product?.unit_id || "",
+            cost_price: props_data?.cost_price || "",
+            stocks: props_data?.stocks || 0,
             image: "",
+            selling_price: props_data?.selling_price || 0
         },
     });
-
+    console.log('props_data', props_data?.category_id)
+    const watchValues = watch()
     const onSubmit = async (data) => {
         try {
             const formData = new FormData();
@@ -54,7 +58,7 @@ export default function ProductCreateSection() {
                 formData.append("image", image[0]);
             }
 
-            await create_pos_product_stocks_product_service(formData, {
+            await edit_pos_warehouse_stocks_product_service(props_data?.id, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             await store.dispatch(get_pos_warehouse_stock_thunk());
@@ -78,7 +82,7 @@ export default function ProductCreateSection() {
             console.error("Error creating product:", error);
         }
     };
-    
+
     return (
         <>
             <Button
@@ -86,11 +90,11 @@ export default function ProductCreateSection() {
                     setOpen(true);
                     reset();
                 }}
-                variant="primary"
+                variant="purple"
                 outlined
             >
                 <div className="flex gap-2 items-center justify-center">
-                    <Plus size={18} />Product Registration
+                    <Pencil size={18} />Edit
                 </div>
             </Button>
             <Modal
@@ -107,8 +111,9 @@ export default function ProductCreateSection() {
                         <Input
                             label="Barcode"
                             name="barcode"
+                            disabled={watchValues.barcode}
                             {...register("barcode", {
-                                required: "Barcode is required",
+                                required: false,
                             })}
                             error={errors.barcode}
                         />
@@ -117,6 +122,7 @@ export default function ProductCreateSection() {
                         <Input
                             label="Product Name"
                             name="name"
+                            disabled
                             {...register("name", {
                                 required: "Name is required",
                             })}
@@ -133,12 +139,13 @@ export default function ProductCreateSection() {
                             render={({ field }) => (
                                 <Select
                                     label="Select Category"
+                                    disabled={watchValues.category_id}
                                     options={categories?.map(res => ({
                                         label: res.name,
                                         value: res.id
                                     }))}
                                     error={errors.category_id}
-                                    {...field} 
+                                    {...field}
                                 />
                             )}
                         />
@@ -150,10 +157,11 @@ export default function ProductCreateSection() {
                             render={({ field }) => (
                                 <Select
                                     label="Select Unit"
-                                    options={[
-                                        { value: 1, label: "Hello" },
-                                        { value: 2, label: "World" },
-                                    ]}
+                                    disabled={watchValues.unit_id}
+                                    options={units?.map(res => ({
+                                        label: res.name,
+                                        value: res.id
+                                    }))}
                                     error={errors.unit_id}
                                     {...field} // passes value & onChange
                                 />
@@ -173,6 +181,18 @@ export default function ProductCreateSection() {
                             error={errors.cost_price}
                         />
 
+                        <Input
+                            label="Selling Price"
+                            type="number"
+                            step="0.01"
+                            {...register("selling_price", {
+                                required: "Cost price is required",
+                            })}
+                            name="selling_price"
+                            error={errors.selling_price}
+                        />
+
+
                         {/* Stocks */}
                         <Input
                             label="Stocks"
@@ -187,7 +207,7 @@ export default function ProductCreateSection() {
                     </div>
 
                     {/* Image */}
-                    <div className="flex w-full">
+                    {/* <div className="flex w-full">
                         <ImageUpload
                             label="Upload Image"
                             {...register("image", {
@@ -204,7 +224,7 @@ export default function ProductCreateSection() {
                             })}
                             error={errors.image}
                         />
-                    </div>
+                    </div> */}
 
                     {/* Actions */}
                     <div className="col-span-2 flex justify-end gap-2 mt-4">

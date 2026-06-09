@@ -29,6 +29,8 @@ export function get_pos_warehouse_stock_thunk() {
         const res = await get_pos_warehouse_stock_service();
         dispatch(posSlice.actions.setSearchTerm(""));
         dispatch(posSlice.actions.setProducts(res.data));
+        dispatch(posSlice.actions.setUnits(res.units));
+        dispatch(posSlice.actions.setCategories(res.categories));
     };
 }
 

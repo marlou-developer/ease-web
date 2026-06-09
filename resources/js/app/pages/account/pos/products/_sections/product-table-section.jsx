@@ -60,13 +60,13 @@ export default function ProductTableSection() {
             header: 'Cost Price',
             accessor: 'cost_price',
             className: 'font-semibold text-slate-900',
-            render: (row) => peso_value(row?.cost_price)
+            render: (row) => peso_value(row?.cost_price??0)
         },
         {
             header: 'Selling Price',
-            accessor: 'sell_price',
+            accessor: 'selling_price',
             className: 'font-semibold text-slate-900',
-            render: (row) => peso_value(row?.sell_price)
+            render: (row) => peso_value(row?.selling_price??0)
         },
         {
             header: 'Stocks',
@@ -75,15 +75,15 @@ export default function ProductTableSection() {
         },
         {
             header: 'Category',
-            accessor: 'category_id',
+            accessor: 'name',
             className: 'text-sm',
-            render: (row) => row.product?.category_id
+            render: (row) => row.product?.category?.name
         },
         {
             header: 'Unit',
             accessor: 'unit_id',
             className: 'text-sm',
-            render: (row) => row.product?.unit_id
+            render: (row) => row.product?.unit?.name
         },
         {
             header: 'Actions',

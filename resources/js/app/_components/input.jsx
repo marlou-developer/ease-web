@@ -6,6 +6,9 @@ const Input = forwardRef(({ label, id, type = "text", error, icon, required = fa
     // Determine if we should show the actual characters or dots for passwords
     const inputType = type === "password" && showPassword ? "text" : type;
 
+    // Safely extract the error string if an object (like from react-hook-form) is passed
+    const errorMessage = typeof error === 'object' && error !== null ? error.message : error;
+
     return (
         <div className="w-full">
             <div className="relative">
@@ -75,35 +78,17 @@ const Input = forwardRef(({ label, id, type = "text", error, icon, required = fa
                         disabled={disabled}
                         onClick={() => setShowPassword(!showPassword)}
                         className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors focus:outline-none ${disabled
-                                ? "text-gray-400 opacity-50 cursor-not-allowed"
-                                : "text-gray-400 hover:text-gray-600"
+                            ? "text-gray-400 opacity-50 cursor-not-allowed"
+                            : "text-gray-400 hover:text-gray-600"
                             }`}
                     >
                         {showPassword ? (
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
                                 <line x1="1" y1="1" x2="23" y2="23"></line>
                             </svg>
                         ) : (
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                             </svg>
@@ -113,21 +98,13 @@ const Input = forwardRef(({ label, id, type = "text", error, icon, required = fa
             </div>
 
             {/* Error Message */}
-            {error && !disabled && (
+            {errorMessage && !disabled && (
                 <p className="mt-1.5 text-xs text-red-500 font-medium flex items-center gap-1">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-3 w-3"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                    >
-                        <path
-                            fillRule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                            clipRule="evenodd"
-                        />
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
-                    {error}
+                    {/* ✅ Rendering the safely extracted string */}
+                    {errorMessage}
                 </p>
             )}
         </div>

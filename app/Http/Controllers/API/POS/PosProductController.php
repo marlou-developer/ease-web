@@ -76,7 +76,7 @@ class PosProductController extends Controller
         //         [
         //             'stocks' => 0,
         //             'cost_price' => $value->cost ?? $value->cost == "NULL" ? 0.00 : 0.00,
-        //             'sell_price' => $value->srp ?? $value->cost == "NULL" ? 0.00 : 0.00,
+        //             'selling_price' => $value->srp ?? $value->cost == "NULL" ? 0.00 : 0.00,
         //             'discount' => 0,
         //         ]
         //     );
@@ -155,7 +155,7 @@ class PosProductController extends Controller
             'category_id' => 'nullable|exists:pos_categories,id',
             'unit_id' => 'nullable|exists:pos_units,id',
             'cost_price' => 'sometimes|required|numeric|min:0',
-            'sell_price' => 'sometimes|required|numeric|min:0',
+            'selling_price' => 'sometimes|required|numeric|min:0',
             'reorder_level' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|string',
@@ -167,7 +167,7 @@ class PosProductController extends Controller
             'category_id',
             'unit_id',
             'cost_price',
-            'sell_price',
+            'selling_price',
             'reorder_level',
             'description',
             'image'

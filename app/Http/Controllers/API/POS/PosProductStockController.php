@@ -36,10 +36,10 @@ class PosProductStockController extends Controller
             'pos_product_id' => $warehouse_stock->pos_product_id,
             'subscriber_id'  => Auth::id(),
             'cost_price'       => $request->cost_price,
-            'sell_price'       => $request->sell_price,
+            'selling_price'       => $request->selling_price,
         ], ['stocks' => 0]);
         $store_stock->stocks += $request->stocks;
-        $store_stock->sell_price = $request->sell_price;
+        $store_stock->selling_price = $request->selling_price;
         $store_stock->save();
         return response()->json([
             'success' => true,
@@ -118,7 +118,7 @@ class PosProductStockController extends Controller
                 'subscriber_id' => $auth->id,
                 'stocks' => $request->stocks,
                 'cost_price' => 0,
-                'sell_price' => 0,
+                'selling_price' => 0,
                 'discount' => 0,
             ]);
             // $stock_movement = PosStockMovement::where('pos_product_stock_id', $pos_product_stock->id)->first();

@@ -16,7 +16,7 @@ class PosProductStock extends Model
         'subscriber_id',
         'stocks',
         'cost_price',
-        'sell_price',
+        'selling_price',
         'discount',
         'discounted_price'
     ];
@@ -24,6 +24,6 @@ class PosProductStock extends Model
 
     public function product(): HasOne
     {
-        return $this->hasOne(PosProduct::class, 'id', 'pos_product_id')->with('category');
+        return $this->hasOne(PosProduct::class, 'id', 'pos_product_id')->with('category','unit');
     }
 }

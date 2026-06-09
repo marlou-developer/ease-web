@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('subscriber_id')->constrained('pos_subscribers');
             $table->bigInteger('stocks')->default(0);
             $table->decimal('cost_price', 10, 2)->default(0);
-            $table->decimal('sell_price', 10, 2)->default(0);
+            $table->decimal('selling_price', 10, 2)->default(0);
             $table->decimal('discount', 10, 2)->default(0);
             $table->timestamps();
         });
