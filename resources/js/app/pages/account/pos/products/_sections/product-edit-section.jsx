@@ -120,6 +120,7 @@ export default function ProductEditSection({ props_data }) {
                         <Input
                             label="Cost Price"
                             type="number"
+                            disabled
                             step="0.01"
                             {...register("cost_price", {
                                 required: "Cost price is required",
@@ -135,6 +136,7 @@ export default function ProductEditSection({ props_data }) {
                             label="Selling Price"
                             type="number"
                             step="0.01"
+                            disabled
                             {...register("selling_price", {
                                 required: "Selling price is required",
                                 validate: (value, formValues) =>

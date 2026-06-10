@@ -17,6 +17,7 @@ export default function POSProductListSection() {
             name: res.product?.name ?? "Unknown",
             stocks: res.stocks ?? "Unknown",
             price: Number(res.selling_price).toFixed(2),
+            srp: Number(res.selling_price).toFixed(2),
             category: res.product?.category?.name ?? "N/A",
             img: res.product.image,
             cost_price: res.cost_price,
