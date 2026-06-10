@@ -161,19 +161,15 @@ class PosProductStockController extends Controller
     /**
      * Update a product stock.
      */
-    public function update(Request $request, PosProductStock $posProductStock)
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'quantity' => 'sometimes|required|numeric|min:0',
-            'location' => 'nullable|string|max:255',
-        ]);
-
-        $posProductStock->update($request->only('quantity', 'location'));
-
+        $pos_product_stock =  PosProductStock::where('id', $id)->first();
+        if ($pos_product_stock) {
+            $pos_product_stock->update($request->all());
+        }
         return response()->json([
             'success' => true,
             'message' => 'Product stock updated successfully',
-            'data' => $posProductStock
         ]);
     }
 

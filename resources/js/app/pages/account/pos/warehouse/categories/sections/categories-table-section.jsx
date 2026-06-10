@@ -5,7 +5,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function CategoryTableSection() {
-    const { searchTerm, category, currentPage, products } = useSelector(
+    const { searchTerm, category, currentPage, products,categories } = useSelector(
         (store) => store.pos,
     );
     const dispatch = useDispatch();
@@ -13,27 +13,20 @@ export default function CategoryTableSection() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-    const filteredProducts =
-        products?.pos_warehouse?.pos_warehouse_stocks?.filter((p) => {
-            const matchesSearch = p?.product?.name
-                ?.toLowerCase()
-                ?.includes(searchTerm?.toLowerCase());
-            const matchesCat =
-                category === "All Categories" || p.category_id === category;
-            return matchesSearch && matchesCat;
-        });
+    const filteredProducts =categories;
 
     const currentItems = filteredProducts?.slice(
         indexOfFirstItem,
         indexOfLastItem,
     );
+    console.log('categories',categories)
 
     const columns = [
         {
             header: "Category",
             accessor: "name",
             className: "font-bold text-gray-700",
-            render: (row) => row.product?.name,
+            render: (row) => row?.name,
         },
         // {
         //     header: "Stocks",

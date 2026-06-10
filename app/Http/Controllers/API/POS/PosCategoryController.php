@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\POS;
 use App\Http\Controllers\Controller;
 use App\Models\POS\PosCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PosCategoryController extends Controller
 {
@@ -13,13 +14,10 @@ class PosCategoryController extends Controller
      */
     public function index()
     {
-        $categories = PosCategory::all();
-        return response()->json(['success' => true, 'data' => $categories]);
+        $categories = PosCategory::where('subscriber_id', Auth::id())->get();
+        return response()->json($categories);
     }
 
-    /**
-     * Store a new category.
-     */
     public function store(Request $request)
     {
         $request->validate([

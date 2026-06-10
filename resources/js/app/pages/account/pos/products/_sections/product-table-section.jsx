@@ -3,6 +3,7 @@ import peso_value from "@/app/lib/peso-value";
 import { Edit2, Trash2 } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import ProductEditSection from "./product-edit-section";
 // import StockingSection from "..."; // Make sure to import this if you use it!
 
 export default function ProductTableSection() {
@@ -91,12 +92,7 @@ export default function ProductTableSection() {
             align: 'center',
             render: (row) => (
                 <div className="flex justify-center gap-2">
-                    <button
-                        onClick={() => handleEdit(row?.product?.name)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded-md text-xs font-bold hover:bg-blue-700 transition"
-                    >
-                        <Edit2 size={14} /> Edit
-                    </button>
+                    <ProductEditSection props_data={row} />
                     <button
                         onClick={() => handleDelete(row?.product?.name)}
                         className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 text-white rounded-md text-xs font-bold hover:bg-red-600 transition"

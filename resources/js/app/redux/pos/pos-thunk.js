@@ -5,6 +5,7 @@ import { get_pos_warehouse_stock_service } from "@/app/services/pos/pos-warehous
 import { get_pos_customer_service } from "@/app/services/pos/pos-customer-service";
 import { get_pos_product_stocks_service } from "@/app/services/pos/pos-product-stock";
 import { get_pos_sales_service } from "@/app/services/pos/pos-sales-service";
+import { get_pos_category_service } from "@/app/services/pos/pos-categories-service";
 
 export function get_pos_suppliers_thunk() {
     return async function (dispatch, getState) {
@@ -43,6 +44,14 @@ export function get_pos_customer_thunk() {
     };
 }
 
+export function get_pos_category_thunk() {
+    return async function (dispatch, getState) {
+        dispatch(posSlice.actions.setSearchTerm(""));
+        const res = await get_pos_category_service();
+        dispatch(posSlice.actions.setCategories(res.data));
+    };
+}
+
 export function get_pos_product_stocks_thunk() {
     return async function (dispatch, getState) {
         const res = await get_pos_product_stocks_service();
@@ -50,7 +59,6 @@ export function get_pos_product_stocks_thunk() {
         dispatch(posSlice.actions.setStoreStocks(res.data));
     };
 }
-
 
 export function get_pos_sales_thunk() {
     return async function (dispatch, getState) {
