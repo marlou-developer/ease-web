@@ -47,6 +47,9 @@ class PosSaleController extends Controller
             return $item['quantity'] * $item['selling_price'];
         });
 
+        $split_product_discount = $request->discount / count($request->items);
+
+        $total_discount = collect($request->items)->sum('discount') + $request->discount;
         $sale = PosSale::create([
             'pos_store_id' => session('pos_store_id'),
             'invoice_no' => 0,
@@ -54,7 +57,7 @@ class PosSaleController extends Controller
             'subscriber_id' => Auth::id(),
             'cashier_id' => Auth::id(),
             'total_amount' => $total,
-            'discount' => $request->discount ?? 0,
+            'discount' => $total_discount ?? 0,
             'tax' => $request->tax ?? 0,
             'amount_paid' => $request->amount_paid,
             'change_due' => $request->change_due,
@@ -74,7 +77,7 @@ class PosSaleController extends Controller
             $discount = $item['discount'] ?? 0;
 
             // Calculate the line total (Revenue) first
-            $total = ($quantity * $sellingPrice) - $discount;
+            $total = ($quantity * $sellingPrice) - ($discount + $split_product_discount);
 
             // Calculate discounted price per unit (safeguard against division by zero)
             $discountedPrice = $quantity > 0 ? ($total / $quantity) : 0;
@@ -89,7 +92,7 @@ class PosSaleController extends Controller
                 'quantity'             => $quantity,
                 'selling_price'        => $sellingPrice,
                 'cost_price'           => $costPrice,
-                'discount'             => $discount,
+                'discount'             => $discount + $split_product_discount,
                 'total'                => $total,
                 'discounted_price'     => $discountedPrice,
                 'profit'               => $profit, // <--- Added profit here

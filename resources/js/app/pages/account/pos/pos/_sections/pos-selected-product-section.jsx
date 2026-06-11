@@ -11,7 +11,7 @@ import peso_value from "@/app/lib/peso-value";
 import PosOverallDiscount from "./pos-overall-discount";
 
 export default function POSSelectedProductSection() {
-    const { cart, cartDetail, heldSales, amountPaid } = useSelector(
+    const { cart, cartDetail, heldSales, amountPaid, overall_all_product_discount } = useSelector(
         (store) => store.pos
     );
     const dispatch = useDispatch();
@@ -93,6 +93,9 @@ export default function POSSelectedProductSection() {
         );
     };
 
+    const split_product_discount = overall_all_product_discount / cart.length
+    console.log('cartcart', split_product_discount)
+
     return (
         <>
             <div className="bg-blue-600 text-white p-3 font-bold flex justify-between">
@@ -118,7 +121,7 @@ export default function POSSelectedProductSection() {
                             const itemQty = Number(item.qty) || 0;
                             const itemDiscount = Number(item.discount) || 0;
                             // Calculate net price safely line-by-line
-                            const rowNetTotal = (itemSrp * itemQty) - itemDiscount;
+                            const rowNetTotal = ((itemSrp * itemQty) - itemDiscount) - split_product_discount;
 
                             return (
                                 <tr key={item.id} className="border-b">
@@ -190,11 +193,12 @@ export default function POSSelectedProductSection() {
                     <span>Subtotal</span> <span>{peso_value(cartDetail.subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                    <span>Total Discount</span> <span>{peso_value(total_total_discount)}</span>
+                    <span>Total Discount</span> <span>{peso_value(total_total_discount + overall_all_product_discount)}</span>
                 </div>
                 <div className="flex justify-between text-xl font-black border-t pt-2">
-                    <span>Total</span> <span>{peso_value(cartDetail.grandTotal - (total_total_discount || 0))}</span>
+                    <span>Total</span> <span>{peso_value(cartDetail.grandTotal - (total_total_discount + overall_all_product_discount || 0))}</span>
                 </div>
+
                 <div className="flex gap-2 pt-2">
                     <button
                         onClick={() => {

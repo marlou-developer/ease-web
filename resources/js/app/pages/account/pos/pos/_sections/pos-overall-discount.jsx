@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCart } from "@/app/redux/pos/pos-slice";
+import { setCart, setOverAllProductDiscount } from "@/app/redux/pos/pos-slice";
 
 export default function PosOverallDiscount() {
     const { cart } = useSelector((store) => store.pos);
@@ -10,26 +10,7 @@ export default function PosOverallDiscount() {
     const [discountInput, setDiscountInput] = useState("");
 
     function minus_discount_all_product(inputValue) {
-        const total_carts = cart.length;
-        if (total_carts === 0) return;
-
-        // Convert input string to a clean number
-        const totalDiscount = parseFloat(inputValue) || 0;
-
-        // Evenly distribute the discount value
-        const discountPerItem = totalDiscount / total_carts;
-
-        const updatedCart = cart.map((item) => {
-            return {
-                ...item,
-                // ✅ Fixed: Changed from 'price' to 'discount' to prevent data corruption
-                // ✅ Fixed: Removed the Math.min constraint completely so totals can go negative
-                discount: parseFloat(discountPerItem.toFixed(2))
-            };
-        });
-
-        // 🚀 Dispatch the updated array back to Redux so the cart re-renders
-        dispatch(setCart(updatedCart));
+        dispatch(setOverAllProductDiscount(Number(inputValue)));
     }
 
     return (

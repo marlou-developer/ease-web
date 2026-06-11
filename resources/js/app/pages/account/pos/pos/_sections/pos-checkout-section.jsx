@@ -6,6 +6,7 @@ import {
     setCart,
     setCartDetail,
     setHeldSales,
+    setOverAllProductDiscount,
 } from "@/app/redux/pos/pos-slice";
 import { create_pos_sales_service } from "@/app/services/pos/pos-sales-service";
 import Swal from "sweetalert2";
@@ -13,7 +14,7 @@ import store from "@/app/store/store";
 import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-thunk";
 
 export default function POSCheckout() {
-    const { cartDetail, heldSales, cart, amountPaid, tax } = useSelector(
+    const { cartDetail, heldSales, cart, amountPaid, tax, overall_all_product_discount } = useSelector(
         (store) => store.pos,
     );
     const [loading, setLoading] = useState(false);
@@ -25,6 +26,10 @@ export default function POSCheckout() {
         if (saved) dispatch(setHeldSales(JSON.parse(saved)));
     }, []);
 
+    const total_total_discount = cart?.reduce((accumulator, currentItem) => {
+        return (accumulator + Number(currentItem.discount || 0));
+    }, 0);
+
     useEffect(() => {
         const subtotal = cart.reduce(
             (acc, item) => acc + item.price * item.qty,
@@ -32,14 +37,13 @@ export default function POSCheckout() {
         );
         const tax = subtotal * cartDetail.tax; // cartDetail.tax should be 0.12 for 12%
         const grandTotal = subtotal + tax;
-        const changeDue = Math.max(0, amountPaid - grandTotal);
-
+        const change = Math.max(0, amountPaid - (cartDetail.grandTotal - (total_total_discount + (overall_all_product_discount || 0)))) || 0;
         dispatch(
             setCartDetail({
                 ...cartDetail,
                 subtotal,
                 grandTotal,
-                changeDue,
+                changeDue: change,
             }),
         );
     }, [cart, cartDetail.tax, amountPaid]);
@@ -58,17 +62,18 @@ export default function POSCheckout() {
         dispatch(setHeldSales(heldSales.filter((h) => h.id !== sale.id)));
     };
 
+
     const isDisabled = () => {
         if (cart.length === 0) return true;
         if (loading) return true;
         if (
             cart.length != 0 &&
-            Number(cartDetail.grandTotal) > Number(amountPaid)
+            Number(cartDetail.grandTotal - (total_total_discount + overall_all_product_discount || 0)) > Number(amountPaid)
         )
             return true;
         if (
             cart.length != 0 &&
-            Number(cartDetail.grandTotal) == Number(amountPaid)
+            Number(cartDetail.grandTotal - (total_total_discount + overall_all_product_discount || 0)) == Number(amountPaid)
         )
             return false;
         return false;
@@ -81,7 +86,7 @@ export default function POSCheckout() {
                 customer_id: 0,
                 invoice_no: 0,
                 payment_type: "cash",
-                discount: 0,
+                discount: overall_all_product_discount,
                 amount_paid: amountPaid,
                 change_due: Number(cartDetail.changeDue).toFixed(2),
                 items: cart.map((res) => ({
@@ -101,6 +106,7 @@ export default function POSCheckout() {
             });
             dispatch(setCart([]));
             dispatch(setAmountPaid(0));
+            dispatch(setOverAllProductDiscount(0));
             setLoading(false);
         } catch (error) {
             setLoading(false);
@@ -125,6 +131,7 @@ export default function POSCheckout() {
             console.log("Sales submitted successfully");
         }
     }
+
     return (
         <>
             <h3 className="font-bold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">

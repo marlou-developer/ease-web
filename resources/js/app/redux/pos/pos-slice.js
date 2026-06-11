@@ -13,6 +13,7 @@ export const posSlice = createSlice({
         currentPage: 1,
         products: [],
         amountPaid: 0,
+        overall_all_product_discount: 0,
         cart: [],
         cartDetail: {
             tax: 0,
@@ -23,7 +24,7 @@ export const posSlice = createSlice({
         heldSales: [],
         store_stocks: [],
         sales: [],
-        units:[]
+        units: [],
     },
     reducers: {
         setStoreStocks: (state, action) => {
@@ -69,8 +70,11 @@ export const posSlice = createSlice({
         setCategories: (state, action) => {
             state.categories = action.payload;
         },
-          setUnits: (state, action) => {
+        setUnits: (state, action) => {
             state.units = action.payload;
+        },
+        setOverAllProductDiscount: (state, action) => {
+            state.overall_all_product_discount = action.payload;
         },
     },
 });
@@ -91,5 +95,6 @@ export const {
     setCategory,
     setCurrentPage,
     setAmountPaid,
+    setOverAllProductDiscount,
 } = posSlice.actions;
 export default posSlice.reducer;
