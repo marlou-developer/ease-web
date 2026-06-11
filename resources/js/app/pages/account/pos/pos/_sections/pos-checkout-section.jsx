@@ -12,12 +12,32 @@ import { create_pos_sales_service } from "@/app/services/pos/pos-sales-service";
 import Swal from "sweetalert2";
 import store from "@/app/store/store";
 import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-thunk";
+import Radio from "@/app/_components/radio";
+import Checkbox from "@/app/_components/checkbox";
+import Select from "@/app/_components/select";
+import { Controller, useForm } from "react-hook-form";
+import { FcPortraitMode, FcShop } from "react-icons/fc";
+import Input from "@/app/_components/input";
 
 export default function POSCheckout() {
     const { cartDetail, heldSales, cart, amountPaid, tax, overall_all_product_discount } = useSelector(
         (store) => store.pos,
     );
+    const {
+        control,
+        handleSubmit,
+        setValue, 
+        register,
+        formState: { errors } 
+    } = useForm({
+        defaultValues: {
+            customer_id: ''
+        }
+    });
     const [loading, setLoading] = useState(false);
+    const [paymentType, setPaymentType] = useState('Cash')
+    const [isCustomer, setIsCustomer] = useState(false)
+    const [isCredit, setIsCredit] = useState(false)
     const dispatch = useDispatch();
 
     // Load held sales from localStorage on start
@@ -85,7 +105,7 @@ export default function POSCheckout() {
             await create_pos_sales_service({
                 customer_id: 0,
                 invoice_no: 0,
-                payment_type: "cash",
+                payment_type: paymentType,
                 discount: overall_all_product_discount,
                 amount_paid: amountPaid,
                 change_due: Number(cartDetail.changeDue).toFixed(2),
@@ -173,12 +193,104 @@ export default function POSCheckout() {
                     </span>
                 </div>
 
+                <div className="flex flex-col gap-3">
+                    <div className="font-bold">
+                        Payment Method
+                    </div>
+                    <div className="flex gap-3 items-center justify-evenly">
+                        <div className="flex flex-col gap-2">
+                            <Radio
+                                name="payment_type"
+                                label="Cash"
+                                value="Cash"
+                                // ✅ Dynamically checks if state matches this value
+                                checked={paymentType === "Cash"}
+                                onChange={(e) => setPaymentType(e.target.value)}
+                            />
+                            <Radio
+                                name="payment_type"
+                                label="E-Wallet"
+                                value="E-Wallet"
+                                // ✅ Dynamically checks if state matches this value
+                                checked={paymentType === "E-Wallet"}
+                                onChange={(e) => setPaymentType(e.target.value)}
+                            />
+                        </div>
+
+
+                        <div className="flex flex-col gap-2">
+                            <Radio
+                                name="payment_type"
+                                label="Bank Transfer"
+                                value="Bank Transfer"
+                                // ✅ Dynamically checks if state matches this value
+                                checked={paymentType === "Bank Transfer"}
+                                onChange={(e) => setPaymentType(e.target.value)}
+                            />
+                            <Radio
+                                name="payment_type"
+                                label="Credit/Debit Card"
+                                value="Credit/Debit Card"
+                                // ✅ Dynamically checks if state matches this value
+                                checked={paymentType === "Credit/Debit Card"}
+                                onChange={(e) => setPaymentType(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    <div className="my-3 flex flex-col gap-5">
+                        <Checkbox
+                            onChange={(e) => setIsCustomer(e.target.checked)}
+                            name="is_customer"
+                            label="Is Customer?"
+                            checked={isCustomer}
+                        />
+                        {
+                            isCustomer && <Checkbox
+                                onChange={(e) => setIsCredit(e.target.checked)}
+                                name="is_credit"
+                                label="Is Credit?"
+                                checked={isCredit}
+                            />
+                        }
+                        <Input
+                            label="Due Date"
+                            type="text"
+                            name="due_date"
+                            {...register("due_date", {
+                                required: "Due Date is required",
+                            })}
+                            error={errors?.due_date?.message}
+                        />
+                    </div>
+                    {
+                        isCustomer && <>
+                            <Controller
+                                name="customer_id"
+                                control={control}
+                                rules={{ required: "Customer is required" }}
+                                render={({ field: { onChange, value, ...restField } }) => (
+                                    <Select
+                                        iconLeft={<FcPortraitMode className='text-2xl' />}
+                                        label={<div className="ml-6">Select Customer</div>}
+                                        options={[]}
+                                        value={value}
+                                        {...restField}
+                                        onChange={(selectedValue) => {
+                                            // onChange(selectedValue);         // Updates React Hook Form state
+                                            // handleSubmit(onSubmit)();       // Triggers auto-submit instantly
+                                        }}
+                                    />
+                                )}
+                            />
+                        </>
+                    }
+                </div>
                 <button
                     onClick={() => open_confirmation()}
                     // Convert both sides to Number to ensure accurate numeric comparison
                     disabled={isDisabled()}
                     className={`w-full py-4 rounded-xl font-black text-xl shadow-lg transition-all
-    ${isDisabled()
+                          ${isDisabled()
                             ? "bg-gray-400 cursor-not-allowed"
                             : "bg-green-600 text-white hover:bg-green-700 active:scale-95"
                         }`}
