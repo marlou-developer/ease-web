@@ -22,8 +22,8 @@ class PosWarehouseStockController extends Controller
     public function index()
     {
         $pos_store = PosStore::where('id', session('pos_store_id'))
-            ->where('subscriber_id', Auth::id())->with(['pos_warehouse'])->first();
-        $categories = PosCategory::where('subscriber_id', Auth::id())->get();
+            ->where('subscriber_id', Auth::user()->subscriber_id)->with(['pos_warehouse'])->first();
+        $categories = PosCategory::where('subscriber_id', Auth::user()->subscriber_id)->get();
         $units = PosUnit::get();
         return response()->json([
             'success' => true,

@@ -14,7 +14,7 @@ class PosCategoryController extends Controller
      */
     public function index()
     {
-        $categories = PosCategory::where('subscriber_id', Auth::id())->get();
+        $categories = PosCategory::where('subscriber_id', Auth::user()->subscriber_id)->get();
         return response()->json($categories);
     }
 

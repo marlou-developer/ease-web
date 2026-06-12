@@ -15,7 +15,7 @@ class PosSupplierController extends Controller
      */
     public function index()
     {
-        $sales = PosSupplier::where('subscriber_id', Auth::id())->latest()->get();
+        $sales = PosSupplier::where('subscriber_id', Auth::user()->subscriber_id)->latest()->get();
 
         return response()->json([
             'success' => true,
@@ -28,7 +28,7 @@ class PosSupplierController extends Controller
         $supplier = PosSupplier::updateOrCreate(
             [
                 'email' => $request->email,
-                'subscriber_id' => Auth::id()
+                'subscriber_id' => Auth::user()->subscriber_id
             ],
             $request->all()
         );

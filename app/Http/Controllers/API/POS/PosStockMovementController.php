@@ -19,14 +19,14 @@ class PosStockMovementController extends Controller
         $today = Carbon::today();
 
         $movements = PosStockMovement::where('pos_store_id', session('pos_store_id'))
-            ->where('subscriber_id', Auth::id())
+            ->where('subscriber_id', Auth::user()->subscriber_id)
             ->with('product_stock', 'user')
             ->latest()
             ->get();
 
         // Today's stats
         $additionsToday = PosStockMovement::where('pos_store_id', session('pos_store_id'))
-            ->where('subscriber_id', Auth::id())
+            ->where('subscriber_id', Auth::user()->subscriber_id)
             ->whereDate('created_at', $today)
             ->where('type', 'IN')
             ->sum('qty_change');
@@ -34,7 +34,7 @@ class PosStockMovementController extends Controller
         // Deductions today (convert to positive number for display)
         $deductionsToday = abs(
             PosStockMovement::where('pos_store_id', session('pos_store_id'))
-                ->where('subscriber_id', Auth::id())
+                ->where('subscriber_id', Auth::user()->subscriber_id)
                 ->whereDate('created_at', $today)
                 ->where('type', 'OUT')
                 ->sum('qty_change')
@@ -42,14 +42,14 @@ class PosStockMovementController extends Controller
 
         // Adjustments today
         $adjustmentsToday = PosStockMovement::where('pos_store_id', session('pos_store_id'))
-            ->where('subscriber_id', Auth::id())
+            ->where('subscriber_id', Auth::user()->subscriber_id)
             ->whereDate('created_at', $today)
             ->where('type', 'ADJUST')
             ->sum('qty_change');
 
         // Current total stock
         $currentStock = PosProductStock::where('pos_store_id', session('pos_store_id'))
-            ->where('subscriber_id', Auth::id())
+            ->where('subscriber_id', Auth::user()->subscriber_id)
             ->sum('stocks');
 
         return response()->json([
@@ -87,7 +87,7 @@ class PosStockMovementController extends Controller
         //     'reason' => $request->reason,
         //     'location_from' => $request->location_from,
         //     'location_to' => $request->location_to,
-        //     'subscriber_id' => Auth::id(),
+        //     'subscriber_id' => Auth::user()->subscriber_id,
         // ]);
 
         // Update product stock

@@ -41,7 +41,7 @@ export default function EditStockSection({ props_data }) {
             selling_price: props_data?.selling_price || 0
         },
     });
-    console.log('props_data', props_data?.category_id)
+    console.log('props_datassssssssss', props_data)
     const watchValues = watch()
     const onSubmit = async (data) => {
         try {

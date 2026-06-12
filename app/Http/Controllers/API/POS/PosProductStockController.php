@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\POS;
 
 use App\Http\Controllers\Controller;
+use App\Models\POS\PosCustomer;
 use App\Models\POS\PosProduct;
 use App\Models\POS\PosProductStock;
 use App\Models\POS\PosPurchase;
@@ -21,9 +22,14 @@ class PosProductStockController extends Controller
     public function index()
     {
         $stocks = PosProductStock::where('pos_store_id', session('pos_store_id'))
-            ->where('subscriber_id', Auth::id())
+            ->where('subscriber_id', Auth::user()->subscriber_id)
             ->with('product')->get();
-        return response()->json($stocks, 200);
+        $customers = PosCustomer::where('subscriber_id', Auth::user()->subscriber_id)->get();
+
+        return response()->json([
+            'pos_product_stock' => $stocks,
+            'customers' => $customers
+        ]);
     }
 
     public function add_new_stock_in_store(Request $request)
@@ -34,7 +40,7 @@ class PosProductStockController extends Controller
         $store_stock = PosProductStock::firstOrNew([
             'pos_store_id'   => session('pos_store_id'),
             'pos_product_id' => $warehouse_stock->pos_product_id,
-            'subscriber_id'  => Auth::id(),
+            'subscriber_id'  => Auth::user()->subscriber_id,
             'cost_price'       => $request->cost_price,
             'selling_price'       => $request->selling_price,
         ], ['stocks' => 0]);
@@ -56,7 +62,7 @@ class PosProductStockController extends Controller
                 'pos_product_id'   => $base->pos_product_id,
                 'cost_price'       => $item['cost_price'],
                 'selling_price'       => $item['selling_price'],
-                'subscriber_id'    => Auth::id(),
+                'subscriber_id'    => Auth::user()->subscriber_id,
             ], ['stocks' => 0]);
 
             $stock->stocks += $item['quantity'];
@@ -72,8 +78,6 @@ class PosProductStockController extends Controller
 
     public function store(Request $request)
     {
-        $auth = Auth::user();
-
         $pos_product = PosProduct::where('barcode', $request->barcode)->first();
         $pos_store = PosStore::where('id', session('pos_store_id'))->first();
         if (!$pos_product) {
@@ -91,13 +95,13 @@ class PosProductStockController extends Controller
         }
         $pos_stock = PosProductStock::where([
             ['pos_product_id', '=', $pos_product->id],
-            ['subscriber_id', '=', $auth->id]
+            ['subscriber_id', '=', Auth::user()->subscriber_id]
         ])->first();
 
         $pos_warehouse_stock = PosWarehouseStock::where([
             ['pos_warehouse_id', '=', $pos_store->pos_warehouse_id],
             ['pos_product_id', '=', $pos_product->id],
-            ['subscriber_id', '=', $auth->id]
+            ['subscriber_id', '=', Auth::user()->subscriber_id]
         ])->first();
 
 
@@ -105,7 +109,7 @@ class PosProductStockController extends Controller
             PosWarehouseStock::create([
                 'pos_warehouse_id' => $pos_store->pos_warehouse_id,
                 'pos_product_id' => $pos_product->id,
-                'subscriber_id' => $auth->id,
+                'subscriber_id' => Auth::user()->subscriber_id,
                 'cost_price' => 0,
                 'stocks' => 0,
             ]);
@@ -115,7 +119,7 @@ class PosProductStockController extends Controller
             $pos_product_stock = PosProductStock::create([
                 'pos_store_id' => session('pos_store_id'),
                 'pos_product_id' => $pos_product->id,
-                'subscriber_id' => $auth->id,
+                'subscriber_id' => Auth::user()->subscriber_id,
                 'stocks' => $request->stocks,
                 'cost_price' => 0,
                 'selling_price' => 0,
@@ -126,7 +130,7 @@ class PosProductStockController extends Controller
             //     PosStockMovement::create([
             //         'pos_store_id' => session('pos_store_id'),
             //         'pos_product_stock_id' => $pos_product_stock->id,
-            //         'subscriber_id' => Auth::id(),
+            //         'subscriber_id' => Auth::user()->subscriber_id,
             //         'type' => 'IN',
             //         'reference' => 'Initial Stock',
             //         'qty_before' => 0,

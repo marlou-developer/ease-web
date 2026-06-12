@@ -18,7 +18,7 @@ class PosSaleController extends Controller
      */
     public function index()
     {
-        $sales = PosSale::where('subscriber_id', Auth::id())->with(['sale_items'])->latest()->get();
+        $sales = PosSale::where('subscriber_id', Auth::user()->subscriber_id)->with(['sale_items'])->latest()->get();
 
         return response()->json([
             'success' => true,
@@ -31,6 +31,7 @@ class PosSaleController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'customer_id' => 'nullable',
             'items' => 'required|array|min:1',
@@ -38,7 +39,7 @@ class PosSaleController extends Controller
             'items.*.quantity' => 'required|numeric|min:1',
             'items.*.selling_price' => 'required|numeric|min:0',
             'items.*.discount' => 'nullable|numeric|min:0',
-            'payment_type' => 'nullable|in:cash,card',
+            'payment_type' => 'nullable|in:Cash,E-Wallet,Bank Transfer,Credit/Debit Card',
             'amount_paid' => 'required|numeric|min:0',
             'change_due' => 'required',
         ]);
@@ -53,8 +54,8 @@ class PosSaleController extends Controller
         $sale = PosSale::create([
             'pos_store_id' => session('pos_store_id'),
             'invoice_no' => 0,
-            'customer_id' => $request->customer_id,
-            'subscriber_id' => Auth::id(),
+            'customer_id' => $request->customer_id ?? null,
+            'subscriber_id' => Auth::user()->subscriber_id,
             'cashier_id' => Auth::id(),
             'total_amount' => $total,
             'discount' => $total_discount ?? 0,
@@ -62,7 +63,9 @@ class PosSaleController extends Controller
             'amount_paid' => $request->amount_paid,
             'change_due' => $request->change_due,
             'payment_type' => $request->payment_type,
-            'status' => 'paid',
+            'is_credit' => $request->is_credit,
+            'due_date' => $request->due_date ?? null,
+            'status' => $request->is_credit ? 'Pending' : 'Paid',
         ]);
         $invoice_no = str_pad($sale->id, 8, '0', STR_PAD_LEFT);
 

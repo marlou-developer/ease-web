@@ -56,7 +56,8 @@ export function get_pos_product_stocks_thunk() {
     return async function (dispatch, getState) {
         const res = await get_pos_product_stocks_service();
         dispatch(posSlice.actions.setSearchTerm(""));
-        dispatch(posSlice.actions.setStoreStocks(res.data));
+        dispatch(posSlice.actions.setStoreStocks(res.pos_product_stock));
+        dispatch(posSlice.actions.setCustomers(res.customers));
     };
 }
 

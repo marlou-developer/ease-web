@@ -21,15 +21,15 @@ class PosPurchaseController extends Controller
     public function index()
     {
         $purchases = PosPurchase::where('pos_store_id', session('pos_store_id'))
-            ->where('subscriber_id', Auth::id())
+            ->where('subscriber_id', Auth::user()->subscriber_id)
             ->with('supplier', 'items.pos_warehouse_stock')
             ->latest()->get();
 
-        $suppliers = PosSupplier::where('subscriber_id', Auth::id())->latest()->get();
+        $suppliers = PosSupplier::where('subscriber_id', Auth::user()->subscriber_id)->latest()->get();
         $pos_store = PosStore::where('id', session('pos_store_id'))->first();
 
         $products = PosWarehouseStock::where('pos_warehouse_id', $pos_store->pos_warehouse_id)
-            ->where('subscriber_id', Auth::id())->with(['product'])
+            ->where('subscriber_id', Auth::user()->subscriber_id)->with(['product'])
             ->latest()->get();
 
         return response()->json([
@@ -48,7 +48,7 @@ class PosPurchaseController extends Controller
 
         $purchase = PosPurchase::create([
             'pos_store_id' => session('pos_store_id'),
-            'subscriber_id' => Auth::id(),
+            'subscriber_id' => Auth::user()->subscriber_id,
             'pos_supplier_id' => $request->pos_supplier_id,
             'reference_no' => 'REF' . Carbon::now()->format('mdYHis'),
             'total_amount' => 0,

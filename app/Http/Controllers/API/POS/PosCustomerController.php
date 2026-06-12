@@ -14,7 +14,7 @@ class PosCustomerController extends Controller
      */
     public function index()
     {
-        $customers = PosCustomer::where('subscriber_id', Auth::id())->get();
+        $customers = PosCustomer::where('subscriber_id', Auth::user()->subscriber_id)->get();
 
         return response()->json([
             'success' => true,
@@ -31,7 +31,7 @@ class PosCustomerController extends Controller
 
         $customer = PosCustomer::create([
             ...$request->all(),
-            'subscriber_id' => Auth::id()
+            'subscriber_id' => Auth::user()->subscriber_id
         ]);
 
         return response()->json([

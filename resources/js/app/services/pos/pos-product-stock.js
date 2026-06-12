@@ -11,5 +11,5 @@ export async function received_pos_product_stocks_service(data) {
 
 
 export async function get_pos_product_stocks_service(data) {
-    return await axios.get("/api/pos-product-stocks");
+    return (await axios.get("/api/pos-product-stocks")).data;
 }
