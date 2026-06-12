@@ -39,7 +39,7 @@ export default function SalesTableSection() {
             header: 'Cashier',
             accessor: 'cashier',
             className: 'font-bold text-gray-700',
-            render: (row) => row.product?.name
+            render: (row) => row.cashier?.name
         },
         {
             header: 'Total Cost Price',

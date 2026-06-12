@@ -18,7 +18,7 @@ class PosSaleController extends Controller
      */
     public function index()
     {
-        $sales = PosSale::where('subscriber_id', Auth::user()->subscriber_id)->with(['sale_items'])->latest()->get();
+        $sales = PosSale::where('subscriber_id', Auth::user()->subscriber_id)->with(['sale_items','cashier'])->latest()->get();
 
         return response()->json([
             'success' => true,
