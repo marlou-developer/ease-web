@@ -25,6 +25,8 @@ export const posSlice = createSlice({
         store_stocks: [],
         sales: [],
         units: [],
+        users: [],
+        reports: {},
     },
     reducers: {
         setStoreStocks: (state, action) => {
@@ -76,13 +78,21 @@ export const posSlice = createSlice({
         setOverAllProductDiscount: (state, action) => {
             state.overall_all_product_discount = action.payload;
         },
+        setUsers: (state, action) => {
+            state.users = action.payload;
+        },
+        setReports: (state, action) => {
+            state.reports = action.payload;
+        },
     },
 });
 
 export const {
+    setUsers,
     setCart,
     setSales,
     setUnits,
+    setReports,
     setCategories,
     setStoreStocks,
     setCartDetail,

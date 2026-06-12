@@ -11,6 +11,7 @@ class PosWarehouseStock extends Model
     use HasFactory;
     protected $fillable = [
         'pos_warehouse_id',
+        'pos_supplier_id',
         'pos_product_id',
         'subscriber_id',
         'cost_price',

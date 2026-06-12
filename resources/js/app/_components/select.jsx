@@ -25,7 +25,7 @@ const Select = forwardRef(
 
         // Sync search text with value
         useEffect(() => {
-            const selectedOption = options.find((o) => o.value === value);
+            const selectedOption = options.find((o) => o.value == value);
             if (selectedOption) setSearch(selectedOption.label);
             else setSearch("");
         }, [value, options]);
@@ -140,7 +140,7 @@ const Select = forwardRef(
                                 filteredOptions.map((option, idx) => (
                                     <li
                                         key={idx}
-                                        className={`cursor-pointer px-4 py-2 hover:bg-blue-100 text-black text-sm ${value === option.value
+                                        className={`cursor-pointer px-4 py-2 hover:bg-blue-100 text-black text-sm ${value == option.value
                                             ? "bg-blue-50 text-blue-600"
                                             : ""
                                             }`}

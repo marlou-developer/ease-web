@@ -45,6 +45,7 @@ class PosProductStockController extends Controller
             'selling_price'       => $request->selling_price,
         ], ['stocks' => 0]);
         $store_stock->stocks += $request->stocks;
+        $store_stock->pos_supplier_id = $request->pos_supplier_id??null;
         $store_stock->selling_price = $request->selling_price;
         $store_stock->save();
         return response()->json([
@@ -55,9 +56,11 @@ class PosProductStockController extends Controller
 
     public function received_stock(Request $request)
     {
+
         foreach ($request->items as $item) {
             $base = PosWarehouseStock::findOrFail($item['pos_warehouse_stock_id']);
             $stock = PosWarehouseStock::firstOrNew([
+                'pos_supplier_id' => $request->pos_supplier_id,
                 'pos_warehouse_id' => $base->pos_warehouse_id,
                 'pos_product_id'   => $base->pos_product_id,
                 'cost_price'       => $item['cost_price'],

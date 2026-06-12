@@ -18,7 +18,7 @@ class PosSaleController extends Controller
      */
     public function index()
     {
-        $sales = PosSale::where('subscriber_id', Auth::user()->subscriber_id)->with(['sale_items','cashier'])->latest()->get();
+        $sales = PosSale::where('subscriber_id', Auth::user()->subscriber_id)->with(['sale_items', 'cashier'])->latest()->get();
 
         return response()->json([
             'success' => true,
@@ -89,6 +89,8 @@ class PosSaleController extends Controller
             $profit = $total - ($quantity * $costPrice);
 
             PosSalesItem::create([
+                'pos_supplier_id' => $item['pos_supplier_id'],
+                'pos_category_id' => $item['pos_category_id'],
                 'pos_store_id'         => session('pos_store_id'),
                 'pos_product_stock_id' => $item['pos_product_stock_id'],
                 'sale_id'              => $sale->id,
@@ -98,7 +100,7 @@ class PosSaleController extends Controller
                 'discount'             => $discount + $split_product_discount,
                 'total'                => $total,
                 'discounted_price'     => $discountedPrice,
-                'profit'               => $profit, // <--- Added profit here
+                'profit'               => $profit,
             ]);
 
             $product_stock = PosProductStock::find($item['pos_product_stock_id']);

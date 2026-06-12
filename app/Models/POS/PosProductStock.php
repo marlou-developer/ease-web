@@ -13,6 +13,7 @@ class PosProductStock extends Model
     protected $fillable = [
         'pos_store_id',
         'pos_product_id',
+        'pos_supplier_id',
         'subscriber_id',
         'stocks',
         'cost_price',

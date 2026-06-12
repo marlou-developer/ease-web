@@ -75,16 +75,6 @@ export default function WarehouseTableSection() {
                 </div>
             }
         },
-        // {
-        //     header: 'Status',
-        //     accessor: 'status',
-        //     align: 'center',
-        //     render: (row) => (
-        //         <span className={`px-4 py-1 rounded text-[11px] font-bold inline-block w-24 uppercase text-center ${getStatusStyle(row?.status)}`}>
-        //             {row?.status}
-        //         </span>
-        //     )
-        // },
 
     ];
 

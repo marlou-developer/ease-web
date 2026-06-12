@@ -24,6 +24,7 @@ export default function StockingSection({ props_data }) {
     } = useForm({
         values: {
             id: props_data.id,
+            pos_supplier_id: props_data?.pos_supplier_id,
             barcode: props_data?.product?.barcode || "",
             name: props_data?.product?.name || "",
             cost_price: props_data?.cost_price || "",
@@ -33,6 +34,7 @@ export default function StockingSection({ props_data }) {
             image: "",
         },
     });
+    console.log('badodo', props_data)
 
     const onSubmit = async (data) => {
         try {

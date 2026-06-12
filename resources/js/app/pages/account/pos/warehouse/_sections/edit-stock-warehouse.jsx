@@ -13,7 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function EditStockSection({ props_data }) {
-    const { categories, units } = useSelector(
+    const { categories, units,suppliers } = useSelector(
         (store) => store.pos
     );
     const [open, setOpen] = useState(false);
@@ -28,6 +28,7 @@ export default function EditStockSection({ props_data }) {
     } = useForm({
         defaultValues: {
             id: props_data?.id,
+            pos_supplier_id: props_data?.pos_supplier_id,
             subscriber_id: props_data?.subscriber_id || "",
             pos_product_id: props_data?.pos_product_id || "",
             pos_warehouse_id: props_data?.pos_warehouse_id || "",
@@ -41,7 +42,7 @@ export default function EditStockSection({ props_data }) {
             selling_price: props_data?.selling_price || 0
         },
     });
-    console.log('props_datassssssssss', props_data)
+    console.log('props_datassssssssss', suppliers)
     const watchValues = watch()
     const onSubmit = async (data) => {
         try {
@@ -132,6 +133,25 @@ export default function EditStockSection({ props_data }) {
 
                     <div className="flex gap-3">
                         {/* Category */}
+
+                         <Controller
+                            name="pos_supplier_id"
+                            control={control}
+                            rules={{ required: "Supplier is required" }}
+                            render={({ field }) => (
+                                <Select
+                                    label="Select Supplier"
+                                    disabled={watchValues.pos_supplier_id}
+                                    options={suppliers?.map(res => ({
+                                        label: res.name,
+                                        value: res.id
+                                    }))}
+                                    error={errors.pos_supplier_id}
+                                    {...field}
+                                />
+                            )}
+                        />
+
                         <Controller
                             name="category_id"
                             control={control}

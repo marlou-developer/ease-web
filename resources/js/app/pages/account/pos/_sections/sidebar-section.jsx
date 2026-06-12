@@ -15,6 +15,7 @@ import {
     FcDataSheet,
     FcDeployment,
     FcShop,
+    FcConferenceCall,
 } from "react-icons/fc";
 import Tooltip from "@/app/_components/tooltip";
 import { Link } from "@inertiajs/react";
@@ -70,14 +71,20 @@ export default function SidebarSection() {
             icon: FcShipped,
             current: path == "suppliers",
         },
+        { name: "Reports", href: "/account/pos/reports", icon: FcPositiveDynamic, current: path == "reports" },
         {
             name: "Customers",
             href: "/account/pos/customers",
             icon: FcBusinesswoman,
             current: path == "customers",
         },
+        {
+            name: "Users",
+            href: "/account/pos/users",
+            icon: FcConferenceCall,
+            current: path == "users",
+        },
         // { name: "Cash Register", href: "/account/pos/cash_register", icon: FcSalesPerformance, current: path == "cash_register" },
-        // { name: "Reports", href: "/account/pos/reports", icon: FcPositiveDynamic, current: path == "reports" },
         // { name: "Settings", href: "/account/pos/settings", icon: FcSettings, current: path == "settings" },
     ];
 

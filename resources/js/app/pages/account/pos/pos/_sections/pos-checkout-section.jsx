@@ -102,17 +102,19 @@ export default function POSCheckout() {
         try {
             setLoading(true);
             await create_pos_sales_service({
-                customer_id: formData.customer_id ,
+                customer_id: formData.customer_id,
                 due_date: formData.due_date,
                 payment_type: paymentType,
-                is_credit:isCredit,
-                is_customer:isCustomer,
+                is_credit: isCredit,
+                is_customer: isCustomer,
                 discount: overall_all_product_discount || 0,
                 amount_paid: Number(amountPaid), // Ensure this is a number
                 change_due: Number(cartDetail.changeDue).toFixed(2),
                 items: cart.map((res) => ({
                     pos_product_stock_id: res.id,
                     quantity: res.qty,
+                    pos_supplier_id: res?.pos_supplier_id,
+                    pos_category_id: res?.pos_category_id,
                     cost_price: Number(res.cost_price).toFixed(2),
                     selling_price: Number(res.price).toFixed(2),
                     discount: res.discount || 0,

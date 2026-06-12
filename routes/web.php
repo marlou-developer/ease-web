@@ -91,6 +91,9 @@ Route::prefix('account')->middleware('auth')->group(function () {
         Route::get('/settings', function () {
             return Inertia::render('account/pos/settings/page');
         });
+         Route::get('/users', function () {
+            return Inertia::render('account/pos/users/page');
+        });
     });
 });
 

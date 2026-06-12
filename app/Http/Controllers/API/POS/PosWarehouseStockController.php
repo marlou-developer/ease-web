@@ -7,6 +7,7 @@ use App\Models\POS\PosCategory;
 use App\Models\POS\PosProduct;
 use App\Models\POS\PosProductStock;
 use App\Models\POS\PosStore;
+use App\Models\POS\PosSupplier;
 use App\Models\POS\PosUnit;
 use App\Models\POS\PosWarehouse;
 use App\Models\POS\PosWarehouseStock;
@@ -24,12 +25,14 @@ class PosWarehouseStockController extends Controller
         $pos_store = PosStore::where('id', session('pos_store_id'))
             ->where('subscriber_id', Auth::user()->subscriber_id)->with(['pos_warehouse'])->first();
         $categories = PosCategory::where('subscriber_id', Auth::user()->subscriber_id)->get();
+        $suppliers = PosSupplier::where('subscriber_id', Auth::user()->subscriber_id)->get();
         $units = PosUnit::get();
         return response()->json([
             'success' => true,
             'categories' => $categories,
             'units' => $units,
-            'data' => $pos_store
+            'data' => $pos_store,
+            'suppliers' => $suppliers
         ]);
     }
 
@@ -48,6 +51,12 @@ class PosWarehouseStockController extends Controller
                 'barcode' => $request->barcode,
                 'unit_id' => $request->unit_id,
                 'category_id' => $request->category_id,
+            ]);
+        }
+
+        if ($pos_product_stock && !$pos_product_stock->pos_supplier_id) {
+            $pos_product_stock->update([
+                'pos_supplier_id' => $request->pos_supplier_id
             ]);
         }
 
@@ -71,6 +80,7 @@ class PosWarehouseStockController extends Controller
                 'cost_price' => $request->cost_price,
                 'selling_price' => $request->selling_price,
                 'stocks' => $request->stocks,
+                'pos_supplier_id' => $request->pos_supplier_id
             ]);
         }
 

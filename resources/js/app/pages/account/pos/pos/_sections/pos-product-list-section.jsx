@@ -8,26 +8,29 @@ export default function POSProductListSection() {
     const { cart = [], store_stocks = [] } = useSelector(
         (store) => store.pos,
     );
-
     const dispatch = useDispatch();
 
     const PRODUCTS =
         store_stocks?.map((res) => ({
-            id: res.id,
-            name: res.product?.name ?? "Unknown",
-            stocks: res.stocks ?? "Unknown",
-            price: Number(res.selling_price).toFixed(2),
-            srp: Number(res.selling_price).toFixed(2),
-            category: res.product?.category?.name ?? "N/A",
-            img: res.product.image,
-            cost_price: res.cost_price,
-            discount: res.discount,
+            pos_supplier_id: res?.pos_supplier_id,
+            pos_category_id: res?.product?.category?.id,
+            id: res?.id,
+            name: res?.product?.name ?? "Unknown",
+            stocks: res?.stocks ?? "Unknown",
+            price: Number(res?.selling_price).toFixed(2),
+            srp: Number(res?.selling_price).toFixed(2),
+            category: res?.product?.category?.name ?? "N/A",
+            img: res?.product.image,
+            cost_price: res?.cost_price,
+            discount: res?.discount,
         })) || [];
 
     const filteredProducts = PRODUCTS.filter((p) =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
+
+    console.log('store_stocksbadodo', cart)
     const addToCart = (product) => {
         const exists = cart.find((item) => item.id === product.id);
         if (exists)

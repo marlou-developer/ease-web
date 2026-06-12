@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pos_store_id')->constrained('pos_stores');
             $table->foreignId('sale_id')->constrained('pos_sales');
+            $table->foreignId('pos_category_id')->constrained('pos_categories');
+            $table->foreignId('pos_supplier_id')->constrained('pos_suppliers');
             $table->foreignId('pos_product_stock_id')->constrained('pos_product_stocks');
             $table->integer('quantity')->default(0);
             $table->decimal('cost_price', 10, 2)->default(0);
