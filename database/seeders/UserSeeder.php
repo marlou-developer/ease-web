@@ -24,6 +24,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Subscriber User',
             'email' => 'user@gmail.com',
+            'subscriber_id' => 2,
             'password' => Hash::make('admin'),
             'role' => 2
         ]);

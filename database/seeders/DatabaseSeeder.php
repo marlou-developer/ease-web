@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             POSUnitSeeder::class,
             UserSeeder::class,
             POSStoreSeeder::class,
+            SubscriberSeeder::class,
         ]);
     }
 }
