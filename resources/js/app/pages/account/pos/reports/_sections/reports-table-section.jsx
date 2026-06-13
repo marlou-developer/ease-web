@@ -1,6 +1,7 @@
 import Table from "@/app/_components/table";
 import peso_value from "@/app/lib/peso-value";
 import { Edit2, Trash2 } from "lucide-react";
+import moment from "moment";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import StockingSection from "..."; // Make sure to import this if you use it!
@@ -21,7 +22,7 @@ export default function ReportsTableSection() {
             }
         },
         {
-            header: 'Product Stock ID',
+            header: 'ID',
             accessor: 'code',
             className: 'font-bold text-gray-700',
             render: (row) => {
@@ -34,6 +35,14 @@ export default function ReportsTableSection() {
             className: 'font-bold text-gray-700',
             render: (row) => {
                 return row?.pos_product_stock?.product?.name;
+            }
+        },
+         {
+            header: 'Category',
+            accessor: 'category',
+            className: 'font-bold text-gray-700',
+            render: (row) => {
+                return row?.pos_product_stock?.product?.category?.name;
             }
         },
         {
@@ -73,15 +82,15 @@ export default function ReportsTableSection() {
                 return `${margin}%`;
             }
         },
-        // {
-        //     header: 'Action',
-        //     accessor: 'action',
-        //     align: 'center',
-        //     className: 'font-bold text-gray-700',
-        //     render: (row) => {
-        //         return <div className="flex gap-3"></div>;
-        //     }
-        // },
+        {
+            header: 'Sold At',
+            accessor: 'created_at',
+            align: 'center',
+            className: 'font-bold text-gray-700',
+            render: (row) => {
+                return <div className="flex gap-3">{moment(row.created_at).format('LL')}</div>;
+            }
+        },
     ];
 
     return (

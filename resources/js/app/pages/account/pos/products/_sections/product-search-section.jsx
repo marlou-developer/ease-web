@@ -5,6 +5,7 @@ import {
     setCurrentPage,
     setSearchTerm,
 } from "@/app/redux/pos/pos-slice";
+import { router } from "@inertiajs/react";
 import { Search } from "lucide-react";
 import React from "react";
 import { FcSearch } from "react-icons/fc";
@@ -31,6 +32,18 @@ export default function ProductSearchSection() {
                             label: product.name,
                         })) || []}
                     />
+
+                    <div className="ml-1 mt-0.5 flex gap-3">
+
+                        <button
+                            className="hover:text-pink-500 transition-colors duration-200"
+                            onClick={() =>
+                                router.visit(`/account/pos/products/transactions`)
+                            }
+                        >
+                            <u className="text-sm">View All Transaction</u>
+                        </button>
+                    </div>
                 </div>
                 <div className=" flex-1">
                     <Input

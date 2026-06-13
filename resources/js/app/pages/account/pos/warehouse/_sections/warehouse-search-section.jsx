@@ -5,11 +5,11 @@ import {
     setCurrentPage,
     setSearchTerm,
 } from "@/app/redux/pos/pos-slice";
+import { router } from "@inertiajs/react";
 import { Search } from "lucide-react";
 import React from "react";
 import { FcSearch } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
-import ViewCategoriesSection from "./view-categories-section";
 
 export default function WarehouseSearchSection() {
     const { app } = useSelector((store) => store.app);
@@ -32,9 +32,25 @@ export default function WarehouseSearchSection() {
                             })) || []
                         }
                     />
-                    <button>
-                        <ViewCategoriesSection />
-                    </button>
+                    <div className="ml-1 mt-0.5 flex gap-3">
+                        <button
+                            className="hover:text-pink-500 transition-colors duration-200"
+                            onClick={() =>
+                                router.visit(`/account/pos/warehouse/categories`)
+                            }
+                        >
+                            <u className="text-sm">View All Categories</u>
+                        </button>
+
+                         <button
+                            className="hover:text-pink-500 transition-colors duration-200"
+                            onClick={() =>
+                                router.visit(`/account/pos/warehouse/transactions`)
+                            }
+                        >
+                            <u className="text-sm">View All Transaction</u>
+                        </button>
+                    </div>
                 </div>
                 <div className=" flex-1">
                     <Input

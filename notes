@@ -1,5 +1,5 @@
-php artisan make:model ER/EmployeeChangeForm -mcr
-
+php artisan make:model POS/PosWarehouseTransaction -mcr
+php artisan make:model POS/PosStoreTransaction -mcr
 
 where('pos_store_id', session('pos_store_id'))
             ->where('subscriber_id', Auth::user()->subscriber_id)

@@ -17,6 +17,6 @@ class PosWarehouse extends Model
 
     public function pos_warehouse_stocks(): HasMany
     {
-        return $this->hasMany(PosWarehouseStock::class, 'pos_warehouse_id', 'id')->with(['product']);
+        return $this->hasMany(PosWarehouseStock::class, 'pos_warehouse_id', 'id')->with(['product'])->orderBy('stocks', 'desc');
     }
 }

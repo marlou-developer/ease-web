@@ -1,5 +1,6 @@
 import { BookOpen } from 'lucide-react'
 import React from 'react'
+import AddUserSection from './add-user-section'
 
 export default function HeaderSection() {
     return (
@@ -9,6 +10,7 @@ export default function HeaderSection() {
                     <BookOpen size={24} />
                    POS Users
                 </div>
+                <AddUserSection />
             </div>
         </>
     )

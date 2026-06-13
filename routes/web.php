@@ -59,8 +59,14 @@ Route::prefix('account')->middleware('auth')->group(function () {
         Route::get('/pos', function () {
             return Inertia::render('account/pos/pos/page');
         });
-        Route::get('/products', function () {
-            return Inertia::render('account/pos/products/page');
+
+        Route::prefix('products')->group(function () {
+            Route::get('/', function () {
+                return Inertia::render('account/pos/products/page');
+            });
+            Route::get('/transactions', function () {
+                return Inertia::render('account/pos/products/transactions/page');
+            });
         });
         Route::get('/stock_movements', function () {
             return Inertia::render('account/pos/stock_movements/page');
@@ -84,6 +90,9 @@ Route::prefix('account')->middleware('auth')->group(function () {
             Route::get('/categories', function () {
                 return Inertia::render('account/pos/warehouse/categories/page');
             });
+            Route::get('/transactions', function () {
+                return Inertia::render('account/pos/warehouse/transactions/page');
+            });
         });
         Route::get('/reports', function () {
             return Inertia::render('account/pos/reports/page');
@@ -91,7 +100,7 @@ Route::prefix('account')->middleware('auth')->group(function () {
         Route::get('/settings', function () {
             return Inertia::render('account/pos/settings/page');
         });
-         Route::get('/users', function () {
+        Route::get('/users', function () {
             return Inertia::render('account/pos/users/page');
         });
     });

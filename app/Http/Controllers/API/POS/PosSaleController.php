@@ -8,6 +8,7 @@ use App\Models\POS\PosSale;
 use App\Models\POS\PosSaleItem;
 use App\Models\POS\PosSalesItem;
 use App\Models\POS\PosStockMovement;
+use App\Models\POS\PosStoreTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -107,6 +108,20 @@ class PosSaleController extends Controller
             if ($product_stock) {
                 $product_stock->decrement('stocks', $quantity);
             }
+
+
+            $pos_store_transaction =  PosStoreTransaction::create([
+                'transact_by' => Auth::id(),
+                'subscriber_id' => Auth::user()->subscriber_id,
+                'pos_product_stock_id' => $item['pos_product_stock_id'],
+                'pos_sale_id' => $sale->id,
+                'stocks' => $quantity,
+                'status' => 'Deducted'
+            ]);
+            $transaction_id = str_pad($pos_store_transaction->id, 10, '0', STR_PAD_LEFT);
+            $pos_store_transaction->update([
+                'transaction_id' => $transaction_id
+            ]);
         }
         return response()->json([
             'success' => true,

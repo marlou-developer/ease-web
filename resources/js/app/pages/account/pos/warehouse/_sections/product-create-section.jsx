@@ -78,7 +78,7 @@ export default function ProductCreateSection() {
             console.error("Error creating product:", error);
         }
     };
-    
+
     return (
         <>
             <Button
@@ -88,6 +88,7 @@ export default function ProductCreateSection() {
                 }}
                 variant="primary"
                 outlined
+                className="border-white text-white hover:text-blue-600"
             >
                 <div className="flex gap-2 items-center justify-center">
                     <Plus size={18} />Product Registration
@@ -138,7 +139,7 @@ export default function ProductCreateSection() {
                                         value: res.id
                                     }))}
                                     error={errors.category_id}
-                                    {...field} 
+                                    {...field}
                                 />
                             )}
                         />

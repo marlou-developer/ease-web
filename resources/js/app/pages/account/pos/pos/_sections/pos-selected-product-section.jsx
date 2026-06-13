@@ -181,13 +181,18 @@ export default function POSSelectedProductSection() {
                     </tbody>
                 </table>
             </div>
-            <div>
-                <NumberKeyboard
-                    value={`${amountPaid}`}
-                    onChange={(value) => dispatch(setAmountPaid(value))}
-                />
-            </div>
-            <PosOverallDiscount />
+            {
+                cart.length != 0 && <>
+                    <div>
+                        <NumberKeyboard
+                            value={`${amountPaid}`}
+                            onChange={(value) => dispatch(setAmountPaid(value))}
+                        />
+                    </div>
+                    <PosOverallDiscount />
+
+                </>
+            }
             <div className="p-4 bg-gray-50 border-t space-y-2">
                 <div className="flex justify-between text-sm">
                     <span>Subtotal</span> <span>{peso_value(cartDetail.subtotal)}</span>

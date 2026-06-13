@@ -27,7 +27,7 @@ export default function UsersTableSection() {
         indexOfFirstItem,
         indexOfLastItem,
     );
-console.log('usersusers',users)
+    console.log('usersusers', users)
     const handleDelete = (name) => alert(`Delete ${name}?`);
     const handleEdit = (name) => alert(`Edit ${name}?`);
 
@@ -48,18 +48,13 @@ console.log('usersusers',users)
             className: "font-bold text-gray-700",
         },
         {
-            header: "Contact",
-            accessor: "phone",
+            header: "User Type",
+            accessor: "user_type",
             className: "font-bold text-gray-700",
         },
         {
-            header: "Address",
-            accessor: "address",
-            className: "font-bold text-gray-700",
-        },
-        {
-            header: "Actions",
-            accessor: "actions",
+            header: "Position",
+            accessor: "position",
             className: "font-bold text-gray-700",
         },
         // {

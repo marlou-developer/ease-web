@@ -16,10 +16,10 @@ use Illuminate\Support\Facades\DB; // Make sure DB is imported!
 
 class PosReportController extends Controller
 {
-
     public function profit_and_margin(Request $request)
     {
-        $sales_items = PosSalesItem::where('pos_store_id', session('pos_store_id'))
+        // 1. Build the query but DO NOT execute it yet
+        $query = PosSalesItem::where('pos_store_id', session('pos_store_id'))
             ->when($request->pos_supplier_id, function ($query, $supplier) {
                 return $query->where('pos_supplier_id', $supplier);
             })
@@ -33,7 +33,6 @@ class PosReportController extends Controller
                 }
                 return $query;
             })
-
             ->when($request->pos_category_id, function ($query, $category) {
                 return $query->where('pos_category_id', $category);
             })
@@ -56,11 +55,18 @@ class PosReportController extends Controller
                     }
                 });
             })
-            ->with(['sale', 'pos_product_stock'])
-            ->get();
-        return $sales_items;
-    }
+            ->with(['sale', 'pos_product_stock']);
 
+        // 2. Conditionally execute the query
+        // Using except('page') ensures that navigating to ?page=2 doesn't break pagination
+        if (empty($request->except('page'))) {
+            $sales_items = $query->paginate(15);
+            return [...$sales_items];
+        } else {
+            $sales_items = $query->get();
+            return $sales_items;
+        }
+    }
     public function index(Request $request)
     {
         $customers = PosCustomer::where('subscriber_id', Auth::user()->subscriber_id)->get();

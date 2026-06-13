@@ -20,6 +20,7 @@ export default function StockingSection({ props_data }) {
         handleSubmit,
         reset,
         control,
+        watch,
         formState: { errors, isSubmitting },
     } = useForm({
         values: {
@@ -35,7 +36,7 @@ export default function StockingSection({ props_data }) {
         },
     });
     console.log('badodo', props_data)
-
+    const watchedValues = watch()
     const onSubmit = async (data) => {
         try {
             const formData = new FormData();
@@ -105,7 +106,7 @@ export default function StockingSection({ props_data }) {
                             label="Barcode"
                             name="barcode"
                             disabled
-                            {...register("barcode", { required: "Barcode is required" })}
+                            {...register("barcode", { required: watchedValues.barcode })}
                             error={errors?.barcode?.message}
                         />
 

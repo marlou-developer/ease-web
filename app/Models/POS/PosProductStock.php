@@ -27,4 +27,9 @@ class PosProductStock extends Model
     {
         return $this->hasOne(PosProduct::class, 'id', 'pos_product_id')->with('category','unit');
     }
+
+      public function pos_store(): HasOne
+    {
+        return $this->hasOne(PosStore::class, 'id', 'pos_store_id');
+    }
 }

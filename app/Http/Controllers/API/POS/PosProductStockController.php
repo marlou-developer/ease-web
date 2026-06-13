@@ -9,7 +9,9 @@ use App\Models\POS\PosProductStock;
 use App\Models\POS\PosPurchase;
 use App\Models\POS\PosStockMovement;
 use App\Models\POS\PosStore;
+use App\Models\POS\PosStoreTransaction;
 use App\Models\POS\PosWarehouseStock;
+use App\Models\POS\PosWarehouseTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -45,9 +47,37 @@ class PosProductStockController extends Controller
             'selling_price'       => $request->selling_price,
         ], ['stocks' => 0]);
         $store_stock->stocks += $request->stocks;
-        $store_stock->pos_supplier_id = $request->pos_supplier_id??null;
+        $store_stock->pos_supplier_id = $request->pos_supplier_id ?? null;
         $store_stock->selling_price = $request->selling_price;
         $store_stock->save();
+
+        $pos_warehouse_transaction =  PosWarehouseTransaction::create([
+            'transact_by' => Auth::id(),
+            'subscriber_id' => Auth::user()->subscriber_id,
+            'pos_warehouse_id' => $warehouse_stock->pos_warehouse_id,
+            'pos_product_stock_id' => $store_stock->id,
+            'pos_warehouse_stock_id' => $warehouse_stock->id,
+            'pos_purchase_id' => $request->id,
+            'stocks' => $request->stocks,
+            'status' => 'Deducted'
+        ]);
+        $transaction_id = str_pad($pos_warehouse_transaction->id, 10, '0', STR_PAD_LEFT);
+        $pos_warehouse_transaction->update([
+            'transaction_id' => $transaction_id
+        ]);
+
+        $pos_store_transaction =  PosStoreTransaction::create([
+            'transact_by' => Auth::id(),
+            'subscriber_id' => Auth::user()->subscriber_id,
+            'pos_warehouse_id' => $warehouse_stock->pos_warehouse_id,
+            'pos_product_stock_id' => $store_stock->id,
+            'pos_warehouse_stock_id' => $warehouse_stock->id,
+            'stocks' => $request->stocks,
+        ]);
+        $transaction_id = str_pad($pos_store_transaction->id, 10, '0', STR_PAD_LEFT);
+        $pos_store_transaction->update([
+            'transaction_id' => $transaction_id
+        ]);
         return response()->json([
             'success' => true,
             'message' => 'Stock successfully transferred to the retail store store.',
@@ -70,6 +100,18 @@ class PosProductStockController extends Controller
 
             $stock->stocks += $item['quantity'];
             $stock->save();
+            $pos_warehouse_transaction =  PosWarehouseTransaction::create([
+                'transact_by' => Auth::id(),
+                'subscriber_id' => Auth::user()->subscriber_id,
+                'pos_warehouse_id' => $base->pos_warehouse_id,
+                'pos_warehouse_stock_id' => $stock->id,
+                'pos_purchase_id' => $request->id,
+                'stocks' => $item['quantity'],
+            ]);
+            $transaction_id = str_pad($pos_warehouse_transaction->id, 10, '0', STR_PAD_LEFT);
+            $pos_warehouse_transaction->update([
+                'transaction_id' => $transaction_id
+            ]);
         }
 
         PosPurchase::where('id', $request->id)->update(['status' => 'received']);
