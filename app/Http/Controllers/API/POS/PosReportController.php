@@ -56,7 +56,7 @@ class PosReportController extends Controller
                 });
             })
             ->with(['sale', 'pos_product_stock']);
-
+        $query->latest('id');
         // 2. Conditionally execute the query
         // Using except('page') ensures that navigating to ?page=2 doesn't break pagination
         if (empty($request->except('page'))) {
