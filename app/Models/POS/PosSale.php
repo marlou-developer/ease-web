@@ -28,9 +28,9 @@ class PosSale extends Model
         'status'
     ];
 
-    public function customer()
+    public function customer(): HasOne
     {
-        return $this->belongsTo(PosCustomer::class);
+        return $this->hasOne(PosCustomer::class, 'id', 'customer_id');
     }
 
     public function sale_items(): HasMany

@@ -23,7 +23,7 @@ class PosStoreTransactionController extends Controller
                 // This checks the 'pos_product_stocks' table directly for the matching store ID
                 $query->where('pos_store_id', $store->id);
             })
-            ->with(['pos_sale', 'pos_warehouse', 'pos_product_stock','transact_by'])
+            ->with(['pos_sale', 'pos_warehouse', 'pos_product_stock', 'transact_by'])
             ->paginate(10);
 
         // 2. Transform the collection to append your custom attributes
@@ -32,9 +32,9 @@ class PosStoreTransactionController extends Controller
             if ($transaction->status === 'Added') {
                 $transaction->transfer_from = $transaction->pos_warehouse?->name;
                 $transaction->transfer_to = $transaction->pos_product_stock->pos_store->name;
-            }else if ($transaction->status === 'Deducted') {
+            } else if ($transaction->status === 'Deducted') {
                 $transaction->transfer_from = $transaction->pos_product_stock->pos_store->name;
-                $transaction->transfer_to = 'Customer';
+                $transaction->transfer_to = $transaction->pos_sale->customer->name ?? 'Customer';
             } else {
                 $transaction->transfer_from = null;
                 $transaction->transfer_to = null;

@@ -24,7 +24,7 @@ class PosStoreTransaction extends Model
 
     public function pos_sale(): HasOne
     {
-        return $this->hasOne(PosSale::class, 'id', 'pos_sale_id');
+        return $this->hasOne(PosSale::class, 'id', 'pos_sale_id')->with(['customer']);
     }
     public function pos_warehouse(): HasOne
     {
