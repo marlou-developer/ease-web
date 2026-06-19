@@ -15,7 +15,7 @@ export default function AddPurchasesSection() {
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
 
-    const { products, suppliers } = useSelector((state) => state.pos);
+    const { purchases_products, suppliers } = useSelector((state) => state.pos);
     const {
         register,
         handleSubmit,
@@ -149,7 +149,7 @@ export default function AddPurchasesSection() {
                                     render={({ field: { onChange, value, ...restField } }) => (
                                         <Select
                                             label="Select Product"
-                                            options={products?.map((product) => ({
+                                            options={purchases_products?.map((product) => ({
                                                 value: product.id,
                                                 label: product?.product?.name,
                                             })) || []}
@@ -161,7 +161,7 @@ export default function AddPurchasesSection() {
                                                 onChange(selectedValue); // 1. Update standard field value
 
                                                 // 2. Find the selected item's price from Redux store data
-                                                const selectedProduct = products?.find(
+                                                const selectedProduct = purchases_products?.find(
                                                     (prod) => String(prod.id) === String(selectedValue)
                                                 );
 

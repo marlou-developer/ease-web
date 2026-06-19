@@ -29,6 +29,7 @@ export const posSlice = createSlice({
         reports: {},
         pos_warehouse_transactions: [],
         pos_store_transactions: [],
+        purchases_products:[]
     },
     reducers: {
         setStoreStocks: (state, action) => {
@@ -92,6 +93,11 @@ export const posSlice = createSlice({
         setPosStoreTransactions: (state, action) => {
             state.pos_store_transactions = action.payload;
         },
+        setPurchasesProducts: (state, action) => {
+            state.purchases_products = action.payload;
+        },
+
+        
     },
 });
 
@@ -113,6 +119,7 @@ export const {
     setCategory,
     setCurrentPage,
     setAmountPaid,
+    setPurchasesProducts,
     setOverAllProductDiscount,
     setPosWarehouseTransactions,
     setPosStoreTransactions,

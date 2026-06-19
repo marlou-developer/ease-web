@@ -1,6 +1,7 @@
 import Table from "@/app/_components/table";
 import peso_value from "@/app/lib/peso-value";
 import { Edit2, Trash2 } from "lucide-react";
+import moment from "moment";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -55,6 +56,14 @@ export default function TransactionTableSection() {
             className: "font-bold text-gray-700",
             render: (row) => {
                 return row.transfer_to
+            },
+        },
+          {
+            header: "Transaction Date",
+            accessor: "name",
+            className: "font-bold text-gray-700",
+            render: (row) => {
+                return moment(row.created_at).format('LL')
             },
         },
         {

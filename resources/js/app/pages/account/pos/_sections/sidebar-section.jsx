@@ -48,15 +48,15 @@ export default function SidebarSection() {
         },
         {
             name: "Store Stocks",
-            href: "/account/pos/products",
+            href: "/account/pos/store_stocks",
             icon: FcShop,
-            current: path == "products",
+            current: path == "store_stocks",
         },
         {
             name: "Warehouse Stocks",
-            href: "/account/pos/warehouse",
+            href: "/account/pos/warehouse_stocks",
             icon: FcDeployment,
-            current: path == "warehouse",
+            current: path == "warehouse_stocks",
         },
         {
             name: "Purchases",

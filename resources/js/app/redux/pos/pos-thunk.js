@@ -25,7 +25,7 @@ export function get_pos_purchases_thunk() {
         dispatch(posSlice.actions.setSearchTerm(""));
         dispatch(posSlice.actions.setPurchases(res?.purchases));
         dispatch(posSlice.actions.setSuppliers(res?.suppliers));
-        dispatch(posSlice.actions.setProducts(res?.products));
+        dispatch(posSlice.actions.setPurchasesProducts(res?.products));
     };
 }
 
@@ -104,6 +104,8 @@ export function get_pos_store_transaction_thunk() {
     return async function (dispatch, getState) {
         const res = await get_pos_store_transaction_service();
         dispatch(posSlice.actions.setSearchTerm(""));
+        dispatch(posSlice.actions.setStoreStocks(res.stocks));
+        dispatch(posSlice.actions.setSuppliers(res.suppliers));
         dispatch(posSlice.actions.setPosStoreTransactions(res.data));
     };
 }

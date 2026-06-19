@@ -11,8 +11,11 @@ import React from "react";
 import { FcSearch } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function WarehouseSearchSection() {
-    const { app } = useSelector((store) => store.app);
+export default function ProductSearchSection() {
+    
+    const { app } = useSelector(
+        (store) => store.app
+    );
     const dispatch = useDispatch();
     return (
         <>
@@ -25,27 +28,18 @@ export default function WarehouseSearchSection() {
                         }}
                         name="categories"
                         label="Select Categories"
-                        options={
-                            app?.categories?.map((product) => ({
-                                value: product.id,
-                                label: product.name,
-                            })) || []
-                        }
+                        options={app?.categories?.map((product) => ({
+                            value: product.id,
+                            label: product.name,
+                        })) || []}
                     />
+
                     <div className="ml-1 mt-0.5 flex gap-3">
+
                         <button
                             className="hover:text-pink-500 transition-colors duration-200"
                             onClick={() =>
-                                router.visit(`/account/pos/warehouse/categories`)
-                            }
-                        >
-                            <u className="text-sm">View All Categories</u>
-                        </button>
-
-                         <button
-                            className="hover:text-pink-500 transition-colors duration-200"
-                            onClick={() =>
-                                router.visit(`/account/pos/warehouse/transactions`)
+                                router.visit(`/account/pos/store_stocks/transactions`)
                             }
                         >
                             <u className="text-sm">View All Transaction</u>
@@ -54,13 +48,14 @@ export default function WarehouseSearchSection() {
                 </div>
                 <div className=" flex-1">
                     <Input
-                        icon={<FcSearch className="text-2xl" />}
+                        icon={<FcSearch
+                            className="text-2xl"
+                        />}
                         onChange={(e) => {
                             dispatch(setSearchTerm(e.target.value));
                             dispatch(setCurrentPage(1));
                         }}
-                        label="Search products..."
-                    />
+                        label="Search products..." />
                 </div>
             </div>
         </>

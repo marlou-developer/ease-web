@@ -3,32 +3,63 @@
 namespace App\Http\Controllers\API\POS;
 
 use App\Http\Controllers\Controller;
+use App\Models\POS\PosProductStock;
 use App\Models\POS\PosStore;
 use App\Models\POS\PosStoreTransaction;
+use App\Models\POS\PosSupplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PosStoreTransactionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function index(Request $request)
     {
         $store = PosStore::where('id', session('pos_store_id'))->first();
 
-        // 1. Filter the database query BEFORE pagination using whereHas
-        $units = PosStoreTransaction::where('subscriber_id', Auth::user()->subscriber_id)
+        // 1. Initialize the query
+        $query = PosStoreTransaction::where('subscriber_id', Auth::user()->subscriber_id)
             ->whereHas('pos_product_stock', function ($query) use ($store) {
-                // This checks the 'pos_product_stocks' table directly for the matching store ID
                 $query->where('pos_store_id', $store->id);
-            })
-            ->with(['pos_sale', 'pos_warehouse', 'pos_product_stock', 'transact_by'])
-            ->paginate(10);
+            });
+
+        // --- SEARCH FILTERS APPLIED HERE ---
+
+        // Filter by Date Range (Format from React: "YYYY-MM-DD,YYYY-MM-DD")
+        $query->when($request->filled('date_range'), function ($q) use ($request) {
+            $dates = explode(',', $request->date_range);
+            if (count($dates) === 2) {
+                // Assuming you want to filter by the 'created_at' column. 
+                // We append times to ensure the entire end day is included.
+                $q->whereBetween('created_at', [$dates[0] . ' 00:00:00', $dates[1] . ' 23:59:59']);
+            }
+        });
+
+        // Filter by Product/Stock
+        // Note: Your React component names this `pos_warehouse_stock_id` but maps it to `store_stocks`. 
+        // Adjust the column name 'pos_product_stock_id' if your DB schema uses a different foreign key.
+        $query->when($request->filled('pos_warehouse_stock_id'), function ($q) use ($request) {
+            $q->where('pos_product_stock_id', $request->pos_warehouse_stock_id);
+        });
+
+        // Filter by Supplier
+        $query->when($request->filled('pos_supplier_id'), function ($q) use ($request) {
+            // Option A: If supplier ID is stored directly on the transaction table
+            // $q->where('pos_supplier_id', $request->pos_supplier_id);
+
+            // Option B: If supplier is attached to the product inside the stock relationship
+            $q->whereHas('pos_product_stock.product', function ($subQuery) use ($request) {
+                $subQuery->where('pos_supplier_id', $request->pos_supplier_id);
+            });
+        });
+        // Execute query, load relationships, and paginate
+        $units = $query->with(['pos_sale', 'pos_warehouse', 'pos_product_stock', 'transact_by'])
+            ->latest() // Optional but recommended to show newest first
+            ->paginate(10)
+            ->withQueryString(); // IMPORTANT: This keeps your URL search params intact when navigating pagination pages!
 
         // 2. Transform the collection to append your custom attributes
         $units->getCollection()->transform(function ($transaction) {
-
             if ($transaction->status === 'Added') {
                 $transaction->transfer_from = $transaction->pos_warehouse?->name;
                 $transaction->transfer_to = $transaction->pos_product_stock->pos_store->name;
@@ -43,9 +74,17 @@ class PosStoreTransactionController extends Controller
             return $transaction;
         });
 
+        $stocks = PosProductStock::where('pos_store_id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::user()->subscriber_id)
+            ->with('product')->get();
+
+        $suppliers = PosSupplier::where('subscriber_id', Auth::user()->subscriber_id)->latest()->get();
+
         return response()->json([
             'success' => true,
-            'data'    => $units
+            'data'    => $units,
+            'stocks'  => $stocks,
+            'suppliers' => $suppliers
         ]);
     }
 

@@ -60,12 +60,12 @@ Route::prefix('account')->middleware('auth')->group(function () {
             return Inertia::render('account/pos/pos/page');
         });
 
-        Route::prefix('products')->group(function () {
+        Route::prefix('store_stocks')->group(function () {
             Route::get('/', function () {
-                return Inertia::render('account/pos/products/page');
+                return Inertia::render('account/pos/store_stocks/page');
             });
             Route::get('/transactions', function () {
-                return Inertia::render('account/pos/products/transactions/page');
+                return Inertia::render('account/pos/store_stocks/transactions/page');
             });
         });
         Route::get('/stock_movements', function () {
@@ -83,15 +83,15 @@ Route::prefix('account')->middleware('auth')->group(function () {
         Route::get('/cash_register', function () {
             return Inertia::render('account/pos/cash_register/page');
         });
-        Route::prefix('warehouse')->group(function () {
+        Route::prefix('warehouse_stocks')->group(function () {
             Route::get('/', function () {
-                return Inertia::render('account/pos/warehouse/page');
+                return Inertia::render('account/pos/warehouse_stocks/page');
             });
             Route::get('/categories', function () {
-                return Inertia::render('account/pos/warehouse/categories/page');
+                return Inertia::render('account/pos/warehouse_stocks/categories/page');
             });
             Route::get('/transactions', function () {
-                return Inertia::render('account/pos/warehouse/transactions/page');
+                return Inertia::render('account/pos/warehouse_stocks/transactions/page');
             });
         });
         Route::get('/reports', function () {
