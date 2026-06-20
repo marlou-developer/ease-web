@@ -36,6 +36,15 @@ export default function TransactionTableSection() {
                 return row.transfer_from
             },
         },
+         {
+            header: "Product ID",
+            accessor: "name",
+            className: "font-bold text-gray-700",
+            render: (row) => {
+                console.log('row',row)
+                return row?.pos_product_stock?.id
+            },
+        },
         {
             header: "Product",
             accessor: "product",

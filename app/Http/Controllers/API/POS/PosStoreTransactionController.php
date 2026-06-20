@@ -36,10 +36,10 @@ class PosStoreTransactionController extends Controller
         });
 
         // Filter by Product/Stock
-        // Note: Your React component names this `pos_warehouse_stock_id` but maps it to `store_stocks`. 
+        // Note: Your React component names this `pos_product_stock_id` but maps it to `store_stocks`. 
         // Adjust the column name 'pos_product_stock_id' if your DB schema uses a different foreign key.
-        $query->when($request->filled('pos_warehouse_stock_id'), function ($q) use ($request) {
-            $q->where('pos_product_stock_id', $request->pos_warehouse_stock_id);
+        $query->when($request->filled('pos_product_stock_id'), function ($q) use ($request) {
+            $q->where('pos_product_stock_id', $request->pos_product_stock_id);
         });
 
         // Filter by Supplier
@@ -80,11 +80,20 @@ class PosStoreTransactionController extends Controller
 
         $suppliers = PosSupplier::where('subscriber_id', Auth::user()->subscriber_id)->latest()->get();
 
+        $stats = PosStoreTransaction::selectRaw("
+        SUM(CASE WHEN status = 'Added' THEN stocks ELSE 0 END) as total_added,
+        SUM(CASE WHEN status = 'Deducted' THEN stocks ELSE 0 END) as total_deducted,
+        (SUM(CASE WHEN status = 'Added' THEN stocks ELSE 0 END) - SUM(CASE WHEN status = 'Deducted' THEN stocks ELSE 0 END)) as current_stock
+    ")
+            ->where('subscriber_id', Auth::user()->subscriber_id)
+            ->where('pos_product_stock_id',  $request->pos_product_stock_id)
+            ->first();
         return response()->json([
             'success' => true,
+            'stats' => $stats,
             'data'    => $units,
             'stocks'  => $stocks,
-            'suppliers' => $suppliers
+            'suppliers' => $suppliers,
         ]);
     }
 

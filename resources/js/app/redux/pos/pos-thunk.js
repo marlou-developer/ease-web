@@ -107,5 +107,6 @@ export function get_pos_store_transaction_thunk() {
         dispatch(posSlice.actions.setStoreStocks(res.stocks));
         dispatch(posSlice.actions.setSuppliers(res.suppliers));
         dispatch(posSlice.actions.setPosStoreTransactions(res.data));
+        dispatch(posSlice.actions.setPosStoreStats(res.stats));
     };
 }
