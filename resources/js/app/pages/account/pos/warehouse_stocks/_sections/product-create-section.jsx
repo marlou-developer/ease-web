@@ -97,6 +97,7 @@ export default function ProductCreateSection() {
                 </div>
             </Button>
             <Modal
+                title="Product Registration"
                 width="max-w-4xl"
                 isOpen={open}
                 onClose={() => setOpen(false)}
@@ -165,8 +166,7 @@ export default function ProductCreateSection() {
                             )}
                         />
                     </div>
-                    <div className="flex gap-3">
-                        {/* Cost Price */}
+                    {/* <div className="flex gap-3">
                         <Input
                             label="Cost Price"
                             type="number"
@@ -178,7 +178,6 @@ export default function ProductCreateSection() {
                             error={errors.cost_price}
                         />
 
-                        {/* Stocks */}
                         <Input
                             label="Stocks"
                             type="number"
@@ -189,7 +188,7 @@ export default function ProductCreateSection() {
                             name="stocks"
                             error={errors.stocks}
                         />
-                    </div>
+                    </div> */}
 
                     {/* Image */}
                     <div className="flex w-full">

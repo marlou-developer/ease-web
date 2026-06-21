@@ -150,10 +150,21 @@ export default function AddPurchasesSection() {
                                     render={({ field: { onChange, value, ...restField } }) => (
                                         <Select
                                             label="Select Product"
-                                            options={purchases_products?.map((product) => ({
-                                                value: product.id,
-                                                label: `${product?.product?.name}  (Cost: ${product?.cost_price ?? 0} & Sell: ${product?.selling_price ?? 0})` || "Unnamed Product", // <-- Safety fallback added here
-                                            })) || []}
+                                            options={purchases_products?.map((product) => {
+                                                // 1. Safely grab the product name, with a fallback if it's missing
+                                                const productName = product?.product?.name || "Unnamed Product";
+
+                                                // 2. Format the label based on whether prices are 0
+                                                const labelText = (product?.cost_price == 0 && product?.selling_price == 0)
+                                                    ? `${productName} (New)`
+                                                    : `${productName} (Cost: ${product?.cost_price ?? 0} & Sell: ${product?.selling_price ?? 0})`;
+
+                                                // 3. Return the mapped object
+                                                return {
+                                                    value: product?.id,
+                                                    label: labelText,
+                                                };
+                                            }) || []}
                                             error={errors?.purchases?.[index]?.pos_warehouse_stock_id?.message}
                                             value={value}
                                             {...restField}
@@ -167,9 +178,12 @@ export default function AddPurchasesSection() {
                                                 );
 
                                                 if (selectedProduct) {
+                                                    console.log('selectedValue', selectedProduct)
                                                     // Safe fallback checks depending on how your state nesting is configured
                                                     const autoPrice = selectedProduct.cost_price ?? selectedProduct.product?.cost_price ?? "";
                                                     const autoSelling = selectedProduct.selling_price ?? selectedProduct.product?.selling_price ?? "";
+                                                    const autoCategory = selectedProduct.product.category_id ?? "";
+                                                    setValue(`purchases.${index}.category_id`, autoCategory);
                                                     setValue(`purchases.${index}.cost_price`, autoPrice);
                                                     setValue(`purchases.${index}.selling_price`, autoSelling);
                                                 }
@@ -181,6 +195,7 @@ export default function AddPurchasesSection() {
                                 <Controller
                                     name={`purchases.${index}.category_id`}
                                     control={control}
+                                    disabled
                                     rules={{ required: "Category is required" }}
                                     render={({ field: { onChange, value, ...restField } }) => (
                                         <Select
@@ -189,13 +204,13 @@ export default function AddPurchasesSection() {
                                                 value: res.id,
                                                 label: res?.name,
                                             })) || []}
+
                                             error={errors?.purchases?.[index]?.category_id?.message}
                                             value={value}
                                             {...restField}
                                             // Intercepting onChange handler to extract and set the price
                                             onChange={(selectedValue) => {
                                                 onChange(selectedValue); // 1. Update standard field value
-
 
                                             }}
                                         />

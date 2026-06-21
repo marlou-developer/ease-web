@@ -33,6 +33,7 @@ class PosPurchaseController extends Controller
         $products = PosWarehouseStock::where('pos_warehouse_id', $pos_store->pos_warehouse_id)
             ->where('subscriber_id', Auth::user()->subscriber_id)->with(['product'])
             ->latest()->get();
+            
         $categories = PosCategory::where('subscriber_id', Auth::user()->subscriber_id)->get();
 
         return response()->json([
