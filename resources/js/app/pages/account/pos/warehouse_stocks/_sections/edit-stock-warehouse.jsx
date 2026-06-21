@@ -99,6 +99,7 @@ export default function EditStockSection({ props_data }) {
                 </div>
             </Button>
             <Modal
+                title="Update Warehouse Stocks"
                 width="max-w-4xl"
                 isOpen={open}
                 onClose={() => setOpen(false)}

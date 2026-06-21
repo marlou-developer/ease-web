@@ -27,10 +27,12 @@ class PosProductStockController extends Controller
             ->where('subscriber_id', Auth::user()->subscriber_id)
             ->with('product')->get();
         $customers = PosCustomer::where('subscriber_id', Auth::user()->subscriber_id)->get();
-
+        $pos_store = PosStore::where('id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::user()->subscriber_id)->with(['pos_warehouse'])->first();
         return response()->json([
             'pos_product_stock' => $stocks,
-            'customers' => $customers
+            'customers' => $customers,
+            'warehouse_products' => $pos_store->pos_warehouse['pos_warehouse_stocks']
         ]);
     }
 

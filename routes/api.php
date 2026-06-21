@@ -21,7 +21,9 @@ use App\Http\Controllers\API\POS\PosWarehouseStockController;
 use App\Http\Controllers\API\POS\PosReportController;
 use App\Http\Controllers\API\POS\PosStoreTransactionController;
 use App\Http\Controllers\API\POS\PosWarehouseTransactionController;
+use App\Http\Controllers\API\POS\PosStoreRequestController;
 use App\Http\Controllers\UserController;
+use App\Models\POS\PosStoreRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -60,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('get_pos_users', [UserController::class, 'get_pos_users']);
     Route::apiResource('pos-warehouse-transaction', PosWarehouseTransactionController::class);
     Route::apiResource('pos-store-transaction', PosStoreTransactionController::class);
+    Route::apiResource('pos-store-requests', PosStoreRequestController::class);
 });
 
 

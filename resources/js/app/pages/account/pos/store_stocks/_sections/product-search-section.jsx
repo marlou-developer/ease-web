@@ -45,6 +45,14 @@ export default function ProductSearchSection() {
                         >
                             <u className="text-sm">View All Transaction</u>
                         </button>
+                        <button
+                            className="hover:text-pink-500 transition-colors duration-200"
+                            onClick={() =>
+                                router.visit(`/account/pos/store_stocks/my_product_requests`)
+                            }
+                        >
+                            <u className="text-sm">My Product Requests</u>
+                        </button>
                     </div>
                 </div>
                 <div className=" flex-1">

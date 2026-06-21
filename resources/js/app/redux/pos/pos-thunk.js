@@ -10,12 +10,22 @@ import { get_pos_users_service } from "@/app/services/index/users-service";
 import { get_pos_reports_service } from "@/app/services/pos/pos-report-service";
 import { get_pos_warehouse_transaction_service } from "@/app/services/pos/pos-warehouse-transaction";
 import { get_pos_store_transaction_service } from "@/app/services/pos/pos-store-transaction";
+import { get_pos_store_requests_service } from "@/app/services/pos/pos-store-requests-service";
 
 export function get_pos_suppliers_thunk() {
     return async function (dispatch, getState) {
         dispatch(posSlice.actions.setSearchTerm(""));
         const res = await get_pos_suppliers_service();
         dispatch(posSlice.actions.setSuppliers(res.data));
+    };
+}
+
+export function get_pos_store_requests_thunk() {
+    return async function (dispatch, getState) {
+        dispatch(posSlice.actions.setSearchTerm(""));
+        const res = await get_pos_store_requests_service();
+        dispatch(posSlice.actions.setProducts(res.warehouse_products));
+        dispatch(posSlice.actions.setProductRequests(res.requests));
     };
 }
 
@@ -64,6 +74,7 @@ export function get_pos_product_stocks_thunk() {
         dispatch(posSlice.actions.setSearchTerm(""));
         dispatch(posSlice.actions.setStoreStocks(res.pos_product_stock));
         dispatch(posSlice.actions.setCustomers(res.customers));
+        dispatch(posSlice.actions.setProducts(res.warehouse_products));
     };
 }
 
@@ -81,9 +92,6 @@ export function get_pos_reports_thunk() {
         dispatch(posSlice.actions.setReports(res.data));
     };
 }
-
-
-
 
 export function get_pos_users_thunk() {
     return async function (dispatch, getState) {

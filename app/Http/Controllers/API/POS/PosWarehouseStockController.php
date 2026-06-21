@@ -31,7 +31,7 @@ class PosWarehouseStockController extends Controller
             'success' => true,
             'categories' => $categories,
             'units' => $units,
-            'data' => $pos_store,
+            'data' => $pos_store->pos_warehouse['pos_warehouse_stocks'],
             'suppliers' => $suppliers
         ]);
     }
@@ -54,25 +54,12 @@ class PosWarehouseStockController extends Controller
             ]);
         }
 
-        if ($pos_product_stock && !$pos_product_stock->pos_supplier_id) {
-            $pos_product_stock->update([
-                'pos_supplier_id' => $request->pos_supplier_id
-            ]);
-        }
-
-        // 2. Update Product Stock (Wrapped in a null check!)
         if ($pos_product_stock) {
-            if ($pos_product_stock->cost_price == 0.00) {
-                $pos_product_stock->update([
-                    'cost_price' => $request->cost_price // ✅ Fixed
-                ]);
-            }
-
-            if ($pos_product_stock->selling_price == 0.00) {
-                $pos_product_stock->update([
-                    'selling_price' => $request->selling_price // ✅ Fixed
-                ]);
-            }
+            $pos_product_stock->update([
+                'cost_price' => $request->cost_price,
+                'selling_price' => $request->selling_price,
+                'pos_supplier_id' => $request->pos_supplier_id,
+            ]);
         }
 
         if ($pos_warehouse_stock) {

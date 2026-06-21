@@ -3,9 +3,8 @@ import Input from "@/app/_components/input";
 import Modal from "@/app/_components/modal";
 import Select from "@/app/_components/select";
 import { setAlert } from "@/app/redux/app-slice";
-import { get_pos_purchases_thunk } from "@/app/redux/pos/pos-thunk";
-import { add_pos_purchases_service } from "@/app/services/pos/pos-purchases-service";
-import store from "@/app/store/store";
+import { create_pos_store_requests_service } from "@/app/services/pos/pos-store-requests-service";
+import { router } from "@inertiajs/react";
 import { Plus, Trash2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
@@ -15,7 +14,7 @@ export default function ProductRequestStocksSection() {
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
 
-    const { store_stocks, suppliers, categories } = useSelector((state) => state.pos);
+    const { products, suppliers, categories } = useSelector((state) => state.pos);
     const {
         register,
         handleSubmit,
@@ -23,10 +22,11 @@ export default function ProductRequestStocksSection() {
         control,
         watch,
         setValue,
+        getValues, // <-- 1. Added getValues here
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
-            purchases: [
+            requests: [
                 { pos_warehouse_stock_id: "", quantity: "" }
             ],
         },
@@ -35,7 +35,7 @@ export default function ProductRequestStocksSection() {
     console.log('categories', categories)
     const { fields, append, remove } = useFieldArray({
         control,
-        name: "purchases",
+        name: "requests",
     });
 
     const handleAddRow = () => {
@@ -48,25 +48,25 @@ export default function ProductRequestStocksSection() {
         }
     };
 
-
-
     const onSubmit = async (formData) => {
         try {
-            // await add_pos_purchases_service(formData);
-            // await store.dispatch(get_pos_purchases_thunk());
-            // setOpen(false);
-            // reset();
-            // dispatch(
-            //     setAlert({
-            //         type: "success",
-            //         title: "Purchases added successfully!",
-            //     })
-            // );
+
+            console.log('formData', formData)
+            await create_pos_store_requests_service(formData);
+            router.visit('/account/pos/store_stocks/my_product_requests')
+            setOpen(false);
+            reset();
+            dispatch(
+                setAlert({
+                    type: "success",
+                    title: "Request added successfully!",
+                })
+            );
         } catch (error) {
             dispatch(
                 setAlert({
                     type: "danger",
-                    title: "Failed to add purchases.",
+                    title: "Failed to add request.",
                 })
             );
             console.error("Error creating purchase:", error);
@@ -84,7 +84,7 @@ export default function ProductRequestStocksSection() {
                 outlined
             >
                 <div className="flex gap-2 items-center justify-center">
-                    <Plus size={18} /> Request Products
+                    <Plus size={18} /> Request from Warehouse
                 </div>
             </Button>
 
@@ -115,34 +115,33 @@ export default function ProductRequestStocksSection() {
                             <div className="flex-1 flex gap-3 w-full">
                                 <div className="flex-1">
                                     <Controller
-                                        name={`purchases.${index}.pos_warehouse_stock_id`}
+                                        name={`requests.${index}.pos_warehouse_stock_id`}
                                         control={control}
                                         rules={{ required: "Product is required" }}
                                         render={({ field: { onChange, value, ...restField } }) => (
                                             <Select
                                                 label="Select Product"
-                                                options={store_stocks?.map((product) => ({
+                                                options={products?.map((product) => ({
                                                     value: product.id,
-                                                    label: `${product?.product?.name}  (Cost: ${product?.cost_price ?? 0}, Sell: ${product?.selling_price ?? 0} & Quantity: ${product?.quantity ?? 0})` || "Unnamed Product", // <-- Safety fallback added here
+                                                    label: `${product?.product?.name}  (Cost: ${product?.cost_price ?? 0}, Sell: ${product?.selling_price ?? 0} & Stocks: ${product?.stocks ?? 0})` || "Unnamed Product",
                                                 })) || []}
-                                                error={errors?.purchases?.[index]?.pos_warehouse_stock_id?.message}
+                                                error={errors?.requests?.[index]?.pos_warehouse_stock_id?.message}
                                                 value={value}
                                                 {...restField}
-                                                // Intercepting onChange handler to extract and set the price
                                                 onChange={(selectedValue) => {
-                                                    onChange(selectedValue); // 1. Update standard field value
+                                                    onChange(selectedValue);
 
-                                                    // 2. Find the selected item's price from Redux store data
-                                                    const selectedProduct = store_stocks?.find(
+                                                    const selectedProduct = products?.find(
                                                         (prod) => String(prod.id) === String(selectedValue)
                                                     );
 
                                                     if (selectedProduct) {
-                                                        // Safe fallback checks depending on how your state nesting is configured
                                                         const autoPrice = selectedProduct.cost_price ?? selectedProduct.product?.cost_price ?? "";
                                                         const autoSelling = selectedProduct.selling_price ?? selectedProduct.product?.selling_price ?? "";
-                                                        setValue(`purchases.${index}.cost_price`, autoPrice);
-                                                        setValue(`purchases.${index}.selling_price`, autoSelling);
+                                                        const autoStocks = selectedProduct.stocks ?? selectedProduct.product?.stocks ?? "";
+                                                        setValue(`requests.${index}.cost_price`, autoPrice);
+                                                        setValue(`requests.${index}.selling_price`, autoSelling);
+                                                        setValue(`requests.${index}.stocks`, autoStocks);
                                                     }
                                                 }}
                                             />
@@ -151,15 +150,37 @@ export default function ProductRequestStocksSection() {
                                 </div>
                                 <div className="w-1/4">
                                     <Input
-                                        label="Qty"
-                                        name={`purchases.${index}.quantity`}
+                                        label="Stocks"
+                                        name={`requests.${index}.stocks`}
                                         type="number"
                                         min="1"
-                                        {...register(`purchases.${index}.quantity`, {
+                                        disabled
+                                        {...register(`requests.${index}.stocks`, {
                                             required: "Required",
                                             min: { value: 1, message: "Min 1" }
                                         })}
-                                        error={errors?.purchases?.[index]?.quantity?.message}
+                                        error={errors?.requests?.[index]?.stocks?.message}
+                                    />
+                                </div>
+                                <div className="w-1/4">
+                                    <Input
+                                        label="Qty"
+                                        name={`requests.${index}.quantity`}
+                                        type="number"
+                                        min="1"
+                                        {...register(`requests.${index}.quantity`, {
+                                            required: "Required",
+                                            min: { value: 1, message: "Min 1" },
+                                            // 2. Added custom validation here
+                                            validate: (value) => {
+                                                const currentStocks = getValues(`requests.${index}.stocks`);
+                                                // Prevent validation from running if stocks haven't been selected yet
+                                                if (currentStocks === undefined || currentStocks === "") return true;
+
+                                                return Number(value) <= Number(currentStocks) || `Exceeds stock (${currentStocks})`;
+                                            }
+                                        })}
+                                        error={errors?.requests?.[index]?.quantity?.message}
                                     />
                                 </div>
 
@@ -197,7 +218,7 @@ export default function ProductRequestStocksSection() {
                             variant="primary"
                             loading={isSubmitting}
                         >
-                            Save Purchases
+                            Save Requests
                         </Button>
                     </div>
                 </form>

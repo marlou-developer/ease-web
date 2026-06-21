@@ -3,20 +3,21 @@ import peso_value from "@/app/lib/peso-value";
 import { Edit2, Trash2 } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import StockingSection from "./stocking-section";
-import EditStockSection from "./edit-stock-warehouse";
+// import StockingSection from "./stocking-section";
+// import EditStockSection from "./edit-stock-warehouse";
 // import StockingSection from "..."; // Make sure to import this if you use it!
 
-export default function WarehouseTableSection() {
-    const { searchTerm, category, currentPage, products } = useSelector(
+export default function RequestsTableSection() {
+    const { searchTerm, category, currentPage, product_requests } = useSelector(
         (store) => store.pos
     );
     const dispatch = useDispatch();
     const itemsPerPage = 10;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    
-    const filteredProducts = products?.filter((p) => {
+    console.log('requests', product_requests)
+
+    const filteredRequests = product_requests?.data?.filter((p) => {
         const term = searchTerm.toLowerCase();
         const searchableFields = [
             p?.id,
@@ -41,44 +42,45 @@ export default function WarehouseTableSection() {
         return matchesSearch && matchesCat;
     });
 
-    const currentItems = filteredProducts?.slice(
+    const currentItems = filteredRequests?.slice(
         indexOfFirstItem,
         indexOfLastItem
     );
 
     const columns = [
         {
-            header: 'ID',
+            header: 'Request ID',
             accessor: 'id',
             className: 'font-bold text-slate-800',
             render: (row) => row?.id
         },
 
         {
-            header: 'Barcode',
+            header: 'Requested By',
             accessor: 'barcode',
             className: 'font-bold text-gray-700',
             render: (row) => row.product?.barcode
         },
         {
-            header: 'Products',
+            header: 'Received By',
             accessor: 'barcode',
             className: 'font-bold text-gray-700',
-            render: (row) => row.product?.name
+            render: (row) => row.product?.barcode
         },
         {
-            header: 'Stocks',
-            accessor: 'stocks',
+            header: 'Processed By',
+            accessor: 'barcode',
+            className: 'font-bold text-gray-700',
+            render: (row) => row.product?.barcode
+        },
+        {
+            header: 'Quantity',
+            accessor: 'quantity',
             className: 'font-bold text-gray-700'
         },
         {
-            header: 'Cost Price',
-            accessor: 'cost_price',
-            className: 'font-bold text-gray-700'
-        },
-        {
-            header: 'Selling Price',
-            accessor: 'selling_price',
+            header: 'Status',
+            accessor: 'status',
             className: 'font-bold text-gray-700'
         },
         {
@@ -88,7 +90,7 @@ export default function WarehouseTableSection() {
             className: 'font-bold text-gray-700',
             render: (row) => {
                 return <div className="flex gap-3">
-                    <EditStockSection props_data={row} />
+                    {/* <EditStockSection props_data={row} /> */}
                     {/* <StockingSection props_data={row} /> */}
                 </div>
             }
