@@ -152,7 +152,7 @@ export default function AddPurchasesSection() {
                                             label="Select Product"
                                             options={purchases_products?.map((product) => ({
                                                 value: product.id,
-                                                label: product?.product?.name,
+                                                label: `${product?.product?.name}  (Cost: ${product?.cost_price ?? 0} & Sell: ${product?.selling_price ?? 0})` || "Unnamed Product", // <-- Safety fallback added here
                                             })) || []}
                                             error={errors?.purchases?.[index]?.pos_warehouse_stock_id?.message}
                                             value={value}

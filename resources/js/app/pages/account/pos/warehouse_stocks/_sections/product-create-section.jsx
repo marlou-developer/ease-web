@@ -16,7 +16,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function ProductCreateSection() {
-    const { categories } = useSelector(
+    const { categories, units } = useSelector(
         (store) => store.pos
     );
     const [open, setOpen] = useState(false);
@@ -26,6 +26,7 @@ export default function ProductCreateSection() {
         handleSubmit,
         reset,
         control,
+        watch,
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
@@ -39,6 +40,7 @@ export default function ProductCreateSection() {
         },
     });
 
+    const watchValues = watch()
     const onSubmit = async (data) => {
         try {
             const formData = new FormData();
@@ -144,6 +146,7 @@ export default function ProductCreateSection() {
                             )}
                         />
 
+
                         <Controller
                             name="unit_id"
                             control={control}
@@ -151,10 +154,11 @@ export default function ProductCreateSection() {
                             render={({ field }) => (
                                 <Select
                                     label="Select Unit"
-                                    options={[
-                                        { value: 1, label: "Hello" },
-                                        { value: 2, label: "World" },
-                                    ]}
+                                    disabled={watchValues.unit_id}
+                                    options={units?.map(res => ({
+                                        label: res.name,
+                                        value: res.id
+                                    }))}
                                     error={errors.unit_id}
                                     {...field} // passes value & onChange
                                 />

@@ -42,6 +42,7 @@ Route::prefix('administrator')->middleware('auth')->group(function () {
 });
 
 Route::prefix('account')->middleware('auth')->group(function () {
+    Route::get('get_all_data', [PosProductController::class, 'get_all_data']);
     Route::prefix('pos')->group(function () {
         $storeId = session('pos_store_id');
         if (!$storeId) {

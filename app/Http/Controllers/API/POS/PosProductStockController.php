@@ -161,7 +161,7 @@ class PosProductStockController extends Controller
         }
 
         if (!$pos_stock) {
-            $pos_product_stock = PosProductStock::create([
+            PosProductStock::create([
                 'pos_store_id' => session('pos_store_id'),
                 'pos_product_id' => $pos_product->id,
                 'subscriber_id' => Auth::user()->subscriber_id,

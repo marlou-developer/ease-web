@@ -89,7 +89,7 @@ export default function WarehouseTableSection() {
             render: (row) => {
                 return <div className="flex gap-3">
                     <EditStockSection props_data={row} />
-                    <StockingSection props_data={row} />
+                    {/* <StockingSection props_data={row} /> */}
                 </div>
             }
         },

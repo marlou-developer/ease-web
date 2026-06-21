@@ -7,6 +7,7 @@ use App\Models\POS\PosCategory;
 use App\Models\POS\PosCustomer;
 use App\Models\POS\PosProduct;
 use App\Models\POS\PosProductStock;
+use App\Models\POS\PosSupplier;
 use App\Models\POS\PosWarehouseStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,9 +24,9 @@ class PosProductController extends Controller
         return response()->json($products, 200);
     }
 
-    public function get_products()
+    public function get_all_data()
     {
-        $filename = public_path("csv/customers.csv");
+        $filename = public_path("csv/products.csv");
         $products = [];
 
         if (!file_exists($filename)) {
@@ -61,38 +62,49 @@ class PosProductController extends Controller
         $authId = Auth::id();
         $storeId = session('pos_store_id');
 
-        // foreach ($products as $key => $value) {
-        //     $pos_product = PosProduct::updateOrCreate(
-        //         ['name' => $value->name],
-        //         ['image' => $value->file]
-        //     );
+        foreach ($products as $key => $value) {
+            $pos_product = PosProduct::updateOrCreate(
+                ['name' => $value->name],
+                [
+                    'image' => $value->file,
+                    'category_id' => $value->category_id,
+                    'unit_id' => 1
+                ]
+            );
 
-        //     PosProductStock::updateOrCreate(
-        //         [
-        //             'pos_store_id' => $storeId,
-        //             'pos_product_id' => $pos_product->id,
-        //             'subscriber_id' => $authId,
-        //         ],
-        //         [
-        //             'stocks' => 0,
-        //             'cost_price' => $value->cost ?? $value->cost == "NULL" ? 0.00 : 0.00,
-        //             'selling_price' => $value->srp ?? $value->cost == "NULL" ? 0.00 : 0.00,
-        //             'discount' => 0,
-        //         ]
-        //     );
+            // 1. Safely parse the decimal values. 
+            // If it is a valid number, use it. If it is "NULL" or blank, default to 0.00.
+            $costPrice = is_numeric($value->cost) ? (float) $value->cost : 0.00;
+            $sellingPrice = is_numeric($value->srp) ? (float) $value->srp : 0.00;
 
-        //     PosWarehouseStock::updateOrCreate(
-        //         [
-        //             'pos_warehouse_id' => 1,
-        //             'pos_product_id' => $pos_product->id,
-        //             'subscriber_id' => $authId,
-        //         ],
-        //         [
-        //             'cost_price' => $value->cost ?? $value->cost == "NULL" ? 0.00 : 0.00,
-        //             'stocks' => 0,
-        //         ]
-        //     );
-        // }
+            // 2. Pass the cleaned variables into your queries
+            PosProductStock::updateOrCreate(
+                [
+                    'pos_store_id' => $storeId,
+                    'pos_product_id' => $pos_product->id,
+                    'subscriber_id' => $authId,
+                ],
+                [
+                    'stocks' => 0,
+                    'cost_price' => $costPrice,
+                    'selling_price' => $sellingPrice,
+                    'discount' => 0,
+                ]
+            );
+
+            PosWarehouseStock::updateOrCreate(
+                [
+                    'pos_warehouse_id' => 1, // Make sure hardcoding '1' here is intentional!
+                    'pos_product_id' => $pos_product->id,
+                    'subscriber_id' => $authId,
+                ],
+                [
+                    'cost_price' => $costPrice,
+                    'selling_price' => $sellingPrice,
+                    'stocks' => 0,
+                ]
+            );
+        }
 
         // foreach ($products as $key => $value) {
         //     $addressParts = [
@@ -113,6 +125,15 @@ class PosProductController extends Controller
         //         [
         //             'address' => $fullAddress
         //         ]
+        //     );
+        // }
+
+        // foreach ($products as $key => $value) {
+        //     PosSupplier::updateOrCreate(
+        //         [
+        //             'name' => $value->name,
+        //             'subscriber_id' => $authId,
+        //         ],
         //     );
         // }
         return response()->json($products);

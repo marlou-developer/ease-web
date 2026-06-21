@@ -10,9 +10,10 @@ import { Search } from "lucide-react";
 import React from "react";
 import { FcSearch } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
+import ProductRequestStocksSection from "./product-request-stocks-section";
 
 export default function ProductSearchSection() {
-    
+
     const { app } = useSelector(
         (store) => store.app
     );
@@ -56,6 +57,9 @@ export default function ProductSearchSection() {
                             dispatch(setCurrentPage(1));
                         }}
                         label="Search products..." />
+                </div>
+                <div>
+                    <ProductRequestStocksSection />
                 </div>
             </div>
         </>

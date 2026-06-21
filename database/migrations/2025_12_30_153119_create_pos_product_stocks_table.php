@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('pos_product_stocks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pos_store_id')->constrained('pos_stores');
-            $table->foreignId('pos_product_id')->constrained('pos_products');
-            $table->foreignId('pos_supplier_id')->constrained('pos_suppliers');
-            $table->foreignId('subscriber_id')->constrained('pos_subscribers');
+            $table->foreignId('pos_store_id')->nullable()->constrained('pos_stores');
+            $table->foreignId('pos_product_id')->nullable()->constrained('pos_products');
+            $table->foreignId('pos_supplier_id')->nullable()->constrained('pos_suppliers');
+            $table->foreignId('subscriber_id')->nullable()->constrained('pos_subscribers');
             $table->bigInteger('stocks')->default(0);
             $table->decimal('cost_price', 10, 2)->default(0);
             $table->decimal('selling_price', 10, 2)->default(0);
