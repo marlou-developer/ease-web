@@ -31,7 +31,10 @@ class PosWarehouseTransaction extends Model
     {
         return $this->hasOne(PosProductStock::class, 'id', 'pos_product_stock_id')->with(['pos_store', 'product']);
     }
-
+    public function pos_warehouse_stock(): HasOne
+    {
+        return $this->hasOne(PosWarehouseStock::class, 'id', 'pos_warehouse_stock_id')->with([ 'product']);
+    }
 
     public function pos_warehouse(): HasOne
     {

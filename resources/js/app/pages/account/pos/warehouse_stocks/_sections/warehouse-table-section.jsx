@@ -17,11 +17,27 @@ export default function WarehouseTableSection() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
     const filteredProducts = products?.pos_warehouse?.pos_warehouse_stocks?.filter((p) => {
-        const matchesSearch = p?.product?.name
-            ?.toLowerCase()
-            ?.includes(searchTerm?.toLowerCase());
+        const term = searchTerm.toLowerCase();
+        const searchableFields = [
+            p?.id,
+            p?.product?.name,
+            p?.product?.barcode,
+            p?.cost_price,
+            p?.selling_price,
+            p?.stocks,
+            p?.product?.category?.name,
+            p?.product?.unit?.name
+        ];
+
+        // 2. Check if ANY of those fields contain the search term
+        const matchesSearch = searchableFields.some(field =>
+            // Convert the field to a string safely (handling nulls) and check for the term
+            String(field ?? '').toLowerCase().includes(term)
+        );
+
         const matchesCat =
             category === "All Categories" || p.category_id === category;
+
         return matchesSearch && matchesCat;
     });
 
@@ -32,8 +48,10 @@ export default function WarehouseTableSection() {
 
     const columns = [
         {
-            header: 'REFERENCE #',
-            accessor: 'id'
+            header: 'ID',
+            accessor: 'id',
+            className: 'font-bold text-slate-800',
+            render: (row) => row?.id
         },
 
         {

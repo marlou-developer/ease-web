@@ -68,6 +68,7 @@ export default function ViewPurchasesSection({ props_data }) {
         }
     };
 
+    console.log('props_data',props_data)
     return (
         <>
             <Button

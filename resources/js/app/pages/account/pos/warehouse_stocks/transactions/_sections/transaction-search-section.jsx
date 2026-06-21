@@ -13,7 +13,7 @@ const getDefaultValuesFromUrl = () => {
 
     const params = new URLSearchParams(window.location.search);
     return {
-        pos_product_stock_id: params.get('pos_product_stock_id') || '',
+        pos_warehouse_stock_id: params.get('pos_warehouse_stock_id') || '',
         pos_supplier_id: params.get('pos_supplier_id') || '',
         date_range: params.get('date_range') || '',
     };
@@ -42,7 +42,7 @@ export default function TransactionSearchSection() {
         <form onSubmit={handleSubmit(search_data)} className='flex gap-3 items-start'>
 
             <Controller
-                name="pos_product_stock_id"
+                name="pos_warehouse_stock_id"
                 control={control}
                 rules={{ required: false }} // Usually false for search filters so users can view all
                 render={({ field: { onChange, value, ...restField } }) => (
@@ -51,11 +51,11 @@ export default function TransactionSearchSection() {
                         options={[
                             { value: "", label: "All Products" }, // Added reset option
                             ...(store_stocks?.map((product) => ({
-                                value: String(product.id),
-                                label: `${product?.product?.name}  (Cost: ${product?.cost_price ?? 0} & Sell: ${product?.selling_price ?? 0})` || "Unnamed Product", // <-- Safety fallback added here
+                                value: String(product.id), 
+                                label: `${product?.product?.name}  (Cost: ${product?.cost_price??0} & Sell: ${product?.selling_price??0})` || "Unnamed Product", // <-- Safety fallback added here
                             })) || [])
                         ]}
-                        error={errors?.pos_product_stock_id?.message}
+                        error={errors?.pos_warehouse_stock_id?.message}
                         value={value}
                         {...restField}
                         onChange={(selectedValue) => {
@@ -75,8 +75,8 @@ export default function TransactionSearchSection() {
                         options={[
                             { value: "", label: "All Suppliers" }, // Added reset option
                             ...(suppliers?.map((supplier) => ({
-                                value: String(supplier.id),
-                                label: supplier.name || "Unnamed Supplier", // <-- Safety fallback added here
+                                value: String(supplier.id), 
+                                label: `${supplier.name}` || "Unnamed Supplier", // <-- Safety fallback added here
                             })) || [])
                         ]}
                         error={errors?.pos_supplier_id?.message}

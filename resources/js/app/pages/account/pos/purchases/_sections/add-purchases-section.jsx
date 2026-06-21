@@ -15,7 +15,7 @@ export default function AddPurchasesSection() {
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
 
-    const { purchases_products, suppliers } = useSelector((state) => state.pos);
+    const { purchases_products, suppliers, categories } = useSelector((state) => state.pos);
     const {
         register,
         handleSubmit,
@@ -27,18 +27,19 @@ export default function AddPurchasesSection() {
     } = useForm({
         defaultValues: {
             purchases: [
-                { pos_warehouse_stock_id: "", quantity: "", cost_price: "", subtotal: "" }
+                { pos_warehouse_stock_id: "", quantity: "", cost_price: "", subtotal: "", selling_price: "", category_id: "" }
             ],
         },
     });
 
+    console.log('categories', categories)
     const { fields, append, remove } = useFieldArray({
         control,
         name: "purchases",
     });
 
     const handleAddRow = () => {
-        append({ pos_warehouse_stock_id: "", quantity: "", cost_price: "" });
+        append({ pos_warehouse_stock_id: "", quantity: "", cost_price: "", selling_price: "", category_id: "" });
     };
 
     const handleDeleteRow = (index) => {
@@ -139,9 +140,9 @@ export default function AddPurchasesSection() {
 
                     {/* Render Dynamic Rows */}
                     {fields.map((field, index) => (
-                        <div key={field.id} className="flex gap-3 items-center justify-end">
+                        <div key={field.id} className="flex gap-3 flex-col items-center justify-end">
                             {/* Product Select */}
-                            <div className="flex-1">
+                            <div className="flex-1 flex gap-3 w-full">
                                 <Controller
                                     name={`purchases.${index}.pos_warehouse_stock_id`}
                                     control={control}
@@ -168,56 +169,99 @@ export default function AddPurchasesSection() {
                                                 if (selectedProduct) {
                                                     // Safe fallback checks depending on how your state nesting is configured
                                                     const autoPrice = selectedProduct.cost_price ?? selectedProduct.product?.cost_price ?? "";
+                                                    const autoSelling = selectedProduct.selling_price ?? selectedProduct.product?.selling_price ?? "";
                                                     setValue(`purchases.${index}.cost_price`, autoPrice);
+                                                    setValue(`purchases.${index}.selling_price`, autoSelling);
                                                 }
                                             }}
                                         />
                                     )}
                                 />
-                            </div>
 
-                            {/* Quantity */}
-                            <div className="w-52">
-                                <Input
-                                    label="Qty"
-                                    name={`purchases.${index}.quantity`}
-                                    type="number"
-                                    min="1"
-                                    {...register(`purchases.${index}.quantity`, {
-                                        required: "Required",
-                                        min: { value: 1, message: "Min 1" }
-                                    })}
-                                    error={errors?.purchases?.[index]?.quantity?.message}
+                                <Controller
+                                    name={`purchases.${index}.category_id`}
+                                    control={control}
+                                    rules={{ required: "Category is required" }}
+                                    render={({ field: { onChange, value, ...restField } }) => (
+                                        <Select
+                                            label="Select Category"
+                                            options={categories?.map((res) => ({
+                                                value: res.id,
+                                                label: res?.name,
+                                            })) || []}
+                                            error={errors?.purchases?.[index]?.category_id?.message}
+                                            value={value}
+                                            {...restField}
+                                            // Intercepting onChange handler to extract and set the price
+                                            onChange={(selectedValue) => {
+                                                onChange(selectedValue); // 1. Update standard field value
+
+
+                                            }}
+                                        />
+                                    )}
                                 />
                             </div>
+                            <div className="flex gap-3 w-full">
 
-                            {/* Cost Price */}
-                            {/* <div className="w-52">
-                                <Input
-                                    label="Cost Price"
-                                    name={`purchases.${index}.cost_price`}
-                                    type="number"
-                                    step="0.01"
-                                    min="0"
-                                    {...register(`purchases.${index}.cost_price`, {
-                                        required: "Required",
-                                    })}
-                                    disabled
-                                    error={errors?.purchases?.[index]?.cost_price?.message}
-                                />
-                            </div> */}
+                                {/* Quantity */}
+                                <div className="flex-1">
+                                    <Input
+                                        label="Qty"
+                                        name={`purchases.${index}.quantity`}
+                                        type="number"
+                                        min="1"
+                                        {...register(`purchases.${index}.quantity`, {
+                                            required: "Required",
+                                            min: { value: 1, message: "Min 1" }
+                                        })}
+                                        error={errors?.purchases?.[index]?.quantity?.message}
+                                    />
+                                </div>
 
-                            {/* Remove Row Button */}
-                            <div className="pb-1">
-                                <button
-                                    type="button"
-                                    onClick={() => handleDeleteRow(index)}
-                                    disabled={fields.length === 1}
-                                    className="p-2 text-red-500 hover:bg-red-100 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                    title="Remove row"
-                                >
-                                    <Trash2 className="text-xl" />
-                                </button>
+                                {/* Cost Price */}
+                                <div className="flex-1">
+                                    <Input
+                                        label="Cost Price"
+                                        name={`purchases.${index}.cost_price`}
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        {...register(`purchases.${index}.cost_price`, {
+                                            required: false,
+                                        })}
+                                        disabled
+                                        error={errors?.purchases?.[index]?.cost_price?.message}
+                                    />
+                                </div>
+
+                                <div className="flex-1">
+                                    <Input
+                                        label="Selling Price"
+                                        name={`purchases.${index}.selling_price`}
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        {...register(`purchases.${index}.selling_price`, {
+                                            required: false,
+                                        })}
+                                        disabled
+                                        error={errors?.purchases?.[index]?.selling_price?.message}
+                                    />
+                                </div>
+
+                                {/* Remove Row Button */}
+                                <div className="pb-1">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleDeleteRow(index)}
+                                        disabled={fields.length === 1}
+                                        className="p-2 text-red-500 hover:bg-red-100 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        title="Remove row"
+                                    >
+                                        <Trash2 className="text-xl" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     ))}

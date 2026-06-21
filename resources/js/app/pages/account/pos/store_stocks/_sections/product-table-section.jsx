@@ -16,11 +16,29 @@ export default function ProductTableSection() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const filteredProducts = store_stocks?.filter((p) => {
-        const matchesSearch = p?.product?.name
-            ?.toLowerCase()
-            ?.includes(searchTerm.toLowerCase());
+        const term = searchTerm.toLowerCase();
+
+        // 1. Gather all the fields you want to search through
+        const searchableFields = [
+            p?.id,
+            p?.product?.name,
+            p?.product?.barcode,
+            p?.cost_price,
+            p?.selling_price,
+            p?.stocks,
+            p?.product?.category?.name,
+            p?.product?.unit?.name
+        ];
+
+        // 2. Check if ANY of those fields contain the search term
+        const matchesSearch = searchableFields.some(field =>
+            // Convert the field to a string safely (handling nulls) and check for the term
+            String(field ?? '').toLowerCase().includes(term)
+        );
+
         const matchesCat =
             category === "All Categories" || p.category_id === category;
+
         return matchesSearch && matchesCat;
     });
 
@@ -34,6 +52,12 @@ export default function ProductTableSection() {
 
     // Define exactly how each column should look and behave
     const columns = [
+        {
+            header: 'ID',
+            accessor: 'id',
+            className: 'font-bold text-slate-800',
+            render: (row) => row?.id
+        },
         {
             header: 'Image',
             accessor: 'image',
@@ -61,13 +85,13 @@ export default function ProductTableSection() {
             header: 'Cost Price',
             accessor: 'cost_price',
             className: 'font-semibold text-slate-900',
-            render: (row) => peso_value(row?.cost_price??0)
+            render: (row) => peso_value(row?.cost_price ?? 0)
         },
         {
             header: 'Selling Price',
             accessor: 'selling_price',
             className: 'font-semibold text-slate-900',
-            render: (row) => peso_value(row?.selling_price??0)
+            render: (row) => peso_value(row?.selling_price ?? 0)
         },
         {
             header: 'Stocks',
@@ -106,9 +130,9 @@ export default function ProductTableSection() {
 
     return (
         <>
-            <Table 
-                columns={columns} 
-                data={currentItems} 
+            <Table
+                columns={columns}
+                data={currentItems}
             />
         </>
     );

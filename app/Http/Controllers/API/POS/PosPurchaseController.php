@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\POS;
 
 use App\Http\Controllers\Controller;
+use App\Models\POS\PosCategory;
+use App\Models\POS\PosProduct;
 use App\Models\POS\PosProductStock;
 use App\Models\POS\PosPurchase;
 use App\Models\POS\PosPurchaseItem;
@@ -31,12 +33,14 @@ class PosPurchaseController extends Controller
         $products = PosWarehouseStock::where('pos_warehouse_id', $pos_store->pos_warehouse_id)
             ->where('subscriber_id', Auth::user()->subscriber_id)->with(['product'])
             ->latest()->get();
+        $categories = PosCategory::where('subscriber_id', Auth::user()->subscriber_id)->get();
 
         return response()->json([
             'success' => true,
             'purchases' => $purchases,
             'suppliers' => $suppliers,
-            'products' => $products
+            'products' => $products,
+            'categories' => $categories
         ]);
     }
 
@@ -60,7 +64,15 @@ class PosPurchaseController extends Controller
                 'pos_purchase_id' => $purchase->id,
                 'pos_warehouse_stock_id' => $item['pos_warehouse_stock_id'],
                 'quantity' => $item['quantity'],
+                'cost_price' => $item['cost_price'],
+                'selling_price' => $item['selling_price'],
             ]);
+            $warehouse_stock = PosWarehouseStock::where('id', $item['pos_warehouse_stock_id'])->with(['product'])->first();
+            if ($warehouse_stock && !$warehouse_stock->product->category_id) {
+                PosProduct::where('id', $warehouse_stock->pos_product_id)->update([
+                    'category_id' => $item['category_id']
+                ]);
+            }
         }
 
         return response()->json([
