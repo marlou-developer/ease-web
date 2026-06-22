@@ -97,6 +97,10 @@ Route::prefix('account')->middleware('auth')->group(function () {
             Route::get('/transactions', function () {
                 return Inertia::render('account/pos/warehouse_stocks/transactions/page');
             });
+            Route::get('/stocks_request', function () {
+                return Inertia::render('account/pos/warehouse_stocks/stocks_request/page');
+            });
+            
         });
         Route::get('/reports', function () {
             return Inertia::render('account/pos/reports/page');

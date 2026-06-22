@@ -5,12 +5,14 @@ import ProductCreateSection from './product-create-section';
 
 export default function HeaderSection() {
     const { products } = useSelector((store) => store.pos);
+    console.log('products',products)
     return (
         <>
             <div className="bg-blue-600 p-4 flex justify-between items-center text-white">
                 <div className="flex items-center gap-2 text-xl font-semibold flex-1">
                     <BookOpen size={24} />
-                    Warehouse: {products?.pos_warehouse?.name} - {products?.pos_warehouse?.location}
+                    Warehouse
+                    {/* : {products?.pos_warehouse?.name} - {products?.pos_warehouse?.location} */}
                 </div>
               <ProductCreateSection />
             </div>

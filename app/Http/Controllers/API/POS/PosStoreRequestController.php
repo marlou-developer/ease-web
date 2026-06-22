@@ -17,9 +17,13 @@ class PosStoreRequestController extends Controller
     public function index(Request $request)
     {
         $requests = PosStoreRequest::where('subscriber_id', Auth::user()->subscriber_id)
-            ->where('pos_store_id', session('pos_store_id'))->paginate();
+            ->where('pos_store_id', session('pos_store_id'))
+            ->with(['processor', 'requestor', 'receiver','pos_store'])
+            ->paginate();
+
         $pos_store = PosStore::where('id', session('pos_store_id'))
             ->where('subscriber_id', Auth::user()->subscriber_id)->with(['pos_warehouse'])->first();
+            
         return response()->json([
             'success' => true,
             'requests' => $requests,

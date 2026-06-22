@@ -25,7 +25,7 @@ class PosProductStockController extends Controller
     {
         $stocks = PosProductStock::where('pos_store_id', session('pos_store_id'))
             ->where('subscriber_id', Auth::user()->subscriber_id)
-            ->with('product')->get();
+            ->with('product')->orderBy('id', 'desc')->get();
         $customers = PosCustomer::where('subscriber_id', Auth::user()->subscriber_id)->get();
         $pos_store = PosStore::where('id', session('pos_store_id'))
             ->where('subscriber_id', Auth::user()->subscriber_id)->with(['pos_warehouse'])->first();

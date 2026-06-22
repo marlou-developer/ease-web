@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('requestor_id')->nullable()->constrained('users');
             $table->foreignId('receiver_id')->nullable()->constrained('users');
             $table->foreignId('pos_store_id')->nullable()->constrained('pos_stores');
-            $table->enum('status', ['Pending', 'Processing', 'Received'])->default('Pending');
+            $table->enum('status', ['Pending', 'Processing', 'Received', 'Returned'])->default('Pending');
             $table->timestamps();
         });
     }

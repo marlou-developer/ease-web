@@ -35,23 +35,20 @@ export default function ProductSearchSection() {
                         })) || []}
                     />
 
-                    <div className="ml-1 mt-0.5 flex gap-3">
+                    <div className="ml-1 mt-5 flex flex-wrap gap-3">
+                        {/* Transactions Button */}
+                        <button
+                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-1"
+                            onClick={() => router.visit(`/account/pos/store_stocks/transactions`)}
+                        >
+                            View All Transactions
+                        </button>
 
                         <button
-                            className="hover:text-pink-500 transition-colors duration-200"
-                            onClick={() =>
-                                router.visit(`/account/pos/store_stocks/transactions`)
-                            }
+                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-1"
+                            onClick={() => router.visit(`/account/pos/store_stocks/my_product_requests`)}
                         >
-                            <u className="text-sm">View All Transaction</u>
-                        </button>
-                        <button
-                            className="hover:text-pink-500 transition-colors duration-200"
-                            onClick={() =>
-                                router.visit(`/account/pos/store_stocks/my_product_requests`)
-                            }
-                        >
-                            <u className="text-sm">My Product Requests</u>
+                            My Product Requests
                         </button>
                     </div>
                 </div>
