@@ -1,3 +1,4 @@
+import Badge from "@/app/_components/badge";
 import Table from "@/app/_components/table";
 import peso_value from "@/app/lib/peso-value";
 import { Edit2, Trash2 } from "lucide-react";
@@ -59,7 +60,37 @@ export default function RequestsTableSection() {
         {
             header: 'Status',
             accessor: 'status',
-            className: 'font-bold text-gray-700'
+            className: 'font-bold text-gray-700',
+            render: (row) => {
+                const status = row?.status;
+
+                // Map the status string to the corresponding Badge variant
+                const getBadgeVariant = (statusString) => {
+                    switch (statusString) {
+                        case 'Pending':
+                            return 'warning'; // Yellow
+                        case 'Processing':
+                            return 'primary'; // Blue
+                        case 'Received':
+                            return 'success'; // Green
+                        case 'Cancelled':
+                            return 'danger'; // Red
+                        case 'Returned':
+                            return 'secondary'; // Gray
+                        default:
+                            return 'secondary'; // Fallback
+                    }
+                };
+                return (
+                    <div className="flex gap-3">
+                        <Badge
+                            outlined
+                            label={status || 'Unknown'}
+                            variant={getBadgeVariant(status)}
+                        />
+                    </div>
+                );
+            }
         },
         {
             header: 'Action',

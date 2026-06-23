@@ -10,39 +10,29 @@ export default function Badge({
 
     const variants = {
         primary: {
-            solid:
-                "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-            outline:
-                "text-blue-600 border border-blue-400 inset-ring  inset-ring-blue-300 dark:text-blue-300 dark:inset-ring-blue-700",
-            dot: "fill-blue-500 dark:fill-blue-400",
+            solid: "bg-blue-100 text-blue-800",
+            outline: "text-blue-600 border border-blue-400 inset-ring inset-ring-blue-300",
+            dot: "fill-blue-500",
         },
         secondary: {
-            solid:
-                "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
-            outline:
-                "text-gray-600 border border-gray-400 inset-ring  inset-ring-gray-300 dark:text-gray-300 dark:inset-ring-gray-700",
-            dot: "fill-gray-500 dark:fill-gray-400",
+            solid: "bg-gray-100 text-gray-800",
+            outline: "text-gray-600 border border-gray-400 inset-ring inset-ring-gray-300",
+            dot: "fill-gray-500",
         },
         success: {
-            solid:
-                "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
-            outline:
-                "text-green-600 border border-green-400 inset-ring  inset-ring-green-300 dark:text-green-300 dark:inset-ring-green-700",
-            dot: "fill-green-500 dark:fill-green-400",
+            solid: "bg-green-100 text-green-800",
+            outline: "text-green-600 border border-green-400 inset-ring inset-ring-green-300",
+            dot: "fill-green-500",
         },
         warning: {
-            solid:
-                "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
-            outline:
-                "text-yellow-600 border border-yellow-400 inset-ring inset-ring-yellow-300 dark:text-yellow-300 dark:inset-ring-yellow-700",
-            dot: "fill-yellow-500 dark:fill-yellow-400",
+            solid: "bg-yellow-100 text-yellow-800",
+            outline: "text-yellow-600 border border-yellow-400 inset-ring inset-ring-yellow-300",
+            dot: "fill-yellow-500",
         },
         danger: {
-            solid:
-                "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
-            outline:
-                "text-red-600 border border-red-400 inset-ring inset-ring-red-300 dark:text-red-300 dark:inset-ring-red-700",
-            dot: "fill-red-500 dark:fill-red-400",
+            solid: "bg-red-100 text-red-800",
+            outline: "text-red-600 border border-red-400 inset-ring inset-ring-red-300",
+            dot: "fill-red-500",
         },
     };
 
@@ -50,9 +40,8 @@ export default function Badge({
 
     return (
         <span
-            className={`${base} ${
-                outlined ? style.outline : style.solid
-            } ${className}`}
+            className={`${base} ${outlined ? style.outline : style.solid
+                } ${className}`}
         >
             {showDot && (
                 <svg

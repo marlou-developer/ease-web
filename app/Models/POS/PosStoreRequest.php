@@ -4,6 +4,7 @@ namespace App\Models\POS;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PosStoreRequest extends Model
@@ -21,6 +22,13 @@ class PosStoreRequest extends Model
     {
         return $this->hasOne(PosStore::class, 'id', 'pos_store_id')->with(['pos_warehouse']);
     }
+
+
+    public function request_items(): HasMany
+    {
+        return $this->hasMany(PosStoreRequestItem::class, 'pos_store_request_id', 'id')->with(['warehouse_stock']);
+    }
+
 
     public function subscriber(): HasOne
     {

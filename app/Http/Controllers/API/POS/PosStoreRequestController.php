@@ -11,19 +11,31 @@ use Illuminate\Support\Facades\Auth;
 
 class PosStoreRequestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    public function action_store_requests(Request $request)
+    {
+        $storeRequest = PosStoreRequest::find($request->id);
+
+        if ($storeRequest) {
+            $storeRequest->update([
+                'status' => $request->status 
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
     public function index(Request $request)
     {
         $requests = PosStoreRequest::where('subscriber_id', Auth::user()->subscriber_id)
             ->where('pos_store_id', session('pos_store_id'))
-            ->with(['processor', 'requestor', 'receiver','pos_store'])
+            ->with(['processor', 'requestor', 'receiver', 'pos_store', 'request_items'])
             ->paginate();
 
         $pos_store = PosStore::where('id', session('pos_store_id'))
             ->where('subscriber_id', Auth::user()->subscriber_id)->with(['pos_warehouse'])->first();
-            
+
         return response()->json([
             'success' => true,
             'requests' => $requests,

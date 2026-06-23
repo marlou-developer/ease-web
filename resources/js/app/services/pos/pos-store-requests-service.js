@@ -6,3 +6,9 @@ export async function get_pos_store_requests_service() {
     return (await axios.get(`/api/pos-store-requests${window.location.search}`))
         .data;
 }
+
+
+export async function action_store_requests_service(data) {
+    return await axios.post("/api/action_store_requests", data);
+}
+

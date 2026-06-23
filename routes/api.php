@@ -63,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('pos-warehouse-transaction', PosWarehouseTransactionController::class);
     Route::apiResource('pos-store-transaction', PosStoreTransactionController::class);
     Route::apiResource('pos-store-requests', PosStoreRequestController::class);
+    Route::post('action_store_requests', [PosStoreRequestController::class, 'action_store_requests']);
 });
 
 
