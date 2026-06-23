@@ -87,6 +87,7 @@ export default function WarehouseTableSection() {
             align: 'center',
             className: 'font-bold text-gray-700',
             render: (row) => {
+                console.log('rowrowrow',row)
                 return <div className="flex gap-3">
                     <EditStockSection props_data={row} />
                     {/* <StockingSection props_data={row} /> */}

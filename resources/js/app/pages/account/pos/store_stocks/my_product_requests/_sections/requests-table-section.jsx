@@ -1,18 +1,13 @@
 import Badge from "@/app/_components/badge";
 import Table from "@/app/_components/table";
-import peso_value from "@/app/lib/peso-value";
-import { Edit2, Trash2 } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import StockingSection from "./stocking-section";
-// import EditStockSection from "./edit-stock-warehouse";
-// import StockingSection from "..."; // Make sure to import this if you use it!
+import ActionProductSection from "./action-product-section"
 
 export default function RequestsTableSection() {
     const { product_requests } = useSelector(
         (store) => store.pos
     );
-    const dispatch = useDispatch();
 
     const columns = [
         {
@@ -99,8 +94,7 @@ export default function RequestsTableSection() {
             className: 'font-bold text-gray-700',
             render: (row) => {
                 return <div className="flex gap-3">
-                    {/* <EditStockSection props_data={row} /> */}
-                    {/* <StockingSection props_data={row} /> */}
+                    <ActionProductSection props_data={row} />
                 </div>
             }
         },
