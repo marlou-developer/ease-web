@@ -33,6 +33,8 @@ export const posSlice = createSlice({
         pos_warehouse_stats: {},
         purchases_products: [],
         product_requests: [],
+        count_pending_stocks: 0,
+        count_processing_stocks: 0,
     },
     reducers: {
         setStoreStocks: (state, action) => {
@@ -109,6 +111,12 @@ export const posSlice = createSlice({
         setProductRequests: (state, action) => {
             state.product_requests = action.payload;
         },
+        setCountPendingStocks: (state, action) => {
+            state.count_pending_stocks = action.payload;
+        },
+        setCountProcessingStocks: (state, action) => {
+            state.count_processing_stocks = action.payload;
+        },
     },
 });
 
@@ -134,7 +142,9 @@ export const {
     setWarehouseStats,
     setPosStoreStats,
     setPurchasesProducts,
+    setCountPendingStocks,
     setOverAllProductDiscount,
+    setCountProcessingStocks,
     setPosWarehouseTransactions,
     setPosStoreTransactions,
 } = posSlice.actions;

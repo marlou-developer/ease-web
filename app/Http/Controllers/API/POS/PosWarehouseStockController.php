@@ -7,6 +7,7 @@ use App\Models\POS\PosCategory;
 use App\Models\POS\PosProduct;
 use App\Models\POS\PosProductStock;
 use App\Models\POS\PosStore;
+use App\Models\POS\PosStoreRequest;
 use App\Models\POS\PosSupplier;
 use App\Models\POS\PosUnit;
 use App\Models\POS\PosWarehouse;
@@ -27,12 +28,17 @@ class PosWarehouseStockController extends Controller
         $categories = PosCategory::where('subscriber_id', Auth::user()->subscriber_id)->get();
         $suppliers = PosSupplier::where('subscriber_id', Auth::user()->subscriber_id)->get();
         $units = PosUnit::get();
+        $count_pending_stocks = PosStoreRequest::where('subscriber_id', Auth::user()->subscriber_id)
+            ->where('pos_store_id', session('pos_store_id'))
+            ->where('status', 'Pending')
+            ->count();
         return response()->json([
             'success' => true,
             'categories' => $categories,
             'units' => $units,
             'data' => $pos_store->pos_warehouse['pos_warehouse_stocks'],
-            'suppliers' => $suppliers
+            'suppliers' => $suppliers,
+            'count_pending_stocks' => $count_pending_stocks
         ]);
     }
 

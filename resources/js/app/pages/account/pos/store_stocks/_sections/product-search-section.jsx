@@ -17,6 +17,10 @@ export default function ProductSearchSection() {
     const { app } = useSelector(
         (store) => store.app
     );
+    const { count_processing_stocks } = useSelector(
+        (store) => store.pos
+    );
+
     const dispatch = useDispatch();
     return (
         <>
@@ -45,10 +49,13 @@ export default function ProductSearchSection() {
                         </button>
 
                         <button
-                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-1"
+                            className="group flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-1"
                             onClick={() => router.visit(`/account/pos/store_stocks/my_product_requests`)}
                         >
                             My Product Requests
+                            <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-red-600 bg-red-100 rounded-full group-hover:bg-red-500 group-hover:text-white transition-colors duration-200">
+                                {count_processing_stocks}
+                            </span>
                         </button>
                     </div>
                 </div>

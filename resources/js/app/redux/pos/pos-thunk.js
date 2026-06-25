@@ -48,6 +48,7 @@ export function get_pos_warehouse_stock_thunk() {
         dispatch(posSlice.actions.setUnits(res.units));
         dispatch(posSlice.actions.setSuppliers(res.suppliers));
         dispatch(posSlice.actions.setCategories(res.categories));
+        dispatch(posSlice.actions.setCountPendingStocks(res.count_pending_stocks));
     };
 }
 
@@ -75,6 +76,8 @@ export function get_pos_product_stocks_thunk() {
         dispatch(posSlice.actions.setStoreStocks(res.pos_product_stock));
         dispatch(posSlice.actions.setCustomers(res.customers));
         dispatch(posSlice.actions.setProducts(res.warehouse_products));
+        dispatch(posSlice.actions.setCountProcessingStocks(res.count_processing_stocks));
+        
     };
 }
 

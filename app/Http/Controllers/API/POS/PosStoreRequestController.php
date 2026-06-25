@@ -74,8 +74,16 @@ class PosStoreRequestController extends Controller
                     'transaction_id' => $transaction_id
                 ]);
             }
+            $storeRequest->update([
+                'receiver_id' => Auth::id()
+            ]);
         }
 
+        if ($request->status == 'Processing') {
+            $storeRequest->update([
+                'processor_id' => Auth::id()
+            ]);
+        }
         if ($storeRequest) {
             $storeRequest->update([
                 'status' => $request->status

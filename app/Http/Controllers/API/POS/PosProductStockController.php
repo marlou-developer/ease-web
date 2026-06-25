@@ -9,6 +9,7 @@ use App\Models\POS\PosProductStock;
 use App\Models\POS\PosPurchase;
 use App\Models\POS\PosStockMovement;
 use App\Models\POS\PosStore;
+use App\Models\POS\PosStoreRequest;
 use App\Models\POS\PosStoreTransaction;
 use App\Models\POS\PosWarehouseStock;
 use App\Models\POS\PosWarehouseTransaction;
@@ -29,10 +30,15 @@ class PosProductStockController extends Controller
         $customers = PosCustomer::where('subscriber_id', Auth::user()->subscriber_id)->get();
         $pos_store = PosStore::where('id', session('pos_store_id'))
             ->where('subscriber_id', Auth::user()->subscriber_id)->with(['pos_warehouse'])->first();
+        $count_processing_stocks = PosStoreRequest::where('subscriber_id', Auth::user()->subscriber_id)
+            ->where('pos_store_id', session('pos_store_id'))
+            ->where('status', 'Processing')
+            ->count();
         return response()->json([
             'pos_product_stock' => $stocks,
             'customers' => $customers,
-            'warehouse_products' => $pos_store->pos_warehouse['pos_warehouse_stocks']
+            'warehouse_products' => $pos_store->pos_warehouse['pos_warehouse_stocks'],
+            'count_processing_stocks' => $count_processing_stocks
         ]);
     }
 

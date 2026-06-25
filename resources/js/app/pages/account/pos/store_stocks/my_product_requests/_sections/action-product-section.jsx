@@ -32,10 +32,10 @@ export default function ActionProductSection({ props_data }) {
     async function action_submit(value) {
         setLoadingAction(value) // Set loading state before API call
         console.log('value', {
-                id: props_data.id,
-                status: value,
-                request_items: props_data.request_items
-            })
+            id: props_data.id,
+            status: value,
+            request_items: props_data.request_items
+        })
 
         try {
             await action_store_requests_service({
@@ -62,14 +62,13 @@ export default function ActionProductSection({ props_data }) {
     return (
         <>
             {
-                props_data.status == 'Pending' && <Button
+                props_data.status == 'Processing' && <Button
                     onClick={() => setOpen(true)}
                     variant='primary'
                 >
                     Action
                 </Button>
             }
-
             <Modal
                 title="Would you like to receive the products?"
                 width="max-w-3xl"

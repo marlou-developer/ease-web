@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function WarehouseSearchSection() {
     const { app } = useSelector((store) => store.app);
+    const { count_pending_stocks } = useSelector((store) => store.pos);
+    
     const dispatch = useDispatch();
     return (
         <>
@@ -56,7 +58,7 @@ export default function WarehouseSearchSection() {
                         >
                             Stocks Request
                             <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-red-600 bg-red-100 rounded-full group-hover:bg-red-500 group-hover:text-white transition-colors duration-200">
-                                1
+                                {count_pending_stocks}
                             </span>
                         </button>
                     </div>
