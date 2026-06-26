@@ -9,3 +9,20 @@ add products
 -pos_products
 -pos_product_stocks
 -pos_warehouse_stocks
+
+
+empty table
+
+-- 1. Disable foreign key checks to prevent constraint errors
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 2. Empty the tables and reset auto-increment IDs
+TRUNCATE TABLE pos_store_requests;
+TRUNCATE TABLE pos_store_request_items;
+TRUNCATE TABLE pos_warehouse_transactions;
+TRUNCATE TABLE pos_store_transactions;
+TRUNCATE TABLE pos_purchases;
+TRUNCATE TABLE pos_purchase_items;
+
+-- 3. Re-enable foreign key checks (IMPORTANT)
+SET FOREIGN_KEY_CHECKS = 1;

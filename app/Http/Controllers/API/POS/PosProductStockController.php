@@ -242,18 +242,46 @@ class PosProductStockController extends Controller
     /**
      * Update a product stock.
      */
+
     public function update(Request $request, $id)
     {
-        $pos_product_stock =  PosProductStock::where('id', $id)->first();
-        if ($pos_product_stock) {
-            $pos_product_stock->update($request->all());
-        }
+
+
+        $pos_product_stock = PosProductStock::findOrFail($id);
+        $pos_product_stock->update($request->all());
+        $store = PosStore::with('pos_warehouse')->findOrFail($request->pos_store_id);
+
+        $warehouse_stock = PosWarehouseStock::where('subscriber_id', Auth::user()->subscriber_id)
+            ->where('pos_product_id', $pos_product_stock->pos_product_id)
+            ->where('pos_warehouse_id', $store->pos_warehouse->id)
+            ->where('cost_price', $pos_product_stock->cost_price)
+            ->where('selling_price', $pos_product_stock->selling_price)
+            ->first();
+
+
+        $pos_store_transaction = PosStoreTransaction::updateOrCreate(
+            [
+                'subscriber_id'          => Auth::user()->subscriber_id,
+                'pos_warehouse_id'       => $store->pos_warehouse->id,
+                'pos_product_stock_id'   => $id,
+                'pos_warehouse_stock_id' => $warehouse_stock->id,
+            ],
+            [
+                'transact_by' => Auth::id(),
+                'stocks'      => $request->stocks,
+            ]
+        );
+
+        $transaction_id = str_pad($pos_store_transaction->id, 10, '0', STR_PAD_LEFT);
+        $pos_store_transaction->update([
+            'transaction_id' => $transaction_id
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Product stock updated successfully',
         ]);
     }
-
     /**
      * Delete a product stock.
      */

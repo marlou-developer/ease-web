@@ -30,12 +30,13 @@ export default function ProductEditSection({ props_data }) {
             id: props_data?.id,
             cost_price: props_data?.cost_price || "",
             stocks: props_data?.stocks || 0,
-            selling_price: props_data?.selling_price || 0
+            selling_price: props_data?.selling_price || 0,
+            pos_store_id: props_data?.pos_store_id || 0
         },
     });
 
     const watchValues = watch();
-
+    // console.log('props_data',props_data)
     const onSubmit = async (form_data) => {
         try {
             await edit_pos_product_stocks_product_service(form_data);
@@ -67,7 +68,8 @@ export default function ProductEditSection({ props_data }) {
             id: props_data?.id,
             cost_price: props_data?.cost_price || "",
             stocks: props_data?.stocks || 0,
-            selling_price: props_data?.selling_price || 0
+            selling_price: props_data?.selling_price || 0,
+            pos_store_id: props_data?.pos_store_id || 0
         });
         setOpen(true);
     };
