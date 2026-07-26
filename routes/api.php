@@ -70,61 +70,61 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-Route::post('/ai-response', function (\Illuminate\Http\Request $request) {
-    $request->validate([
-        'message' => 'required|string',
-    ]);
+// Route::post('/ai-response', function (\Illuminate\Http\Request $request) {
+//     $request->validate([
+//         'message' => 'required|string',
+//     ]);
 
-    $userMessage = trim($request->message);
+//     $userMessage = trim($request->message);
 
-    // Track ticket info in session
-    $ticketInfo = session('ticket_info', [
-        'fname' => null,
-        'lname' => null,
-        'phone' => null,
-        'item_number' => null,
-        'type' => null, // refund or replacement
-    ]);
+//     // Track ticket info in session
+//     $ticketInfo = session('ticket_info', [
+//         'fname' => null,
+//         'lname' => null,
+//         'phone' => null,
+//         'item_number' => null,
+//         'type' => null, // refund or replacement
+//     ]);
 
-    // Determine next missing field
-    $missingFields = [];
-    foreach ($ticketInfo as $key => $value) {
-        if (!$value) $missingFields[] = $key;
-    }
+//     // Determine next missing field
+//     $missingFields = [];
+//     foreach ($ticketInfo as $key => $value) {
+//         if (!$value) $missingFields[] = $key;
+//     }
 
-    try {
-        if (!empty($missingFields)) {
-            $nextField = $missingFields[0];
+//     try {
+//         if (!empty($missingFields)) {
+//             $nextField = $missingFields[0];
 
-            // Special prompt for 'type'
-            if ($nextField === 'type') {
-                $aiText = "Do you want a refund or a replacement?";
-            } else {
-                $fieldPrompts = [
-                    'fname' => "What is your first name?",
-                    'lname' => "What is your last name?",
-                    'phone' => "What is your phone number?",
-                    'item_number' => "What is your item number?"
-                ];
-                $aiText = $fieldPrompts[$nextField] ?? "Please provide {$nextField}.";
-            }
+//             // Special prompt for 'type'
+//             if ($nextField === 'type') {
+//                 $aiText = "Do you want a refund or a replacement?";
+//             } else {
+//                 $fieldPrompts = [
+//                     'fname' => "What is your first name?",
+//                     'lname' => "What is your last name?",
+//                     'phone' => "What is your phone number?",
+//                     'item_number' => "What is your item number?"
+//                 ];
+//                 $aiText = $fieldPrompts[$nextField] ?? "Please provide {$nextField}.";
+//             }
 
-            // Save customer's reply
-            $ticketInfo[$nextField] = $userMessage;
-            session(['ticket_info' => $ticketInfo]);
-        } else {
-            // All info collected → confirmation
-            $aiText = "Ticket created for {$ticketInfo['fname']} {$ticketInfo['lname']}, phone: {$ticketInfo['phone']}, item number: {$ticketInfo['item_number']}, request type: {$ticketInfo['type']}.";
+//             // Save customer's reply
+//             $ticketInfo[$nextField] = $userMessage;
+//             session(['ticket_info' => $ticketInfo]);
+//         } else {
+//             // All info collected → confirmation
+//             $aiText = "Ticket created for {$ticketInfo['fname']} {$ticketInfo['lname']}, phone: {$ticketInfo['phone']}, item number: {$ticketInfo['item_number']}, request type: {$ticketInfo['type']}.";
 
-            // Optionally save to DB
-            // \App\Models\Ticket::create($ticketInfo);
+//             // Optionally save to DB
+//             // \App\Models\Ticket::create($ticketInfo);
 
-            // Clear session
-            session()->forget('ticket_info');
-        }
+//             // Clear session
+//             session()->forget('ticket_info');
+//         }
 
-        return response()->json(['response' => $aiText]);
-    } catch (\Exception $e) {
-        return response()->json(['response' => 'AI call failed.'], 500);
-    }
-});
+//         return response()->json(['response' => $aiText]);
+//     } catch (\Exception $e) {
+//         return response()->json(['response' => 'AI call failed.'], 500);
+//     }
+// });

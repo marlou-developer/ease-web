@@ -11,7 +11,7 @@ export default function WarehousePaginationSection() {
     const itemsPerPage = 10;
 
     // Safety check just in case products is ever undefined
-    const safeProducts = products?.pos_warehouse?.pos_warehouse_stocks || [];
+    const safeProducts = products || [];
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;

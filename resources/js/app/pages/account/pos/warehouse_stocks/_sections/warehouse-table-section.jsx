@@ -15,7 +15,7 @@ export default function WarehouseTableSection() {
     const itemsPerPage = 10;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    
+    console.log('products',products)
     const filteredProducts = products?.filter((p) => {
         const term = searchTerm.toLowerCase();
         const searchableFields = [
