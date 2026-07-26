@@ -1,0 +1,1 @@
+async function a(s){return await axios.get("/api/user")}async function e(s){return await axios.post("/api/user",s)}async function r(s){return await axios.put(`/api/pos-store/${s.pos_store_id}`,s)}export{e as a,r as c,a as g};

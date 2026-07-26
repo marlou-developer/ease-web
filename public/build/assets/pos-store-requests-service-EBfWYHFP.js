@@ -1,0 +1,1 @@
+async function e(s){return await axios.post("/api/pos-store-requests",s)}async function t(){return(await axios.get(`/api/pos-store-requests${window.location.search}`)).data}async function a(s){return await axios.post("/api/action_store_requests",s)}export{a,e as c,t as g};
