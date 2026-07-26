@@ -113,19 +113,21 @@ class PosStoreRequestController extends Controller
 
     public function store(Request $request)
     {
-        $pos_store_request = PosStoreRequest::create([
-            'subscriber_id' => Auth::user()->subscriber_id,
-            'requestor_id' => Auth::id(),
-            'pos_store_id' => session('pos_store_id'),
-        ]);
 
-        foreach ($request->requests as $key => $value) {
-            PosStoreRequestItem::create([
-                'pos_store_request_id' => $pos_store_request->id,
-                'pos_warehouse_stock_id' => $value['warehouse_stock']['id'],
-                'quantity' => $value['quantity'],
-            ]);
-        }
+        $posStoreRequest = PosStoreRequest::create([
+            'subscriber_id' => Auth::user()->subscriber_id,
+            'requestor_id'  => Auth::id(),
+            'pos_store_id'  => session('pos_store_id'),
+        ]);
+        $items = collect($request->requests)->map(function ($item) use ($posStoreRequest) {
+            return [
+                'pos_store_request_id'   => $posStoreRequest->id,
+                'pos_warehouse_stock_id' => $item['pos_warehouse_stock_id'], // Your fix!
+                'quantity'               => $item['quantity'],
+            ];
+        })->toArray();
+        PosStoreRequestItem::insert($items);
+
         return response()->json([
             'success' => true,
         ]);

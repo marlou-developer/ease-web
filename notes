@@ -17,6 +17,8 @@ empty table
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- 2. Empty the tables and reset auto-increment IDs
+TRUNCATE TABLE pos_sales;
+TRUNCATE TABLE pos_sales_items;
 TRUNCATE TABLE pos_store_requests;
 TRUNCATE TABLE pos_store_request_items;
 TRUNCATE TABLE pos_warehouse_transactions;
