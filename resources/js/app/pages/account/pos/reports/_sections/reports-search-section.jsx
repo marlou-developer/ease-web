@@ -62,7 +62,13 @@ export default function ReportsSearchSection() {
         });
     };
 
-    console.log('product', reports?.products)
+   const mappedMissingNames = reports?.products?.map(res => ({
+    id: res?.id,
+    label: res?.product?.name,
+    value: res?.id
+})).filter(item => !item.label) || [];
+
+console.log('Mapped items with no product name:', mappedMissingNames);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col sm:flex-row flex-wrap gap-3 w-full items-end'>
@@ -100,8 +106,8 @@ export default function ReportsSearchSection() {
                             onChange={onChange}
                             error={errors.cashier_id?.message}
                             options={reports?.users?.map(res => ({
-                                label: res.name,
-                                value: res.id
+                                label: res?.name,
+                                value: res?.id
                             })) || []}
                         />
                     )}
@@ -121,8 +127,8 @@ export default function ReportsSearchSection() {
                             onChange={onChange}
                             error={errors.customer_id?.message}
                             options={reports?.customers?.map(res => ({
-                                label: res.name,
-                                value: res.id
+                                label: res?.name,
+                                value: res?.id
                             })) || []}
                         />
                     )}
@@ -142,8 +148,8 @@ export default function ReportsSearchSection() {
                             onChange={onChange}
                             error={errors.pos_supplier_id?.message}
                             options={reports?.suppliers?.map(res => ({
-                                label: res.name,
-                                value: res.id
+                                label: res?.name,
+                                value: res?.id
                             })) || []}
                         />
                     )}
@@ -162,9 +168,9 @@ export default function ReportsSearchSection() {
                             value={value}
                             onChange={onChange}
                             error={errors.product_id?.message}
-                            options={reports?.products?.map(res => ({
-                                label: res.product.name,
-                                value: res.id
+                            options={reports?.products?.map((res,i) => ({
+                                label: res?.product?.name,
+                                value: res?.id
                             })) || []}
                         />
                     )}
@@ -184,8 +190,8 @@ export default function ReportsSearchSection() {
                             onChange={onChange}
                             error={errors.pos_category_id?.message}
                             options={reports?.categories?.map(res => ({
-                                label: res.name,
-                                value: res.id
+                                label: res?.name,
+                                value: res?.id
                             })) || []}
                         />
                     )}
@@ -206,8 +212,8 @@ export default function ReportsSearchSection() {
                                 endDate={end}
                                 error={error} // <-- Now supports standard form errors
                                 onDateChange={(dates) => {
-                                    if (dates.start || dates.end) {
-                                        onChange(`${dates.start},${dates.end}`);
+                                    if (dates?.start || dates?.end) {
+                                        onChange(`${dates?.start},${dates?.end}`);
                                     } else {
                                         onChange('');
                                     }

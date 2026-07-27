@@ -100,7 +100,7 @@ class PosProductStockController extends Controller
             // Create a variable to safely hold our ID
             $stockId = null;
 
-            if ($base->cost_price == 0 && $base->selling_price == 0 && $base->stocks == 0) {
+            if ($base->cost_price == $item['cost_price'] && $base->selling_price == $item['selling_price'] && $base->stocks == 0) {
 
                 // 1. Update the price/supplier info (do NOT assign this to a $stock variable)
                 $base->update([
@@ -115,14 +115,19 @@ class PosProductStockController extends Controller
                 // 3. Grab the ID safely
                 $stockId = $base->id;
             } else {
-                $stock = PosWarehouseStock::firstOrCreate([
-                    'pos_supplier_id'  => $request->pos_supplier_id,
-                    'pos_warehouse_id' => $base->pos_warehouse_id,
-                    'pos_product_id'   => $base->pos_product_id,
-                    'cost_price'       => $item['cost_price'],
-                    'selling_price'    => $item['selling_price'],
-                    'subscriber_id'    => Auth::user()->subscriber_id,
-                ], ['stocks' => 0]);
+                $stock = PosWarehouseStock::firstOrCreate(
+                    [
+                        'pos_supplier_id'  => $request->pos_supplier_id,
+                        'pos_warehouse_id' => $base->pos_warehouse_id,
+                        'pos_product_id'   => $base->pos_product_id,
+                        'cost_price'       => $item['cost_price'],
+                        'selling_price'    => $item['selling_price'],
+                        'subscriber_id'    => Auth::user()->subscriber_id,
+                    ],
+                    [
+                        'stocks' => 0,
+                    ]
+                );
 
                 // Safely ADD the incoming quantity
                 $stock->increment('stocks', $item['quantity']);
@@ -133,6 +138,7 @@ class PosProductStockController extends Controller
 
             // Create transaction using the safe $stockId
             $pos_warehouse_transaction = PosWarehouseTransaction::create([
+                'pos_supplier_id' => $request->pos_supplier_id,
                 'transact_by'            => Auth::id(),
                 'subscriber_id'          => Auth::user()->subscriber_id,
                 'pos_warehouse_id'       => $base->pos_warehouse_id,

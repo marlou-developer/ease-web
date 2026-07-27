@@ -45,6 +45,12 @@ export default function TransactionTableSection() {
                 return row?.pos_warehouse_stock?.id
             },
         },
+         {
+            header: 'Supplier',
+            accessor: 'supplier',
+            className: 'font-bold text-gray-700',
+            render: (row) => row.supplier?.name
+        },
         {
             header: "Product",
             accessor: "product",

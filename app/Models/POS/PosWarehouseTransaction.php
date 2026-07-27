@@ -12,6 +12,7 @@ class PosWarehouseTransaction extends Model
     use HasFactory;
 
     protected $fillable = [
+        'pos_supplier_id',
         'transact_by',
         'transaction_id',
         'subscriber_id',
@@ -43,5 +44,9 @@ class PosWarehouseTransaction extends Model
     public function transact_by(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'transact_by');
+    }
+     public function supplier(): HasOne
+    {
+        return $this->hasOne(PosSupplier::class, 'id', 'pos_supplier_id');
     }
 }

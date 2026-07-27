@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('pos_warehouse_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('transact_by')->nullable()->constrained('users');
+            $table->foreignId('pos_supplier_id')->nullable()->constrained('users');
             $table->string('transaction_id')->nullable();
             $table->foreignId('subscriber_id')->nullable()->constrained('pos_subscribers');
             $table->foreignId('pos_warehouse_id')->nullable()->constrained('pos_warehouses');

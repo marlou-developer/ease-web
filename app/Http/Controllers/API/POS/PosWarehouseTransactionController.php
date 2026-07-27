@@ -36,9 +36,7 @@ class PosWarehouseTransactionController extends Controller
         });
 
         $query->when($request->filled('pos_supplier_id'), function ($q) use ($request) {
-            $q->whereHas('pos_warehouse_stock.product', function ($subQuery) use ($request) {
-                $subQuery->where('pos_supplier_id', $request->pos_supplier_id);
-            });
+            $q->where('pos_supplier_id', $request->pos_supplier_id);
         });
 
         // FIX 1: You were missing the execution of the query! 
@@ -47,7 +45,8 @@ class PosWarehouseTransactionController extends Controller
             'pos_warehouse',
             'pos_warehouse_stock',
             'pos_product_stock.pos_store', // <-- Prevents N+1 in the transform loop
-            'transact_by' // Assuming you still want this based on your earlier code
+            'transact_by', // Assuming you still want this based on your earlier code
+            'supplier'
         ])
             ->latest()
             ->paginate(10)
