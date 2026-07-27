@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 export default function WarehouseSearchSection() {
     const { app } = useSelector((store) => store.app);
     const { count_pending_stocks } = useSelector((store) => store.pos);
-    
+
     const dispatch = useDispatch();
     return (
         <>
@@ -35,7 +35,13 @@ export default function WarehouseSearchSection() {
                         }
                     />
                     <div className="ml-1 mt-5 flex flex-wrap gap-3">
-                        {/* Categories Button */}
+                        <button
+                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-1"
+                            onClick={() => router.visit(`/account/pos/warehouse_stocks/transactions`)}
+                        >
+                            View All Transactions
+                        </button>
+
                         <button
                             className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-1"
                             onClick={() => router.visit(`/account/pos/warehouse_stocks/categories`)}
@@ -43,13 +49,6 @@ export default function WarehouseSearchSection() {
                             View All Categories
                         </button>
 
-                        {/* Transactions Button */}
-                        <button
-                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-1"
-                            onClick={() => router.visit(`/account/pos/warehouse_stocks/transactions`)}
-                        >
-                            View All Transactions
-                        </button>
 
                         {/* Stocks Request Button with Interactive Badge */}
                         <button

@@ -65,7 +65,7 @@ export default function TransactionSearchSection() {
                 )}
             />
 
-            <Controller
+            {/* <Controller
                 name="pos_supplier_id"
                 control={control}
                 rules={{ required: false }}
@@ -83,7 +83,7 @@ export default function TransactionSearchSection() {
                         {...controllerField}
                     />
                 )}
-            />
+            /> */}
 
             <Controller
                 name="date_range"

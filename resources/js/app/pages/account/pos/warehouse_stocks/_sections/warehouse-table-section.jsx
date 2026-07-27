@@ -63,12 +63,6 @@ export default function WarehouseTableSection() {
         },
         
         {
-            header: 'Supplier',
-            accessor: 'supplier',
-            className: 'font-bold text-gray-700',
-            render: (row) => row.supplier?.name
-        },
-        {
             header: 'Products',
             accessor: 'barcode',
             className: 'font-bold text-gray-700',

@@ -117,7 +117,6 @@ class PosProductStockController extends Controller
             } else {
                 $stock = PosWarehouseStock::firstOrCreate(
                     [
-                        'pos_supplier_id'  => $request->pos_supplier_id,
                         'pos_warehouse_id' => $base->pos_warehouse_id,
                         'pos_product_id'   => $base->pos_product_id,
                         'cost_price'       => $item['cost_price'],
@@ -125,6 +124,7 @@ class PosProductStockController extends Controller
                         'subscriber_id'    => Auth::user()->subscriber_id,
                     ],
                     [
+                        'pos_supplier_id'  => $request->pos_supplier_id,
                         'stocks' => 0,
                     ]
                 );
