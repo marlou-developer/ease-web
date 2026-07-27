@@ -28,4 +28,8 @@ class PosWarehouseStock extends Model
     {
         return $this->hasOne(PosWarehouse::class, 'id', 'pos_warehouse_id');
     }
+     public function supplier(): HasOne
+    {
+        return $this->hasOne(PosSupplier::class, 'id', 'pos_supplier_id');
+    }
 }

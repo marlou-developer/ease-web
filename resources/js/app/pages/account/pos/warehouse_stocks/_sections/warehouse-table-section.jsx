@@ -25,6 +25,7 @@ export default function WarehouseTableSection() {
             p?.cost_price,
             p?.selling_price,
             p?.stocks,
+            p?.supplier?.name,
             p?.product?.category?.name,
             p?.product?.unit?.name
         ];
@@ -59,6 +60,13 @@ export default function WarehouseTableSection() {
             accessor: 'barcode',
             className: 'font-bold text-gray-700',
             render: (row) => row.product?.barcode
+        },
+        
+        {
+            header: 'Supplier',
+            accessor: 'supplier',
+            className: 'font-bold text-gray-700',
+            render: (row) => row.supplier?.name
         },
         {
             header: 'Products',
