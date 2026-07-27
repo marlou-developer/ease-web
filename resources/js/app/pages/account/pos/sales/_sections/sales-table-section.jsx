@@ -1,5 +1,7 @@
 import Table from "@/app/_components/table";
+import Button from "@/app/_components/button";
 import peso_value from "@/app/lib/peso-value";
+import { router } from "@inertiajs/react";
 import { Edit2, Trash2 } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -110,9 +112,16 @@ export default function SalesTableSection() {
             accessor: 'action',
             align: 'center',
             className: 'font-bold text-gray-700',
-            // render: (row) => {
-            //     return <><StockingSection props_data={row} /></>
-            // }
+            render: (row) => {
+                return <>
+                    <Button
+                        variant="primary"
+                        onClick={() => router.visit(`/account/pos/sales/${row.id}`)}
+                    >
+                        SHOW
+                    </Button>
+                </>
+            }
         },
         // {
         //     header: 'Status',

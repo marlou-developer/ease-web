@@ -14,9 +14,108 @@ use Illuminate\Support\Facades\Auth;
 
 class PosSaleController extends Controller
 {
-    /**
-     * List all sales.
-     */
+    public function add_sales_items(Request $request)
+    {
+        $request->validate([
+            'pos_sale_id'                  => 'required|exists:pos_sales,id',
+            'items'                        => 'required|array|min:1',
+            'items.*.pos_product_stock_id' => 'required|exists:pos_product_stocks,id',
+            'items.*.quantity'             => 'required|numeric|min:1',
+            'items.*.selling_price'        => 'required|numeric|min:0',
+            'items.*.cost_price'           => 'required|numeric|min:0',
+            'items.*.discount'             => 'nullable|numeric|min:0',
+            'payment_type'                 => 'nullable|in:Cash,E-Wallet,Bank Transfer,Credit/Debit Card',
+            'amount_paid'                  => 'required|numeric|min:0',
+            'discount'                     => 'nullable|numeric|min:0', // Ensure global discount is validated
+        ]);
+
+
+        $global_discount = $request->discount ?? 0;
+        $split_product_discount = $global_discount / count($request->items);
+
+        // Track accumulations for the parent sale update
+        $addedTotalAmount = 0;
+        $addedDiscount    = 0;
+
+        foreach ($request->items as $item) {
+            $quantity     = $item['quantity'];
+            $sellingPrice = $item['selling_price'];
+            $costPrice    = $item['cost_price'];
+            $itemDiscount = $item['discount'] ?? 0;
+
+            $totalLineDiscount = $itemDiscount + $split_product_discount;
+            $totalLineRevenue  = ($quantity * $sellingPrice) - $totalLineDiscount;
+
+            // Prevent division by zero
+            $discountedPricePerUnit = $quantity > 0 ? ($totalLineRevenue / $quantity) : 0;
+            $profit = $totalLineRevenue - ($quantity * $costPrice);
+
+            // Accumulate totals for the parent PosSale
+            $addedTotalAmount += $totalLineRevenue;
+            $addedDiscount    += $totalLineDiscount;
+
+            // 1. Create Sales Item
+            PosSalesItem::create([
+                'pos_supplier_id'      => $item['pos_supplier_id'] ?? null,
+                'pos_category_id'      => $item['pos_category_id'],
+                'pos_store_id'         => session('pos_store_id'),
+                'pos_product_stock_id' => $item['pos_product_stock_id'],
+                'sale_id'              => $request->pos_sale_id,
+                'quantity'             => $quantity,
+                'selling_price'        => $sellingPrice,
+                'cost_price'           => $costPrice,
+                'discount'             => $totalLineDiscount,
+                'total'                => $totalLineRevenue,
+                'discounted_price'     => $discountedPricePerUnit,
+                'profit'               => $profit,
+            ]);
+
+            // 2. Deduct Stock safely using locking
+            $product_stock = PosProductStock::lockForUpdate()->find($item['pos_product_stock_id']);
+            if ($product_stock) {
+                $product_stock->decrement('stocks', $quantity);
+            }
+
+            // 3. Create Store Transaction
+            $pos_store_transaction = PosStoreTransaction::create([
+                'transact_by'          => Auth::id(),
+                'subscriber_id'        => Auth::user()->subscriber_id,
+                'pos_product_stock_id' => $item['pos_product_stock_id'],
+                'pos_sale_id'          => $request->pos_sale_id,
+                'stocks'               => $quantity,
+                'status'               => 'Deducted'
+            ]);
+
+            $pos_store_transaction->update([
+                'transaction_id' => str_pad($pos_store_transaction->id, 10, '0', STR_PAD_LEFT)
+            ]);
+        }
+
+        // 4. Update the Parent Sale Record
+        $pos_sales = PosSale::find($request->pos_sale_id);
+
+        if ($pos_sales) {
+            $newTotalAmount = $pos_sales->total_amount + $addedTotalAmount;
+            $newDiscount    = $pos_sales->discount + $addedDiscount;
+
+            // Change due is Amount Paid MINUS the final Total Amount
+            $newChangeDue   = max(0, $request->amount_paid - $newTotalAmount);
+
+            $pos_sales->update([
+                'total_amount' => $newTotalAmount,
+                'discount'     => $newDiscount,
+                'amount_paid'  => $request->amount_paid,
+                'change_due'   => $newChangeDue,
+                'payment_type' => $request->payment_type ?? $pos_sales->payment_type
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sales items added successfully',
+            'data'    => $request->all()
+        ]);
+    }
     public function index()
     {
         $sales = PosSale::where('subscriber_id', Auth::user()->subscriber_id)->with(['sale_items', 'cashier'])->latest()->get();
@@ -90,7 +189,7 @@ class PosSaleController extends Controller
             $profit = $total - ($quantity * $costPrice);
 
             PosSalesItem::create([
-                'pos_supplier_id' => $item['pos_supplier_id'],
+                'pos_supplier_id' => $item['pos_supplier_id'] ?? null,
                 'pos_category_id' => $item['pos_category_id'],
                 'pos_store_id'         => session('pos_store_id'),
                 'pos_product_stock_id' => $item['pos_product_stock_id'],
@@ -134,7 +233,7 @@ class PosSaleController extends Controller
      */
     public function show(PosSale $posSale)
     {
-        $posSale->load('sale_items.product', 'customer', 'user');
+        $posSale->load('sale_items.pos_product_stock', 'customer', 'user', 'cashier');
 
         return response()->json([
             'success' => true,

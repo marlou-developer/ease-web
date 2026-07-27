@@ -1,0 +1,1 @@
+import{j as r}from"./app-J20TVsDI.js";import t from"./layout-D2rznXGI.js";import"./sidebar-section-CcIbtVLj.js";import"./index-C2zUGCsV.js";import"./iconBase-FjpcoHMr.js";import"./tooltip-CQ1_GFy0.js";import"./portal-CiwLihFO.js";import"./topbar-section-CBM9qrfM.js";import"./ChevronDownIcon-Dt3UFgjC.js";function f(){return r.jsx(t,{children:"User"})}export{f as default};

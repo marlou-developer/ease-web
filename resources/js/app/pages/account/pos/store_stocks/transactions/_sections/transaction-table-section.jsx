@@ -34,7 +34,7 @@ export default function TransactionTableSection() {
             accessor: "name",
             className: "font-bold text-gray-700",
             render: (row) => {
-                return row.transfer_from
+                return row.transfer_from ?? 'Customer'
             },
         },
         {
@@ -42,7 +42,6 @@ export default function TransactionTableSection() {
             accessor: "name",
             className: "font-bold text-gray-700",
             render: (row) => {
-                console.log('row', row)
                 return row?.pos_product_stock?.id
             },
         },

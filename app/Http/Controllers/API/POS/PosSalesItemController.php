@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\API\POS;
 
 use App\Http\Controllers\Controller;
+use App\Models\POS\PosProductStock;
+use App\Models\POS\PosSale;
 use App\Models\POS\PosSalesItem;
+use App\Models\POS\PosStoreTransaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PosSalesItemController extends Controller
 {
@@ -90,11 +94,44 @@ class PosSalesItemController extends Controller
     /**
      * Delete a sale item.
      */
-    public function destroy(PosSalesItem $posSalesItem)
+    public function destroy($id)
     {
-        $posSalesItem->delete();
+        $posSalesItem = PosSalesItem::where('id', $id)->first();
 
+        if ($posSalesItem) {
+            $pos_sales = PosSale::where('id', $posSalesItem->sale_id)->first();
+            if ($pos_sales) {
+                $newTotalAmount = max(0, $pos_sales->total_amount - $posSalesItem->discounted_price);
+                $newDiscount    = max(0, $pos_sales->discount - $posSalesItem->discount);
+                $newChangeDue   = max(0, $pos_sales->amount_paid - $newTotalAmount);
+
+                $pos_sales->update([
+                    'total_amount' => $newTotalAmount,
+                    'discount'     => $newDiscount,
+                    'change_due'   => $newChangeDue,
+                ]);
+            }
+            $pos_product_stock = PosProductStock::where('id', $posSalesItem->pos_product_stock_id)->first();
+
+            if ($pos_product_stock) {
+                $pos_product_stock->increment('stocks', $posSalesItem->quantity);
+                $pos_store_transaction =  PosStoreTransaction::create([
+                    'transact_by' => Auth::id(),
+                    'subscriber_id' => Auth::user()->subscriber_id,
+                    // 'pos_warehouse_id' => $warehouse_stock->pos_warehouse_id,
+                    'pos_product_stock_id' => $posSalesItem->pos_product_stock_id,
+                    // 'pos_warehouse_stock_id' => $warehouse_stock->id,
+                    'stocks' => $posSalesItem->quantity,
+                ]);
+                $transaction_id = str_pad($pos_store_transaction->id, 10, '0', STR_PAD_LEFT);
+                $pos_store_transaction->update([
+                    'transaction_id' => $transaction_id
+                ]);
+            }
+            $posSalesItem->delete();
+        }
         return response()->json([
+            'data'    => $posSalesItem,
             'success' => true,
             'message' => 'Sale item deleted successfully'
         ]);

@@ -24,6 +24,7 @@ export const posSlice = createSlice({
         heldSales: [],
         store_stocks: [],
         sales: [],
+        sale: {},
         units: [],
         users: [],
         reports: {},
@@ -117,12 +118,16 @@ export const posSlice = createSlice({
         setCountProcessingStocks: (state, action) => {
             state.count_processing_stocks = action.payload;
         },
+        setSale: (state, action) => {
+            state.sale = action.payload;
+        },
     },
 });
 
 export const {
     setUsers,
     setCart,
+    setSale,
     setSales,
     setUnits,
     setReports,

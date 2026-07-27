@@ -54,6 +54,9 @@ Route::prefix('account')->middleware('auth')->group(function () {
         Route::get('/sales', function () {
             return Inertia::render('account/pos/sales/page');
         });
+        Route::get('/sales/{id}', function () {
+            return Inertia::render('account/pos/sales/id/page');
+        });
         Route::get('/cashiering', function () {
             return Inertia::render('account/pos/cashiering/page');
         });
@@ -68,7 +71,7 @@ Route::prefix('account')->middleware('auth')->group(function () {
             Route::get('/transactions', function () {
                 return Inertia::render('account/pos/store_stocks/transactions/page');
             });
-              Route::get('/my_product_requests', function () {
+            Route::get('/my_product_requests', function () {
                 return Inertia::render('account/pos/store_stocks/my_product_requests/page');
             });
         });
@@ -100,7 +103,6 @@ Route::prefix('account')->middleware('auth')->group(function () {
             Route::get('/stocks_request', function () {
                 return Inertia::render('account/pos/warehouse_stocks/stocks_request/page');
             });
-            
         });
         Route::get('/reports', function () {
             return Inertia::render('account/pos/reports/page');

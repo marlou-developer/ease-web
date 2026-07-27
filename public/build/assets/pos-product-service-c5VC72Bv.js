@@ -1,0 +1,1 @@
+import{S as s}from"./app-J20TVsDI.js";async function c(o){return await s.post("/api/pos-product-stocks",o)}async function p(o){return await s.put(`/api/pos-product-stocks/${o?.id}`,o)}export{c,p as e};
