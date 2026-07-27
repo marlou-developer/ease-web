@@ -116,10 +116,11 @@ class PosSaleController extends Controller
             'data'    => $request->all()
         ]);
     }
-    public function index()
+    public function index(Request $request)
     {
-        $sales = PosSale::where('subscriber_id', Auth::user()->subscriber_id)->with(['sale_items', 'cashier'])->latest()->get();
-
+        $sales = PosSale::where('subscriber_id', Auth::user()->subscriber_id)
+            ->where('is_credit', $request->is_credit ?? 0)
+            ->with(['sale_items', 'cashier'])->latest()->get();
         return response()->json([
             'success' => true,
             'data' => $sales

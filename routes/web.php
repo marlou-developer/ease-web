@@ -54,6 +54,12 @@ Route::prefix('account')->middleware('auth')->group(function () {
         Route::get('/sales', function () {
             return Inertia::render('account/pos/sales/page');
         });
+        Route::get('/credits', function () {
+            return Inertia::render('account/pos/credits/page');
+        });
+        Route::get('/credits/{id}', function () {
+            return Inertia::render('account/pos/sales/id/page');
+        });
         Route::get('/sales/{id}', function () {
             return Inertia::render('account/pos/sales/id/page');
         });

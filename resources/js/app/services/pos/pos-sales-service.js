@@ -8,9 +8,12 @@ export async function add_sales_items_service(data) {
     return await axios.post("/api/add_sales_items", data);
 }
 
-
 export async function get_pos_sales_service(data) {
-    return (await axios.get("/api/pos-sales")).data;
+    return (
+        await axios.get(
+            `/api/pos-sales?is_credits=${window.location.pathname.split("/")[3] == "credits" ? 1 : 0}`,
+        )
+    ).data;
 }
 
 export async function get_pos_sales_by_id_service(id) {

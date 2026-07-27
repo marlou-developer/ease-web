@@ -16,6 +16,7 @@ import {
     FcDeployment,
     FcShop,
     FcConferenceCall,
+    FcMoneyTransfer,
 } from "react-icons/fc";
 import Tooltip from "@/app/_components/tooltip";
 import { Link } from "@inertiajs/react";
@@ -45,6 +46,12 @@ export default function SidebarSection() {
             href: "/account/pos/sales",
             icon: FcSalesPerformance,
             current: path == "sales",
+        },
+        {
+            name: "Credits",
+            href: "/account/pos/credits",
+            icon: FcMoneyTransfer,
+            current: path == "credits",
         },
         {
             name: "Store Stocks",
