@@ -37,7 +37,7 @@ export default function DeleteItemSection({ data }) {
                 outlined
             >
                 <div className="flex gap-2 items-center justify-center">
-                    <Trash size={18} /> Delete Item
+                    <Trash size={18} /> 
                 </div>
             </Button>
 

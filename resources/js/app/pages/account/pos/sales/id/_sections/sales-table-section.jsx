@@ -3,9 +3,10 @@ import peso_value from "@/app/lib/peso-value";
 import React from "react";
 import { useSelector } from "react-redux";
 import DeleteItemSection from "./delete-item-section";
+import DiscountPerItemSection from "./discount-per-item-section";
 
 export default function SalesTableSection() {
-    const {  sale } = useSelector((store) => store.pos);
+    const { sale } = useSelector((store) => store.pos);
 
     // The current items are the line items (sale_items) for the selected sale
     const currentItems = sale?.sale_items;
@@ -56,9 +57,10 @@ export default function SalesTableSection() {
             className: 'font-bold text-gray-700',
             // Uses discounted_price as the final action line item based on the JSON structure
             render: (row) => {
-                return <>
-                <DeleteItemSection data={row} />
-                </>
+                return <div className="flex gap-2">
+                    <DeleteItemSection data={row} />
+                    <DiscountPerItemSection  data={row}/>
+                </div>
             }
         }
     ];

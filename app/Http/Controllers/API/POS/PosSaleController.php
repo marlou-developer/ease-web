@@ -14,6 +14,58 @@ use Illuminate\Support\Facades\Auth;
 
 class PosSaleController extends Controller
 {
+
+    public function update_discount_per_item_service(Request $request)
+    {
+        $request->validate([
+            'id'       => 'required|exists:pos_sales_items,id',
+            'discount' => 'required|numeric|min:0'
+        ]);
+
+
+        $item = PosSalesItem::lockForUpdate()->find($request->id);
+
+        if ($item) {
+            // 1. Calculate the difference between the old and new discount
+            $oldDiscount  = $item->discount;
+            $newDiscount  = $request->discount;
+            $discountDiff = $newDiscount - $oldDiscount;
+            // 2. Recalculate Item Financials
+            // Revenue (Total) and Profit go down exactly as much as the discount goes up
+            $newTotal = $item->total + $oldDiscount - $newDiscount;
+            $newProfit = $item->profit + $oldDiscount - $newDiscount;
+            $newDiscountedPrice = $item->quantity > 0 ? ($newTotal / $item->quantity) : 0;
+
+            $item->update([
+                'discount'         => $newDiscount,
+                'total'            => $newTotal,
+                'discounted_price' => $newDiscountedPrice,
+                'profit'           => $newProfit
+            ]);
+
+            // 3. Update the Parent Sale
+            $sale = PosSale::lockForUpdate()->find($item->sale_id);
+
+            if ($sale) {
+                $newSaleTotalAmount = max(0, $sale->total_amount - $discountDiff);
+                $newSaleDiscount    = max(0, $sale->discount + $discountDiff);
+                // Recalculate change: Amount Paid minus the New Final Total
+                $newSaleChangeDue   = max(0, $sale->amount_paid - $newSaleTotalAmount);
+
+                $sale->update([
+                    'total_amount' => $newSaleTotalAmount,
+                    'discount'     => $newSaleDiscount,
+                    'change_due'   => $newSaleChangeDue,
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Item discount updated successfully',
+            'data'    => $item
+        ]);
+    }
     public function add_sales_items(Request $request)
     {
         $request->validate([

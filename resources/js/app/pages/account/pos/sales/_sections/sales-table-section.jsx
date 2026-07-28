@@ -2,7 +2,7 @@ import Table from "@/app/_components/table";
 import Button from "@/app/_components/button";
 import peso_value from "@/app/lib/peso-value";
 import { router } from "@inertiajs/react";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Eye, Receipt, Trash2 } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import StockingSection from "./stocking-section";
@@ -113,14 +113,20 @@ export default function SalesTableSection() {
             align: 'center',
             className: 'font-bold text-gray-700',
             render: (row) => {
-                return <>
+                return <div className="flex gap-2">
                     <Button
                         variant="primary"
                         onClick={() => router.visit(`/account/pos/sales/${row.id}`)}
                     >
-                        SHOW
+                        <Eye />
                     </Button>
-                </>
+                    <Button
+                        variant="purple"
+                        onClick={() => window.open(`/account/pos/invoice/${row.id}`, '_blank')}
+                    >
+                        <Receipt />
+                    </Button>
+                </div>
             }
         },
         // {

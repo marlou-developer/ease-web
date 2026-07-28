@@ -51,6 +51,9 @@ Route::prefix('account')->middleware('auth')->group(function () {
         Route::get('/dashboard', function () {
             return Inertia::render('account/pos/dashboard/page');
         });
+        Route::get('/invoice/{id}', function () {
+            return Inertia::render('account/pos/_sections/invoices-section');
+        });
         Route::get('/sales', function () {
             return Inertia::render('account/pos/sales/page');
         });
