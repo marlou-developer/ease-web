@@ -1,0 +1,5 @@
+import{j as s}from"./app-Bu6y7zCG.js";import{c as r}from"./createLucideIcon-CZEM5w2m.js";const c=[["path",{d:"M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z",key:"1yo7s0"}],["path",{d:"m12 9 6 6",key:"anjzzh"}],["path",{d:"m18 9-6 6",key:"1fp51s"}]],d=r("delete",c),x=({value:a="",onChange:i,className:l=""})=>{const n=e=>{let t=String(a);e==="BACKSPACE"?t=t.slice(0,-1):e==="."?t.includes(".")||(t=t===""?"0.":t+"."):t==="0"?t=e:t+=e,i(t)},o=["1","2","3","4","5","6","7","8","9",".","0","BACKSPACE"];return s.jsx("div",{className:`grid grid-cols-3 gap-2 p-2 bg-gray-100 rounded-xl w-full  ${l}`,children:o.map(e=>s.jsx("button",{type:"button",onClick:()=>n(e),className:`
+            flex items-center justify-center h-14 rounded-lg text-xl font-semibold transition-active
+            active:bg-blue-500 active:text-white
+            ${e==="BACKSPACE"?"bg-red-50 text-red-600":"bg-white text-gray-800 shadow-sm"}
+          `,children:e==="BACKSPACE"?s.jsx(d,{size:24}):e},e))})};export{x as default};

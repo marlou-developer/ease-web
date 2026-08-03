@@ -118,6 +118,7 @@ export default function SalesTableSection() {
                     <PayCreditSection props_data={row} />
                     <Button
                         variant="primary"
+                        outlined
                         onClick={() => router.visit(`/account/pos/credits/${row.id}`)}
                     >
                         SHOW

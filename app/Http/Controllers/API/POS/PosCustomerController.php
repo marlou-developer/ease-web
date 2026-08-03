@@ -31,7 +31,7 @@ class PosCustomerController extends Controller
 
 
             // Ensure the balance doesn't drop below 0 if they overpay
-            $newBalance = max(0, $totalAmount - $paymentAmount);
+            $newBalance = max(0, $sale->balance - $paymentAmount);
             $sale->balance = $newBalance;
 
             // Update the due date if it's a partial payment and a new date is provided

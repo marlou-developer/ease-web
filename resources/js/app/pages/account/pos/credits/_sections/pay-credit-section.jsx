@@ -3,7 +3,7 @@ import Input from "@/app/_components/input";
 import Select from "@/app/_components/select";
 import Modal from "@/app/_components/modal";
 import { setAlert } from "@/app/redux/app-slice";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Plus } from "lucide-react";
@@ -21,32 +21,44 @@ export default function PayCreditSection({ props_data }) {
         reset,
         setValue,
         watch,
+        getValues, // <-- Added getValues to fetch live form state during validation
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
             amount: "",
-            due_date: "", // Added date to default values
+            due_date: "", 
             isPartialPayment: false,
-            modeOfPayment: "",
+            modeOfPayment: "Cash",
         },
     });
-    console.log('props_data',props_data)
+
+    const watchedValues = watch();
+    const balance = parseFloat(props_data?.balance || 0);
+    const customerName = props_data?.customer?.name || "Unknown Customer";
 
     // Watch values to handle dynamic rendering and calculations
     const amountValue = watch("amount");
-    const isPartialPayment = watch("isPartialPayment"); // Watch the checkbox state
+    const isPartialPayment = watch("isPartialPayment");
 
-    const currentBalance = props_data?.balance - (parseFloat(amountValue) || 0);
+    // Calculate remaining balance dynamically
+    const currentBalance = Math.max(0, balance - (parseFloat(amountValue) || 0));
+
+    // Automatically set amount to full balance if user unchecks "Partial Payment"
+    useEffect(() => {
+        if (!isPartialPayment && open) {
+            setValue("amount", balance.toString(), { shouldValidate: true });
+        }
+    }, [isPartialPayment, balance, setValue, open]);
 
     const formatCurrency = (amount) => {
-        return `₱ ${amount.toLocaleString("en-US", {
+        return `₱ ${Number(amount || 0).toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
         })}`;
     };
 
     const handlePayFullAmount = () => {
-        setValue("amount", props_data?.balance.toString(), { shouldValidate: true });
+        setValue("amount", balance.toString(), { shouldValidate: true });
         setValue("isPartialPayment", false);
     };
 
@@ -84,7 +96,6 @@ export default function PayCreditSection({ props_data }) {
                     reset();
                 }}
                 variant="primary"
-                outlined
             >
                 <div className="flex gap-2 items-center justify-center">
                     <Plus size={18} /> Add Payment
@@ -103,9 +114,9 @@ export default function PayCreditSection({ props_data }) {
                 >
                     {/* CUSTOMER DETAILS SECTION */}
                     <div className="flex flex-col gap-1 text-[15px] font-medium text-gray-900">
-                        <p>Customer Name: {props_data?.props_data?.name}</p>
-                        <p>Balance: {formatCurrency(props_data?.balance)}</p>
-                        <p>Current Balance: {formatCurrency(currentBalance > 0 ? currentBalance : 0)}</p>
+                        <p>Customer Name: {customerName}</p>
+                        <p>Balance: {formatCurrency(balance)}</p>
+                        <p>Current Balance: {formatCurrency(currentBalance)}</p>
                     </div>
 
                     {/* PARTIAL PAYMENT CHECKBOX */}
@@ -114,7 +125,6 @@ export default function PayCreditSection({ props_data }) {
                             type="checkbox"
                             id="isPartialPayment"
                             {...register("isPartialPayment")}
-                            // Added accent-pink-500 to color the checked box pink
                             className="w-5 h-5 text-pink-500 bg-white border-pink-400 rounded focus:ring-pink-500 focus:ring-2 accent-pink-500"
                         />
                         <label htmlFor="isPartialPayment" className="text-gray-800 cursor-pointer">
@@ -126,7 +136,7 @@ export default function PayCreditSection({ props_data }) {
                     {isPartialPayment && (
                         <div>
                             <Input
-                                label="Due Date"
+                                label="Next Due Date"
                                 type="date"
                                 {...register("due_date", {
                                     required: isPartialPayment ? "Due date is required" : false
@@ -144,7 +154,17 @@ export default function PayCreditSection({ props_data }) {
                             step="0.01"
                             {...register("amount", {
                                 required: "Amount is required",
-                                min: { value: 1, message: "Amount must be greater than 0" }
+                                min: { value: 0.01, message: "Amount must be greater than 0" },
+                                max: { value: balance, message: `Amount cannot exceed ${formatCurrency(balance)}` },
+                                // FIXED: Using getValues() guarantees it checks the live state of the checkbox
+                                validate: (value) => {
+                                    const parsedValue = parseFloat(value) || 0;
+                                    const isPartial = getValues("isPartialPayment");
+                                    if (!isPartial && parsedValue < balance) {
+                                        return `You must pay the full amount or check "Partial Payment".`;
+                                    }
+                                    return true;
+                                }
                             })}
                             error={errors?.amount?.message}
                         />
@@ -158,23 +178,23 @@ export default function PayCreditSection({ props_data }) {
                                 onClick={handlePayFullAmount}
                                 className="px-3 py-1.5 text-sm font-medium text-blue-500 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
                             >
-                                Pay Full Amount ({formatCurrency(props_data?.balance)})
+                                Pay Full Amount ({formatCurrency(balance)})
                             </button>
                         </div>
                     )}
-
                     {/* MODE OF PAYMENT DROPDOWN */}
                     <div className="mt-2">
                         <Select
                             label="Mode of Payment"
                             {...register("modeOfPayment", { required: "Please select a payment mode" })}
                             error={errors?.modeOfPayment?.message}
+                            value={watchedValues?.modeOfPayment}
                             className="w-full text-gray-600"
                             options={[
-                                { label: "Cash", value: "cash" },
-                                { label: "GCash", value: "gcash" },
-                                { label: "Bank Transfer", value: "bank_transfer" },
-                                { label: "Credit Card", value: "credit_card" }
+                                { label: "Cash", value: "Cash" },
+                                { label: "GCash", value: "E-Wallet" },
+                                { label: "Bank Transfer", value: "Bank Transfer" },
+                                { label: "Credit Card", value: "Credit/Debit Card" }
                             ]}
                         />
                     </div>
