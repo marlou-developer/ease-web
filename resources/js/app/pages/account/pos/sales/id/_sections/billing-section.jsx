@@ -9,18 +9,15 @@ export default function BillingSection() {
 
     // --- Calculations for the Summary Section ---
     const subtotalPrice = sale?.sale_items?.reduce((acc, item) => {
-        return acc + (Number(item.selling_price || item.discounted_price) * item.quantity);
+        return acc + (Number(item.selling_price) * item.quantity);
     }, 0) || 0;
 
     const totalDiscountPerItem = sale?.sale_items?.reduce((acc, item) => {
         return acc + Number(item.discount || 0);
     }, 0) || 0;
 
-    const customerTotalDiscount = 0; // Replace with actual customer discount field if available
     const totalDiscountPerOrder = Number(sale?.discount || 0);
-    const overallTotalDiscount = customerTotalDiscount + totalDiscountPerItem + totalDiscountPerOrder;
-
-    const grandTotal = subtotalPrice - overallTotalDiscount;
+    const grandTotal = subtotalPrice - totalDiscountPerOrder;
 
 
     console.log('salesale', sale)
@@ -57,10 +54,10 @@ export default function BillingSection() {
                         <span className="font-medium">{peso_value(subtotalPrice)}</span>
                     </div>
 
-                    <div className="flex justify-between items-center">
+                    {/* <div className="flex justify-between items-center">
                         <span>Customer Total Discount:</span>
                         <span className="font-medium">{peso_value(customerTotalDiscount)}</span>
-                    </div>
+                    </div> */}
 
                     <div className="flex justify-between items-center">
                         <span>Total Discount Per Item:</span>

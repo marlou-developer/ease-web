@@ -22,10 +22,13 @@ class PosSale extends Model
         'discount',
         'tax',
         'amount_paid',
+        'amount',
+        'balance',
         'change_due',
         'payment_type',
         'is_credit',
-        'status'
+        'status',
+        'due_date'
     ];
 
     public function customer(): HasOne

@@ -101,14 +101,21 @@ class PosSalesItemController extends Controller
         if ($posSalesItem) {
             $pos_sales = PosSale::where('id', $posSalesItem->sale_id)->first();
             if ($pos_sales) {
-                $newTotalAmount = max(0, $pos_sales->total_amount - $posSalesItem->discounted_price);
+                $newTotalAmount = max(0, $pos_sales->total_amount - $posSalesItem->selling_price);
                 $newDiscount    = max(0, $pos_sales->discount - $posSalesItem->discount);
                 $newChangeDue   = max(0, $pos_sales->amount_paid - $newTotalAmount);
-
+                // return response()->json([
+                //     'total_amount' => $newTotalAmount,
+                //     'amount' => ($newTotalAmount - $newDiscount),
+                //     'discount'     => $newDiscount, // done
+                //     'change_due'   => $newChangeDue, //done
+                // ], 500);
                 $pos_sales->update([
                     'total_amount' => $newTotalAmount,
+                    'amount' => ($newTotalAmount - $newDiscount),
                     'discount'     => $newDiscount,
                     'change_due'   => $newChangeDue,
+                    'balance' => $pos_sales->balance - $posSalesItem->total
                 ]);
             }
             $pos_product_stock = PosProductStock::where('id', $posSalesItem->pos_product_stock_id)->first();

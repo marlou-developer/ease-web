@@ -22,7 +22,7 @@ class PosSalesItem extends Model
         'total',
         'discount',
         'discounted_price',
-        'profit'
+        'profit',
     ];
 
     public function sale():HasOne

@@ -42,12 +42,11 @@ class PosSaleController extends Controller
                 'discounted_price' => $newDiscountedPrice,
                 'profit'           => $newProfit
             ]);
-
             // 3. Update the Parent Sale
             $sale = PosSale::lockForUpdate()->find($item->sale_id);
 
             if ($sale) {
-                $newSaleTotalAmount = max(0, $sale->total_amount - $discountDiff);
+                $newSaleTotalAmount = max(0, $sale->total_amount);
                 $newSaleDiscount    = max(0, $sale->discount + $discountDiff);
                 // Recalculate change: Amount Paid minus the New Final Total
                 $newSaleChangeDue   = max(0, $sale->amount_paid - $newSaleTotalAmount);
@@ -55,6 +54,7 @@ class PosSaleController extends Controller
                 $sale->update([
                     'total_amount' => $newSaleTotalAmount,
                     'discount'     => $newSaleDiscount,
+                    'amount'            => ($newSaleTotalAmount - $newSaleDiscount),
                     'change_due'   => $newSaleChangeDue,
                 ]);
             }
@@ -147,7 +147,7 @@ class PosSaleController extends Controller
         $pos_sales = PosSale::find($request->pos_sale_id);
 
         if ($pos_sales) {
-            $newTotalAmount = $pos_sales->total_amount + $addedTotalAmount;
+            $newTotalAmount = $pos_sales->total_amount + $sellingPrice;
             $newDiscount    = $pos_sales->discount + $addedDiscount;
 
             // Change due is Amount Paid MINUS the final Total Amount
@@ -156,9 +156,10 @@ class PosSaleController extends Controller
             $pos_sales->update([
                 'total_amount' => $newTotalAmount,
                 'discount'     => $newDiscount,
-                'amount_paid'  => $request->amount_paid,
+                'amount' => ($newTotalAmount - $newDiscount),
                 'change_due'   => $newChangeDue,
-                'payment_type' => $request->payment_type ?? $pos_sales->payment_type
+                'payment_type' => $request->payment_type ?? $pos_sales->payment_type,
+                'balance' => $pos_sales->balance + $addedTotalAmount,
             ]);
         }
 
@@ -172,7 +173,7 @@ class PosSaleController extends Controller
     {
         $sales = PosSale::where('subscriber_id', Auth::user()->subscriber_id)
             ->where('is_credit', $request->is_credit ?? 0)
-            ->with(['sale_items', 'cashier'])->latest()->get();
+            ->with(['sale_items', 'cashier', 'customer'])->latest()->get();
         return response()->json([
             'success' => true,
             'data' => $sales
@@ -204,6 +205,7 @@ class PosSaleController extends Controller
         $split_product_discount = $request->discount / count($request->items);
 
         $total_discount = collect($request->items)->sum('discount') + $request->discount;
+
         $sale = PosSale::create([
             'pos_store_id' => session('pos_store_id'),
             'invoice_no' => 0,
@@ -216,6 +218,8 @@ class PosSaleController extends Controller
             'amount_paid' => $request->amount_paid,
             'change_due' => $request->change_due,
             'payment_type' => $request->payment_type,
+            'amount' => ($total - ($total_discount ?? 0)),
+            'balance' => $request->is_credit ? ($total - ($total_discount ?? 0)) : 0,
             'is_credit' => $request->is_credit,
             'due_date' => $request->due_date ?? null,
             'status' => $request->is_credit ? 'Pending' : 'Paid',

@@ -1,1 +1,0 @@
-import{p as s}from"./app-jbQlXpaA.js";async function c(o){return await s.post("/api/pos-product-stocks",o)}async function p(o){return await s.put(`/api/pos-product-stocks/${o?.id}`,o)}export{c,p as e};

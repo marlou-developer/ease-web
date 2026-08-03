@@ -5,6 +5,7 @@ import { router } from "@inertiajs/react";
 import { Edit2, Trash2 } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import PayCreditSection from "./pay-credit-section";
 // import StockingSection from "./stocking-section";
 // import StockingSection from "..."; // Make sure to import this if you use it!
 
@@ -113,14 +114,15 @@ export default function SalesTableSection() {
             align: 'center',
             className: 'font-bold text-gray-700',
             render: (row) => {
-                return <>
+                return <div className="flex gap-3">
+                    <PayCreditSection props_data={row} />
                     <Button
                         variant="primary"
                         onClick={() => router.visit(`/account/pos/credits/${row.id}`)}
                     >
                         SHOW
                     </Button>
-                </>
+                </div>
             }
         },
         // {
