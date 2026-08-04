@@ -39,7 +39,7 @@ export default function TopbarSection() {
                             app?.user?.pos_user_type == 'Admin' && <SelectStoreSection />
                         }
 
-                        {app?.user?.pos_user_type !== 'admin' && app?.user?.store?.name && (
+                        {app?.user?.pos_user_type !== 'Admin' && app?.user?.store?.name && (
                             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-full shadow-sm">
                                 {/* Optional: A small storefront icon for better UX */}
                                 <svg
