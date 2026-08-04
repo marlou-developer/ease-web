@@ -22,6 +22,43 @@ class PosProductStockController extends Controller
     /**
      * List all product stocks.
      */
+    public function sync_data_to_store()
+    {
+
+        $pos_store = PosStore::where('id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::user()->subscriber_id)
+            ->first();
+
+        if ($pos_store) {
+            $pos_warehouse_stocks = PosWarehouseStock::where('pos_warehouse_id', $pos_store->pos_warehouse_id)
+                ->where('subscriber_id', Auth::user()->subscriber_id)
+                ->get();
+
+            foreach ($pos_warehouse_stocks as $value) {
+                PosProductStock::firstOrCreate(
+                    [
+                        // Unique identifiers to check for existence
+                        'pos_store_id'   => session('pos_store_id'),
+                        'pos_product_id' => $value['pos_product_id'],
+                        'subscriber_id'  => Auth::user()->subscriber_id,
+                    ],
+                    [
+                        // Default values to assign ONLY if it gets created
+                        'stocks'        => 0,
+                        'cost_price'    => 0,
+                        'selling_price' => 0,
+                        'discount'      => 0,
+                    ]
+                );
+            }
+        }
+
+        return response()->json([
+            'data' => $pos_warehouse_stocks,
+            'success' => true,
+            'message' => 'Sync successfully transferred to the retail store.',
+        ]);
+    }
     public function index()
     {
         $stocks = PosProductStock::where('pos_store_id', session('pos_store_id'))

@@ -8,6 +8,7 @@ use App\Models\POS\PosSale;
 use App\Models\POS\PosSaleItem;
 use App\Models\POS\PosSalesItem;
 use App\Models\POS\PosStockMovement;
+use App\Models\POS\PosStore;
 use App\Models\POS\PosStoreTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -173,7 +174,7 @@ class PosSaleController extends Controller
     {
         $sales = PosSale::where('subscriber_id', Auth::user()->subscriber_id)
             ->where('is_credit', $request->is_credit ?? 0)
-            ->with(['sale_items', 'cashier', 'customer'])->latest()->get();
+            ->with(['sale_items', 'cashier', 'customer', 'payments'])->latest()->get();
         return response()->json([
             'success' => true,
             'data' => $sales
@@ -203,9 +204,8 @@ class PosSaleController extends Controller
         });
 
         $split_product_discount = $request->discount / count($request->items);
-
         $total_discount = collect($request->items)->sum('discount') + $request->discount;
-
+        $pos_store = PosStore::where('id', session('pos_store_id'))->where('subscriber_id', Auth::user()->subscriber_id)->first();
         $sale = PosSale::create([
             'pos_store_id' => session('pos_store_id'),
             'invoice_no' => 0,
@@ -222,7 +222,7 @@ class PosSaleController extends Controller
             'balance' => $request->is_credit ? ($total - ($total_discount ?? 0)) : 0,
             'is_credit' => $request->is_credit,
             'due_date' => $request->due_date ?? null,
-            'status' => $request->is_credit ? 'Pending' : 'Paid',
+            'status' => ($request->is_credit || $pos_store->type == 'online') ? 'Pending' : 'Paid',
         ]);
         $invoice_no = str_pad($sale->id, 8, '0', STR_PAD_LEFT);
 

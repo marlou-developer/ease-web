@@ -36,6 +36,10 @@ class PosSale extends Model
         return $this->hasOne(PosCustomer::class, 'id', 'customer_id');
     }
 
+    public function payments(): HasMany
+    {
+        return $this->hasMany(PosCreditPayment::class, 'pos_sales_id', 'id');
+    }
     public function sale_items(): HasMany
     {
         return $this->hasMany(PosSalesItem::class, 'sale_id', 'id');

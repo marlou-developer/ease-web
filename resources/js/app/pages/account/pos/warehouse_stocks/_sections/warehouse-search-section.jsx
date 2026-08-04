@@ -10,6 +10,7 @@ import { Search } from "lucide-react";
 import React from "react";
 import { FcSearch } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
+import SyncDataToStore from "./sync-data-to-store";
 
 export default function WarehouseSearchSection() {
     const { app } = useSelector((store) => store.app);
@@ -18,7 +19,7 @@ export default function WarehouseSearchSection() {
     const dispatch = useDispatch();
     return (
         <>
-            <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row gap-4">
+            <div className="m-4 bg-slate-50 border-b border-slate-200 flex flex-col md:flex-row gap-4">
                 <div className="flex-none">
                     <Select
                         onChange={(e) => {
@@ -62,7 +63,7 @@ export default function WarehouseSearchSection() {
                         </button>
                     </div>
                 </div>
-                <div className=" flex-1">
+                <div className=" flex-1 w-full flex items-end justify-start flex-col">
                     <Input
                         icon={<FcSearch className="text-2xl" />}
                         onChange={(e) => {
@@ -71,6 +72,7 @@ export default function WarehouseSearchSection() {
                         }}
                         label="Search products..."
                     />
+                    <SyncDataToStore />
                 </div>
             </div>
         </>

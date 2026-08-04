@@ -14,6 +14,7 @@ class PosStore extends Model
         'pos_warehouse_id',
         'name',
         'location',
+        'type'
     ];
 
     public function pos_warehouse(): HasOne

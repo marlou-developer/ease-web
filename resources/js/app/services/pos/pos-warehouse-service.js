@@ -11,3 +11,7 @@ export async function add_new_stock_in_store_service(data) {
     return await axios.post("/api/add_new_stock_in_store",data);
 }
 
+export async function sync_data_to_store_service(data) {
+    return await axios.post("/api/sync_data_to_store",data);
+}
+

@@ -1,0 +1,1 @@
+async function t(s){return(await axios.get("/api/pos-warehouse-stock")).data}async function o(s,a){return await axios.put(`/api/pos-warehouse-stock/${s}`,a)}async function e(s){return await axios.post("/api/add_new_stock_in_store",s)}async function _(s){return await axios.post("/api/sync_data_to_store",s)}export{e as a,o as e,t as g,_ as s};

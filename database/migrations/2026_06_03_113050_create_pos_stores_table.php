@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('pos_warehouse_id')->constrained('pos_warehouses');
             $table->string('name')->nullable();
             $table->string('location')->nullable();
+            $table->enum('type', ['in_store', 'online'])->nullable();
             $table->timestamps();
         });
     }

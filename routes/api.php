@@ -53,6 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('pos-product-stocks', PosProductStockController::class);
     Route::post('pos-product-stocks-received', [PosProductStockController::class, 'received_stock']);
     Route::post('add_new_stock_in_store', [PosProductStockController::class, 'add_new_stock_in_store']);
+    Route::post('sync_data_to_store', [PosProductStockController::class, 'sync_data_to_store']);
     Route::apiResource('pos-sales', PosSaleController::class);
     Route::post('add_sales_items', [PosSaleController::class, 'add_sales_items']);
     Route::post('update_discount_per_item_service', [PosSaleController::class, 'update_discount_per_item_service']);
