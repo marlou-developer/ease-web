@@ -3,7 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\POS\PosStore;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -19,6 +22,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'subscriber_id',
+        'pos_store_id',
         'name',
         'email',
         'fname',
@@ -52,5 +56,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+     public function store():HasOne
+    {
+        return $this->hasOne(PosStore::class,'id','pos_store_id');
     }
 }

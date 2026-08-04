@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\POS\PosProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,6 +19,10 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     $user = Auth::user();
+    $storeId = session('pos_store_id');
+    if (!$storeId &&  Auth::user()) {
+        session(['pos_store_id' => Auth::user()->pos_store_id]);
+    }
     return match ($user?->role) {
         1 => redirect('/administrator/dashboard'),
         2 => redirect('/account/pos/dashboard'),
@@ -44,10 +49,7 @@ Route::prefix('administrator')->middleware('auth')->group(function () {
 Route::prefix('account')->middleware('auth')->group(function () {
     Route::get('get_all_data', [PosProductController::class, 'get_all_data']);
     Route::prefix('pos')->group(function () {
-        $storeId = session('pos_store_id');
-        if (!$storeId) {
-            session(['pos_store_id' => 1]);
-        }
+
         Route::get('/dashboard', function () {
             return Inertia::render('account/pos/dashboard/page');
         });

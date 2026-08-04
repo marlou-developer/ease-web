@@ -173,6 +173,7 @@ class PosSaleController extends Controller
     public function index(Request $request)
     {
         $sales = PosSale::where('subscriber_id', Auth::user()->subscriber_id)
+            ->where('pos_store_id', session('pos_store_id'))
             ->where('is_credit', $request->is_credit ?? 0)
             ->with(['sale_items', 'cashier', 'customer', 'payments'])->latest()->get();
         return response()->json([

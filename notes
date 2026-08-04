@@ -28,3 +28,11 @@ TRUNCATE TABLE pos_purchase_items;
 
 -- 3. Re-enable foreign key checks (IMPORTANT)
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+
+before setup.
+
+1. check the warehouse stocks cost price and selling price are correct.
+2. go to warehouse stocks and click the sync product button.
+3. edit the store stocks which has 0.00

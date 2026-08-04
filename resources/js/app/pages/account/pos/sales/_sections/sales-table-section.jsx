@@ -106,7 +106,14 @@ export default function SalesTableSection() {
                 return row?.sale_items?.length;
             }
         },
-
+  {
+            header: 'Status',
+            accessor: 'status',
+            className: 'font-bold text-gray-700',
+            render: (row) => {
+                return row?.status;
+            }
+        },
         {
             header: 'Action',
             accessor: 'action',

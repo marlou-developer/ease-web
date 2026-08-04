@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('subscriber_id')->nullable()->constrained('subscribers');
+            $table->foreignId('pos_store_id')->nullable()->constrained('pos_stores');
             $table->string('name')->nullable();
             $table->string('email')->unique();
             $table->string('fname')->nullable();
             $table->string('lname')->nullable();
             $table->string('mname')->nullable();
-            $table->string('position')->nullable();
             $table->string('pos_user_type')->nullable();
             $table->string('security_pin')->nullable();
             $table->timestamp('email_verified_at')->nullable();

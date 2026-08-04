@@ -292,20 +292,25 @@ class PosProductStockController extends Controller
 
         $pos_product_stock = PosProductStock::findOrFail($id);
         $pos_product_stock->update($request->all());
+
         $store = PosStore::with('pos_warehouse')->findOrFail($request->pos_store_id);
 
         $warehouse_stock = PosWarehouseStock::where('subscriber_id', Auth::user()->subscriber_id)
             ->where('pos_product_id', $pos_product_stock->pos_product_id)
-            ->where('pos_warehouse_id', $store->pos_warehouse->id)
-            ->where('cost_price', $pos_product_stock->cost_price)
-            ->where('selling_price', $pos_product_stock->selling_price)
+            ->where('pos_warehouse_id', $store->pos_warehouse['id'])
             ->first();
 
+        if ($pos_product_stock && $pos_product_stock->cost_price == '0.00' && $pos_product_stock->selling_price == '0.00') {
+            $pos_product_stock->update([
+                'cost_price' => $warehouse_stock->cost_price,
+                'selling_price' => $warehouse_stock->selling_price
+            ]);
+        }
 
         $pos_store_transaction = PosStoreTransaction::updateOrCreate(
             [
                 'subscriber_id'          => Auth::user()->subscriber_id,
-                'pos_warehouse_id'       => $store->pos_warehouse->id,
+                'pos_warehouse_id'       => $store->pos_warehouse['id'],
                 'pos_product_stock_id'   => $id,
                 'pos_warehouse_stock_id' => $warehouse_stock->id,
             ],

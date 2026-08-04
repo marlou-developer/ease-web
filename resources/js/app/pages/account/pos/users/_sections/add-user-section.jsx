@@ -9,9 +9,11 @@ import store from "@/app/store/store";
 import { Plus, User } from "lucide-react";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { FcShop } from "react-icons/fc";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function AddUserSection() {
+    const { app } = useSelector((store) => store.app)
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
     const [error, setError] = useState('')
@@ -110,16 +112,34 @@ export default function AddUserSection() {
                                 label="Select User Type"
                                 // Formatted labels to have capital letters for the UI, but lowercase values for the backend
                                 options={[
-                                    { value: 'admin', label: 'Admin' },
-                                    { value: 'inventory', label: 'Inventory' },
-                                    { value: 'shopee', label: 'Shopee' },
-                                    { value: 'cashier', label: 'Cashier' },
-                                    { value: 'encoder', label: 'Encoder' }
+                                    { value: 'Admin', label: 'Admin' },
+                                    { value: 'Inventory', label: 'Inventory' },
+                                    { value: 'Cashier', label: 'Cashier' },
+                                    { value: 'Encoder', label: 'Encoder' }
                                 ]}
                                 value={value}
                                 onChange={onChange}
                                 {...restField}
                                 error={errors.pos_user_type}
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="pos_store_id"
+                        control={control}
+                        rules={{ required: "Store selection is required" }}
+                        render={({ field: { onChange, value, ...restField } }) => (
+                            <Select
+                                label="Select Store"
+                                name="pos_store_id"
+                                // 4. Added optional chaining safety for the map array
+                                options={app?.stores?.map(res => ({
+                                    value: res.id,
+                                    label: res.name
+                                })) || []}
+                                value={value}
+                                {...restField}
+                                onChange={onChange}
                             />
                         )}
                     />
@@ -160,6 +180,7 @@ export default function AddUserSection() {
                         error={errors.suffix}
                     />
 
+
                     {/* Position */}
                     <Input
                         label="Position"
@@ -169,8 +190,6 @@ export default function AddUserSection() {
                         })}
                         error={errors.position}
                     />
-
-                    {/* Email */}
 
                     {/* Footer Note */}
                     <p className="text-[13px] text-gray-500 italic mt-2 leading-tight">

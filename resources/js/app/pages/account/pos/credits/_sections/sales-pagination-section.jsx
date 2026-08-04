@@ -67,13 +67,12 @@ export default function SalesPaginationSection() {
             </p>
 
             <div className="flex items-center gap-1">
-                {/* Previous Button */}
                 <button
                     disabled={currentPage === 1}
                     onClick={() => dispatch(setCurrentPage(currentPage - 1))}
                     className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm font-medium hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition"
                 >
-                    <ChevronLeft size={16} /> Previous
+                    <ChevronLeft size={16} /> 
                 </button>
 
                 {/* Dynamic Page Numbers */}
@@ -99,7 +98,7 @@ export default function SalesPaginationSection() {
                     onClick={() => dispatch(setCurrentPage(currentPage + 1))}
                     className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm font-medium hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition"
                 >
-                    Next <ChevronRight size={16} />
+                     <ChevronRight size={16} />
                 </button>
             </div>
         </div>

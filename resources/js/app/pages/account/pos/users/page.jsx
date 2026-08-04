@@ -5,6 +5,7 @@ import UsersTableSection from './_sections/users-table-section'
 import loadingApi from '@/app/lib/loading-api'
 import store from '@/app/store/store'
 import { get_pos_users_thunk } from '@/app/redux/pos/pos-thunk'
+import UsersPaginationSection from './_sections/users-pagination-section'
 
 export default function Page() {
 
@@ -16,6 +17,7 @@ export default function Page() {
         <Layout>
             <HeaderSection />
             <UsersTableSection />
+            <UsersPaginationSection />
         </Layout>
     )
 }

@@ -60,7 +60,7 @@ export default function Pagination({ data }) {
                             aria-hidden="true"
                             className="mr-3 h-5 w-5 text-white"
                         />
-                        Previous
+                        
                     </Link>
                 )}
             </div>
@@ -91,7 +91,7 @@ export default function Pagination({ data }) {
                         }&search=${search}&status=${status}`}
                         className="inline-flex items-center  border-transparent bg-blue-500 p-2 text-white rounded-md text-sm font-medium  "
                     >
-                        Next
+                        
                         <ArrowLongRightIcon
                             aria-hidden="true"
                             className="ml-3 h-5 w-5 text-white"

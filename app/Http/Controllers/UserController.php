@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        $user = Auth::user()->load('store');
         $stores = PosStore::where('subscriber_id', $user->subscriber_id)->get();
         $categories = PosCategory::where('subscriber_id', $user->subscriber_id)->get();
         return response()->json([
@@ -46,7 +46,8 @@ class UserController extends Controller
             ...$request->all(),
             'subscriber_id' => Auth::user()->subscriber_id,
             'name' => $request->fname . ' ' . $request->lname,
-            'password' => Hash::make('admin')
+            'password' => Hash::make('admin'),
+            'role' => 2
         ]);
 
         // 3. Return the response

@@ -12,6 +12,8 @@ import SelectStoreSection from "./select-store-section";
 
 
 export default function TopbarSection() {
+    const { app } = useSelector((store) => store.app)
+    console.log('app', app)
     const dispatch = useDispatch();
 
     return (
@@ -33,19 +35,33 @@ export default function TopbarSection() {
 
                 <div className="flex-1 flex items-center gap-x-4">
                     <form className="flex-1 relative  mx-5">
-                        <SelectStoreSection />
-                        {/* <input
-                            name="search"
-                            placeholder="Search"
-                            className="block w-full pl-8 pr-2 py-2 text-gray-900 bg-white border rounded"
-                        />
-                        <MagnifyingGlassIcon className="absolute left-2 top-2.5 w-5 h-5 text-gray-400 pointer-events-none" /> */}
+                        {
+                            app?.user?.pos_user_type == 'Admin' && <SelectStoreSection />
+                        }
+
+                        {app?.user?.pos_user_type !== 'admin' && app?.user?.store?.name && (
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-full shadow-sm">
+                                {/* Optional: A small storefront icon for better UX */}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="w-4 h-4 text-emerald-600"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+
+                                <span>{app.user.store.name}</span>
+                            </div>
+                        )}
                     </form>
 
                     <div className="flex items-center gap-x-4">
-                        <button className="p-2 text-gray-400 hover:text-gray-500 ">
+                        {/* <button className="p-2 text-gray-400 hover:text-gray-500 ">
                             <BellIcon className="w-6 h-6" />
-                        </button>
+                        </button> */}
 
                         <Menu as="div" className="relative">
                             <Menu.Button className="flex items-center">
@@ -55,7 +71,7 @@ export default function TopbarSection() {
                                     alt=""
                                 />
                                 <span className="ml-2 hidden lg:block text-sm font-semibold text-gray-900">
-                                    Tom Cook
+                                    {app?.user?.name}
                                 </span>
                                 <ChevronDownIcon className="ml-1 w-5 h-5 text-gray-400 " />
                             </Menu.Button>
