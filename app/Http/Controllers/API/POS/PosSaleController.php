@@ -15,6 +15,41 @@ use Illuminate\Support\Facades\Auth;
 
 class PosSaleController extends Controller
 {
+    public function pos_sales_change_status(Request $request)
+    {
+
+        $sale = PosSale::find($request->id);
+
+        if ($request->status == 'Returned') {
+            foreach ($request->items as $key => $value) {
+                $pos_product_stock = PosProductStock::where('id', $value['pos_product_stock_id'])->first();
+
+                if ($pos_product_stock) {
+                    $pos_product_stock->increment('stocks', $value['quantity']);
+                    $pos_store_transaction =  PosStoreTransaction::create([
+                        'transact_by' => Auth::id(),
+                        'subscriber_id' => Auth::user()->subscriber_id,
+                        // 'pos_warehouse_id' => $warehouse_stock->pos_warehouse_id,
+                        'pos_product_stock_id' => $value['pos_product_stock_id'],
+                        // 'pos_warehouse_stock_id' => $warehouse_stock->id,
+                        'stocks' => $value['quantity'],
+                    ]);
+                    $transaction_id = str_pad($pos_store_transaction->id, 10, '0', STR_PAD_LEFT);
+                    $pos_store_transaction->update([
+                        'transaction_id' => $transaction_id
+                    ]);
+                }
+            }
+        }
+        $sale->update([
+            'status' => $request->status
+        ]);
+        return response()->json([
+            'data' => $sale,
+            'success' => true,
+            'message' => 'Item discount updated successfully',
+        ]);
+    }
 
     public function update_discount_per_item_service(Request $request)
     {

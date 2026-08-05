@@ -1,1 +1,0 @@
-import{j as e}from"./app-BKVguvAJ.js";function r(){return e.jsx(e.Fragment,{children:e.jsx("div",{className:"bg-blue-600 p-4 flex justify-between items-center text-white",children:e.jsx("h1",{className:"flex-1 text-xl font-bold",children:"Suppliers"})})})}export{r as default};

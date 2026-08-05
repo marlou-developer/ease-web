@@ -5,6 +5,7 @@ import { router } from "@inertiajs/react";
 import { Edit2, Eye, Receipt, Trash2 } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import SalesUpdateStatus from "./sales-update-status";
 // import StockingSection from "./stocking-section";
 // import StockingSection from "..."; // Make sure to import this if you use it!
 
@@ -121,6 +122,7 @@ export default function SalesTableSection() {
             className: 'font-bold text-gray-700',
             render: (row) => {
                 return <div className="flex gap-2">
+                    <SalesUpdateStatus props_data={row} />
                     <Button
                         variant="primary"
                         onClick={() => router.visit(`/account/pos/sales/${row.id}`)}

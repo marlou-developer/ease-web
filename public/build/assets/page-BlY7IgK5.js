@@ -1,1 +1,0 @@
-import{j as t}from"./app-BKVguvAJ.js";import r from"./layout-2-yEquAe.js";import"./sidebar-section-BoHW8dhJ.js";import"./index-BngfIzBS.js";import"./iconBase-Bo_Qy-MQ.js";import"./tooltip-CIoFoETA.js";import"./portal-PkhA4CWP.js";import"./topbar-section-CWa08im6.js";import"./ChevronDownIcon-DzKXRaKy.js";function f(){return t.jsx(r,{children:"Setting"})}export{f as default};

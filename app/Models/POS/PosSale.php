@@ -42,7 +42,7 @@ class PosSale extends Model
     }
     public function sale_items(): HasMany
     {
-        return $this->hasMany(PosSalesItem::class, 'sale_id', 'id');
+        return $this->hasMany(PosSalesItem::class, 'sale_id', 'id')->with(['pos_product_stock']);
     }
 
     public function cashier(): HasOne

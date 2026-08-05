@@ -4,6 +4,10 @@ export async function create_pos_sales_service(data) {
     return await axios.post("/api/pos-sales", data);
 }
 
+export async function pos_sales_change_status_service(data) {
+    return await axios.post("/api/pos_sales_change_status", data);
+}
+
 export async function add_sales_items_service(data) {
     return await axios.post("/api/add_sales_items", data);
 }
