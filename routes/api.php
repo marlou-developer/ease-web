@@ -6,6 +6,8 @@ use App\Http\Controllers\API\POS\PosCashRegisterController;
 use App\Http\Controllers\API\POS\PosCashTransactionController;
 use App\Http\Controllers\API\POS\PosCategoryController;
 use App\Http\Controllers\API\POS\PosCustomerController;
+use App\Http\Controllers\API\POS\PosExpenseCategoryController;
+use App\Http\Controllers\API\POS\PosExpenseController;
 use App\Http\Controllers\API\POS\PosItemController;
 use App\Http\Controllers\API\POS\PosProductController;
 use App\Http\Controllers\API\POS\PosProductStockController;
@@ -72,6 +74,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('pos-store-transaction', PosStoreTransactionController::class);
     Route::apiResource('pos-store-requests', PosStoreRequestController::class);
     Route::post('action_store_requests', [PosStoreRequestController::class, 'action_store_requests']);
+    Route::apiResource('pos-expense-categories', PosExpenseCategoryController::class);
+    Route::apiResource('pos-expenses', PosExpenseController::class);
 });
 
 

@@ -17,6 +17,7 @@ import {
     FcShop,
     FcConferenceCall,
     FcMoneyTransfer,
+    FcDebt,
 } from "react-icons/fc";
 import Tooltip from "@/app/_components/tooltip";
 import { Link } from "@inertiajs/react";
@@ -50,7 +51,7 @@ export default function SidebarSection() {
         {
             name: "Credits",
             href: "/account/pos/credits",
-            icon: FcMoneyTransfer,
+            icon: FcDebt,
             current: path == "credits",
         },
         {
@@ -71,6 +72,12 @@ export default function SidebarSection() {
             icon: FcDonate,
             current: path == "purchases",
         },
+        {
+            name: "Expenses",
+            href: "/account/pos/expenses",
+            icon: FcMoneyTransfer,
+            current: path == "expenses",
+        },
         // { name: "Stock Movements", href: "/account/pos/stock_movements", icon: FcFeedIn, current: path == "stock_movements" },
         {
             name: "Suppliers",
@@ -78,7 +85,12 @@ export default function SidebarSection() {
             icon: FcShipped,
             current: path == "suppliers",
         },
-        { name: "Reports", href: "/account/pos/reports", icon: FcPositiveDynamic, current: path == "reports" },
+        {
+            name: "Reports",
+            href: "/account/pos/reports",
+            icon: FcPositiveDynamic,
+            current: path == "reports",
+        },
         {
             name: "Customers",
             href: "/account/pos/customers",
@@ -202,7 +214,7 @@ export default function SidebarSection() {
             >
                 <div className="flex flex-col flex-1 h-full">
                     <div className="flex items-center mt-3 justify-center h-16 p-4">
-                        <img
+                        {/* <img
                             alt="Logo"
                             src="/images/logo.png"
                             className={`h-16 w-full  ${sidebarText}`}
@@ -211,7 +223,7 @@ export default function SidebarSection() {
                             alt="Logo"
                             src="/images/logo.png"
                             className={`h-16 w-full hidden ${sidebarText}`}
-                        />
+                        /> */}
                     </div>
                     <hr className="my-3" />
                     <nav className="flex-1 overflow-y-auto p-2">

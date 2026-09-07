@@ -11,6 +11,8 @@ import { get_pos_reports_service } from "@/app/services/pos/pos-report-service";
 import { get_pos_warehouse_transaction_service } from "@/app/services/pos/pos-warehouse-transaction";
 import { get_pos_store_transaction_service } from "@/app/services/pos/pos-store-transaction";
 import { get_pos_store_requests_service } from "@/app/services/pos/pos-store-requests-service";
+import { get_pos_expenses_service } from "@/app/services/pos/pos-expense-service";
+import { get_pos_expense_categories_service } from "@/app/services/pos/pos-expense-category-service";
 
 export function get_pos_suppliers_thunk() {
     return async function (dispatch, getState) {
@@ -129,5 +131,20 @@ export function get_pos_store_transaction_thunk() {
         dispatch(posSlice.actions.setSuppliers(res.suppliers));
         dispatch(posSlice.actions.setPosStoreTransactions(res.data));
         dispatch(posSlice.actions.setPosStoreStats(res.stats));
+    };
+}
+
+export function get_pos_expenses_thunk() {
+    return async function (dispatch, getState) {
+        dispatch(posSlice.actions.setSearchTerm(""));
+        const res = await get_pos_expenses_service();
+        dispatch(posSlice.actions.setExpenses(res.data));
+    };
+}
+
+export function get_pos_expense_categories_thunk() {
+    return async function (dispatch, getState) {
+        const res = await get_pos_expense_categories_service();
+        dispatch(posSlice.actions.setExpenseCategories(res.data));
     };
 }

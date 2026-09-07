@@ -136,7 +136,7 @@ export default function SidebarSection() {
             >
                 <div className="flex flex-col flex-1 h-full">
                     <div className="flex items-center mt-3 justify-center h-16 p-4">
-                        <img
+                        {/* <img
                             alt="Logo"
                             src="/images/logo.png"
                             className={`h-16 w-full dark:hidden ${sidebarText}`}
@@ -145,7 +145,7 @@ export default function SidebarSection() {
                             alt="Logo"
                             src="/images/logo.png"
                             className={`h-16 w-full hidden dark:block ${sidebarText}`}
-                        />
+                        /> */}
                     </div>
                     <hr className="my-3" />
                     <nav className="flex-1 overflow-y-auto p-2">

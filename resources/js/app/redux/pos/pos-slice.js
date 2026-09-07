@@ -36,6 +36,8 @@ export const posSlice = createSlice({
         product_requests: [],
         count_pending_stocks: 0,
         count_processing_stocks: 0,
+        expenses: [],
+        expense_categories: [],
     },
     reducers: {
         setStoreStocks: (state, action) => {
@@ -121,6 +123,12 @@ export const posSlice = createSlice({
         setSale: (state, action) => {
             state.sale = action.payload;
         },
+        setExpenses: (state, action) => {
+            state.expenses = action.payload;
+        },
+        setExpenseCategories: (state, action) => {
+            state.expense_categories = action.payload;
+        },
     },
 });
 
@@ -152,5 +160,7 @@ export const {
     setCountProcessingStocks,
     setPosWarehouseTransactions,
     setPosStoreTransactions,
+    setExpenses,
+    setExpenseCategories,
 } = posSlice.actions;
 export default posSlice.reducer;
