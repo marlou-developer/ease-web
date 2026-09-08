@@ -61,17 +61,21 @@ export default function EditUserSection({ user }) {
                 setAlert({
                     type: "success",
                     title: "User updated successfully!",
-                })
+                }),
             );
         } catch (error) {
             setError(error?.response?.data?.message);
-            console.error("Error updating user:", error?.response?.data?.message);
+            console.error(
+                "Error updating user:",
+                error?.response?.data?.message,
+            );
         }
     };
 
     return (
         <div>
             <button
+                title="Edit user"
                 type="button"
                 onClick={handleOpen}
                 className="text-blue-500 hover:text-blue-700"
@@ -80,7 +84,7 @@ export default function EditUserSection({ user }) {
             </button>
 
             <Modal
-                title=""
+                title="Edit User"
                 width="max-w-md"
                 isOpen={open}
                 onClose={() => setOpen(false)}
@@ -109,7 +113,9 @@ export default function EditUserSection({ user }) {
                         name="pos_user_type"
                         control={control}
                         rules={{ required: "Role is required" }}
-                        render={({ field: { onChange, value, ...restField } }) => (
+                        render={({
+                            field: { onChange, value, ...restField },
+                        }) => (
                             <Select
                                 label="Select User Type"
                                 options={[
@@ -129,7 +135,9 @@ export default function EditUserSection({ user }) {
                         name="pos_store_id"
                         control={control}
                         rules={{ required: "Store selection is required" }}
-                        render={({ field: { onChange, value, ...restField } }) => (
+                        render={({
+                            field: { onChange, value, ...restField },
+                        }) => (
                             <Select
                                 label="Select Store"
                                 name="pos_store_id"

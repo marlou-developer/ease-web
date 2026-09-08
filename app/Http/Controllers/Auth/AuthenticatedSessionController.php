@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\POS\PosUserLoginLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +34,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        PosUserLoginLog::create([
+            'user_id' => Auth::id(),
+            'pos_store_id' => Auth::user()->pos_store_id,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'login_at' => now(),
+        ]);
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
@@ -41,6 +50,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        PosUserLoginLog::where('user_id', Auth::id())
+            ->whereNull('logout_at')
+            ->latest('login_at')
+            ->first()?->update(['logout_at' => now()]);
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

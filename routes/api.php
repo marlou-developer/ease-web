@@ -70,6 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('pos-warehouse-stock', PosWarehouseStockController::class);
     Route::apiResource('pos-reports', PosReportController::class);
     Route::get('get_pos_users', [UserController::class, 'get_pos_users']);
+    Route::get('user-login-logs/{user}', [UserController::class, 'get_user_login_logs']);
     Route::apiResource('pos-warehouse-transaction', PosWarehouseTransactionController::class);
     Route::apiResource('pos-store-transaction', PosStoreTransactionController::class);
     Route::apiResource('pos-store-requests', PosStoreRequestController::class);

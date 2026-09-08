@@ -23,15 +23,18 @@ export default function DeleteUserSection({ user }) {
                 setAlert({
                     type: "success",
                     title: "User deleted successfully!",
-                })
+                }),
             );
         } catch (error) {
-            console.error("Error deleting user:", error?.response?.data?.message);
+            console.error(
+                "Error deleting user:",
+                error?.response?.data?.message,
+            );
             dispatch(
                 setAlert({
                     type: "danger",
                     title: "User deletion unsuccessful!",
-                })
+                }),
             );
         } finally {
             setLoading(false);
@@ -41,6 +44,7 @@ export default function DeleteUserSection({ user }) {
     return (
         <div>
             <button
+                title="Delete user"
                 type="button"
                 onClick={() => setIsModalOpen(true)}
                 className="text-red-500 hover:text-red-700"
@@ -62,7 +66,8 @@ export default function DeleteUserSection({ user }) {
                     className="flex flex-col gap-4"
                 >
                     <h1 className="text-lg font-semibold">
-                        Are you sure you want to delete {user?.name || "this user"}?
+                        Are you sure you want to delete{" "}
+                        {user?.name || "this user"}?
                     </h1>
                     <hr className="my-2" />
                     <div className="flex justify-end gap-2">
@@ -74,7 +79,11 @@ export default function DeleteUserSection({ user }) {
                         >
                             Cancel
                         </Button>
-                        <Button type="submit" variant="primary" loading={loading}>
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            loading={loading}
+                        >
                             Delete User
                         </Button>
                     </div>

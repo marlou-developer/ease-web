@@ -18,3 +18,7 @@ export async function delete_user_service(id) {
 export async function change_store_service(data) {
     return await axios.put(`/api/pos-store/${data.pos_store_id}`, data);
 }
+
+export async function get_user_login_logs_service(userId, page = 1) {
+    return await axios.get(`/api/user-login-logs/${userId}`, { params: { page } });
+}

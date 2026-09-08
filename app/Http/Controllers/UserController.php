@@ -39,6 +39,17 @@ class UserController extends Controller
         ]);
     }
 
+    public function get_user_login_logs(User $user)
+    {
+        if ($user->subscriber_id !== Auth::user()->subscriber_id) {
+            abort(403);
+        }
+
+        $logs = $user->loginLogs()->with('store')->paginate(15);
+
+        return response()->json($logs);
+    }
+
     public function store(Request $request)
     {
         // 1. Validate the incoming request data

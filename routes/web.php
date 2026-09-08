@@ -5,29 +5,39 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    $user = Auth::user();
-    return match ($user?->role) {
+// Resolves where a logged-in user should land based on role; falls back to the
+// login page for guests, and to the POS dashboard (with a log entry) for any
+// authenticated user whose role doesn't match a known case, so an authenticated
+// session never gets stuck re-rendering the login page.
+function resolve_home_redirect(?\App\Models\User $user)
+{
+    return match ((int) $user?->role) {
         1 => redirect('/administrator/dashboard'),
         2 => redirect('/account/pos/dashboard'),
-        default => Inertia::render('auth/login/page'),
+        default => $user
+            ? tap(redirect('/account/pos/dashboard'), fn () => Log::warning('Authenticated user has an unrecognized role, defaulting to POS dashboard.', [
+                'user_id' => $user->id,
+                'role' => $user->role,
+            ]))
+            : Inertia::render('auth/login/page'),
     };
+}
+
+Route::get('/', function () {
+    return resolve_home_redirect(Auth::user());
 })->name('login');
 
 Route::get('/dashboard', function () {
     $user = Auth::user();
     $storeId = session('pos_store_id');
-    if (!$storeId &&  Auth::user()) {
-        session(['pos_store_id' => Auth::user()->pos_store_id]);
+    if (!$storeId && $user) {
+        session(['pos_store_id' => $user->pos_store_id]);
     }
-    return match ($user?->role) {
-        1 => redirect('/administrator/dashboard'),
-        2 => redirect('/account/pos/dashboard'),
-        default => Inertia::render('auth/login/page'),
-    };
+    return resolve_home_redirect($user);
 })->name('dashboard');
 
 Route::prefix('administrator')->middleware('auth')->group(function () {
