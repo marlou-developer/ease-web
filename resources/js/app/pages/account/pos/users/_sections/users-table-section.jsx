@@ -88,7 +88,7 @@ export default function UsersTableSection() {
                 <div className="flex items-center gap-3">
                     <EditUserSection user={row} />
                     <DeleteUserSection user={row} />
-                    <LockProfileSection userId={row?.id} />
+                    <LockProfileSection user={row} />
                     <UserLogsSection userId={row?.id} />
                 </div>
             ),

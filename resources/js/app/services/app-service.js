@@ -14,6 +14,10 @@ export async function delete_user_service(id) {
     return await axios.delete(`/api/user/${id}`);
 }
 
+export async function toggle_user_lock_service(id) {
+    return await axios.patch(`/api/user/${id}/toggle-lock`);
+}
+
 
 export async function change_store_service(data) {
     return await axios.put(`/api/pos-store/${data.pos_store_id}`, data);

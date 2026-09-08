@@ -42,6 +42,7 @@ Route::get('/session', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('user', UserController::class);
+    Route::patch('user/{user}/toggle-lock', [UserController::class, 'toggle_lock']);
     Route::apiResource('pos-registers', PosCashRegisterController::class);
     Route::apiResource('pos-store', PosStoreController::class);
     Route::post('pos-registers/{pos_register}/transaction', [PosCashRegisterController::class, 'addTransaction']);

@@ -35,6 +35,8 @@ class User extends Authenticatable
         'security_pin',
         'password',
         'role',
+        'is_locked',
+        'locked_at',
     ];
 
     /**
@@ -57,6 +59,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_locked' => 'boolean',
+            'locked_at' => 'datetime',
         ];
     }
 

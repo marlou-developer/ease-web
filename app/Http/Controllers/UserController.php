@@ -136,4 +136,28 @@ class UserController extends Controller
             'message' => 'User deleted successfully',
         ], 200);
     }
+
+    public function toggle_lock(Request $request, User $user)
+    {
+        // Ensure users can only lock/unlock accounts within their own subscriber
+        if ($user->subscriber_id !== Auth::user()->subscriber_id) {
+            abort(403);
+        }
+
+        if ($user->id === Auth::id()) {
+            return response()->json([
+                'message' => 'You cannot lock your own account',
+            ], 422);
+        }
+
+        $user->update([
+            'is_locked' => ! $user->is_locked,
+            'locked_at' => $user->is_locked ? null : now(),
+        ]);
+
+        return response()->json([
+            'message' => $user->is_locked ? 'User locked successfully' : 'User unlocked successfully',
+            'data' => $user,
+        ], 200);
+    }
 }
