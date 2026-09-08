@@ -18,11 +18,18 @@ import Select from "@/app/_components/select";
 import { Controller, useForm } from "react-hook-form";
 import { FcPortraitMode } from "react-icons/fc";
 import Input from "@/app/_components/input";
+import NumberKeyboard from "./pos-keyboard-section";
 
 export default function POSCheckout() {
-    const { cartDetail, heldSales, cart, amountPaid, tax, overall_all_product_discount, customers } = useSelector(
-        (store) => store.pos,
-    );
+    const {
+        cartDetail,
+        heldSales,
+        cart,
+        amountPaid,
+        tax,
+        overall_all_product_discount,
+        customers,
+    } = useSelector((store) => store.pos);
 
     const {
         control,
@@ -30,18 +37,18 @@ export default function POSCheckout() {
         setValue,
         register,
         watch,
-        formState: { errors }
+        formState: { errors },
     } = useForm({
         defaultValues: {
-            customer_id: '',
-            due_date: ''
-        }
+            customer_id: "",
+            due_date: "",
+        },
     });
 
-    const watchedValues = watch()
+    const watchedValues = watch();
 
     const [loading, setLoading] = useState(false);
-    const [paymentType, setPaymentType] = useState('Cash');
+    const [paymentType, setPaymentType] = useState("Cash");
     const [isCustomer, setIsCustomer] = useState(false);
     const [isCredit, setIsCredit] = useState(false);
     const dispatch = useDispatch();
@@ -53,7 +60,7 @@ export default function POSCheckout() {
     }, [dispatch]);
 
     const total_total_discount = cart?.reduce((accumulator, currentItem) => {
-        return (accumulator + Number(currentItem.discount || 0));
+        return accumulator + Number(currentItem.discount || 0);
     }, 0);
 
     useEffect(() => {
@@ -64,7 +71,14 @@ export default function POSCheckout() {
         const currentTax = subtotal * (cartDetail.tax || 0);
         const grandTotal = subtotal + currentTax;
 
-        const change = Math.max(0, Number(amountPaid) - (grandTotal - (total_total_discount + (overall_all_product_discount || 0)))) || 0;
+        const change =
+            Math.max(
+                0,
+                Number(amountPaid) -
+                    (grandTotal -
+                        (total_total_discount +
+                            (overall_all_product_discount || 0))),
+            ) || 0;
 
         dispatch(
             setCartDetail({
@@ -74,14 +88,25 @@ export default function POSCheckout() {
                 changeDue: change,
             }),
         );
-    }, [cart, cartDetail.tax, amountPaid, total_total_discount, overall_all_product_discount, dispatch]);
+    }, [
+        cart,
+        cartDetail.tax,
+        amountPaid,
+        total_total_discount,
+        overall_all_product_discount,
+        dispatch,
+    ]);
 
     useEffect(() => {
         localStorage.setItem("heldSales", JSON.stringify(heldSales));
     }, [heldSales]);
 
     const restoreSale = (sale) => {
-        if (cart.length > 0 && !window.confirm("Overwrite current cart with held sale?")) return;
+        if (
+            cart.length > 0 &&
+            !window.confirm("Overwrite current cart with held sale?")
+        )
+            return;
         dispatch(setCart(sale.items));
         dispatch(setHeldSales(heldSales.filter((h) => h.id !== sale.id)));
     };
@@ -91,7 +116,10 @@ export default function POSCheckout() {
         if (loading) return true;
         if (isCustomer && !watchedValues.customer_id) return true;
         if (isCredit && !watchedValues.due_date) return true;
-        const netTotal = Number(cartDetail.grandTotal - (total_total_discount + (overall_all_product_discount || 0)));
+        const netTotal = Number(
+            cartDetail.grandTotal -
+                (total_total_discount + (overall_all_product_discount || 0)),
+        );
         if (netTotal > Number(amountPaid)) return true;
 
         return false;
@@ -136,11 +164,14 @@ export default function POSCheckout() {
             // Optional: reset form and checkboxes here
             setIsCustomer(false);
             setIsCredit(false);
-            setPaymentType('Cash');
-
+            setPaymentType("Cash");
         } catch (error) {
             console.error("Error submitting sale:", error);
-            Swal.fire({ icon: "error", title: "Error", text: "Failed to process sale." });
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Failed to process sale.",
+            });
         } finally {
             setLoading(false);
         }
@@ -169,14 +200,19 @@ export default function POSCheckout() {
 
     return (
         // ✅ Wrapped everything in a form tag to utilize react-hook-form
-        <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col h-full">
+        <form
+            onSubmit={handleSubmit(onFormSubmit)}
+            className="flex flex-col h-full"
+        >
             <h3 className="font-bold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
-                <span className="bg-blue-100 text-blue-800 px-2 rounded-full text-sm">{cart.length}</span>
+                <span className="bg-blue-100 text-blue-800 px-2 rounded-full text-sm">
+                    {cart.length}
+                </span>
                 <ShoppingCart size={20} className="text-gray-500" />
                 Checkout
             </h3>
 
-            <div className="space-y-4 flex-1">
+            <div className="space-y-4 flex-1 min-h-0 overflow-y-auto pr-1">
                 <div>
                     <label className="text-[10px] font-bold text-gray-400 uppercase">
                         Amount Paid
@@ -185,6 +221,12 @@ export default function POSCheckout() {
                         type="text"
                         inputMode="decimal"
                         value={amountPaid}
+                        onFocus={() => {
+                            // Clear the default zero so the user can type a fresh value
+                            if (Number(amountPaid) === 0) {
+                                dispatch(setAmountPaid(""));
+                            }
+                        }}
                         onChange={(e) => {
                             const val = e.target.value;
                             if (val === "" || /^\d*\.?\d*$/.test(val)) {
@@ -197,6 +239,11 @@ export default function POSCheckout() {
                             dispatch(setAmountPaid(cleaned));
                         }}
                         className="w-full p-3 border rounded text-2xl font-bold text-right focus:ring-2 focus:ring-green-500 outline-none"
+                    />
+                    <NumberKeyboard
+                        value={`${amountPaid}`}
+                        onChange={(value) => dispatch(setAmountPaid(value))}
+                        className="mt-2"
                     />
                 </div>
 
@@ -246,7 +293,6 @@ export default function POSCheckout() {
                     </div>
 
                     <div className="my-5 flex flex-col gap-3 border-t pt-3">
-
                         <div className="font-bold">Other Option</div>
                         <Checkbox
                             onChange={(e) => setIsCustomer(e.target.checked)}
@@ -258,7 +304,9 @@ export default function POSCheckout() {
                         {isCustomer && (
                             <>
                                 <Checkbox
-                                    onChange={(e) => setIsCredit(e.target.checked)}
+                                    onChange={(e) =>
+                                        setIsCredit(e.target.checked)
+                                    }
                                     name="is_credit"
                                     label="Is Credit?"
                                     checked={isCredit}
@@ -268,13 +316,25 @@ export default function POSCheckout() {
                                     name="customer_id"
                                     control={control}
                                     rules={{ required: "Customer is required" }}
-                                    render={({ field: { onChange, value, ...restField } }) => (
+                                    render={({
+                                        field: {
+                                            onChange,
+                                            value,
+                                            ...restField
+                                        },
+                                    }) => (
                                         <Select
-                                            iconLeft={<FcPortraitMode className='text-2xl' />}
-                                            label={<div className="ml-6">Select Customer</div>}
-                                            options={customers.map(res => ({
+                                            iconLeft={
+                                                <FcPortraitMode className="text-2xl" />
+                                            }
+                                            label={
+                                                <div className="ml-6">
+                                                    Select Customer
+                                                </div>
+                                            }
+                                            options={customers.map((res) => ({
                                                 label: res.name,
-                                                value: res.id
+                                                value: res.id,
                                             }))} // Populate your customer options here
                                             value={value}
                                             onChange={onChange}
@@ -293,7 +353,8 @@ export default function POSCheckout() {
                                 type="date"
                                 name="due_date"
                                 {...register("due_date", {
-                                    required: "Due Date is required for credit sales",
+                                    required:
+                                        "Due Date is required for credit sales",
                                 })}
                                 error={errors?.due_date?.message}
                             />
@@ -306,10 +367,11 @@ export default function POSCheckout() {
                     type="submit"
                     disabled={isDisabled()}
                     className={`w-full py-4 rounded-xl font-black text-xl shadow-lg transition-all mt-4
-                          ${isDisabled()
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-green-600 text-white hover:bg-green-700 active:scale-95"
-                        }`}
+                          ${
+                              isDisabled()
+                                  ? "bg-gray-400 cursor-not-allowed"
+                                  : "bg-green-600 text-white hover:bg-green-700 active:scale-95"
+                          }`}
                 >
                     COMPLETE SALE
                 </button>

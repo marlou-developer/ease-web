@@ -10,10 +10,9 @@ import { setDesktopCollapsed, setSidebarOpen } from "@/app/redux/app-slice";
 import { Link } from "@inertiajs/react";
 import SelectStoreSection from "./select-store-section";
 
-
 export default function TopbarSection() {
-    const { app } = useSelector((store) => store.app)
-    console.log('app', app)
+    const { app } = useSelector((store) => store.app);
+    console.log("app", app);
     const dispatch = useDispatch();
 
     return (
@@ -35,27 +34,32 @@ export default function TopbarSection() {
 
                 <div className="flex-1 flex items-center gap-x-4">
                     <form className="flex-1 relative  mx-5">
-                        {
-                            app?.user?.pos_user_type == 'Admin' && <SelectStoreSection />
-                        }
-
-                        {app?.user?.pos_user_type !== 'Admin' && app?.user?.store?.name && (
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-full shadow-sm">
-                                {/* Optional: A small storefront icon for better UX */}
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-4 h-4 text-emerald-600"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                >
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-
-                                <span>{app.user.store.name}</span>
-                            </div>
+                        {app?.user?.pos_user_type == "Admin" && (
+                            <SelectStoreSection />
                         )}
+
+                        {app?.user?.pos_user_type !== "Admin" &&
+                            app?.user?.store?.name && (
+                                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-full shadow-sm">
+                                    {/* Optional: A small storefront icon for better UX */}
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="w-4 h-4 text-emerald-600"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                                        />
+                                    </svg>
+
+                                    <span>{app.user.store.name}</span>
+                                </div>
+                            )}
                     </form>
 
                     <div className="flex items-center gap-x-4">
@@ -67,7 +71,7 @@ export default function TopbarSection() {
                             <Menu.Button className="flex items-center">
                                 <img
                                     className="w-8 h-8 rounded-full"
-                                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                    src="/images/user.png"
                                     alt=""
                                 />
                                 <span className="ml-2 hidden lg:block text-sm font-semibold text-gray-900">

@@ -24,7 +24,7 @@ export default function Page() {
                     </section>
 
                     {/* RIGHT: PAYMENT & HELD (2 Columns) */}
-                    <section className="col-span-12 lg:col-span-3 p-4 flex flex-col bg-gray-50">
+                    <section className="col-span-12 lg:col-span-3 p-4 flex flex-col bg-gray-50 h-full min-h-0 overflow-hidden">
                         <POSCheckout />
                     </section>
                 </div>
