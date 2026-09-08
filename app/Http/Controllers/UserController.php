@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    // Maps the POS user type label to its numeric role id used for authorization checks
+    private const USER_TYPE_ROLES = [
+        'Admin' => 1,
+        'Inventory' => 2,
+        'Cashier' => 3,
+        'Encoder' => 4,
+    ];
+
     public function index()
     {
         $user = Auth::user()->load('store');
@@ -25,7 +33,7 @@ class UserController extends Controller
     }
     public function get_pos_users()
     {
-        $users = User::where('subscriber_id', Auth::user()->subscriber_id)->get();
+        $users = User::with('store')->where('subscriber_id', Auth::user()->subscriber_id)->get();
         return response()->json([
             'data' => $users,
         ]);
@@ -38,22 +46,83 @@ class UserController extends Controller
             'fname'  => 'required|string|max:255',
             'lname'   => 'required|string|max:255',
             'email'       => 'required|email|unique:users,email',
-            'pos_user_type'   => 'required|string',
+            'pos_user_type'   => ['required', 'string', 'in:' . implode(',', array_keys(self::USER_TYPE_ROLES))],
+            'pos_store_id' => 'required|integer',
+            'title' => 'required|string|max:255',
+            'mname' => 'nullable|string|max:255',
+            'suffix' => 'nullable|string|max:255',
         ]);
 
         // 2. Create the user using ONLY the validated data (Secure)
+        // role is derived from pos_user_type server-side, never trusted from the client
         $user = User::create([
-            ...$request->all(),
             'subscriber_id' => Auth::user()->subscriber_id,
-            'name' => $request->fname . ' ' . $request->lname,
-            'password' => Hash::make('admin'),
-            'role' => 2
+            'name' => trim($validatedData['fname'] . ' ' . ($validatedData['mname'] ?? '') . ' ' . $validatedData['lname'] . ' ' . ($validatedData['suffix'] ?? '')),
+            'fname' => $validatedData['fname'],
+            'mname' => $validatedData['mname'] ?? null,
+            'lname' => $validatedData['lname'],
+            'email' => $validatedData['email'],
+            'position' => $validatedData['title'],
+            'pos_store_id' => $validatedData['pos_store_id'],
+            'pos_user_type' => $validatedData['pos_user_type'],
+            'password' => Hash::make('egiespos'),
+            'role' => self::USER_TYPE_ROLES[$validatedData['pos_user_type']],
         ]);
 
         // 3. Return the response
         return response()->json([
             'message' => 'User created successfully',
             'data'    => $user,
+        ], 200);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        // Ensure users can only update accounts within their own subscriber
+        if ($user->subscriber_id !== Auth::user()->subscriber_id) {
+            abort(403);
+        }
+
+        $validatedData = $request->validate([
+            'fname'  => 'required|string|max:255',
+            'lname'   => 'required|string|max:255',
+            'email'       => 'required|email|unique:users,email,' . $user->id,
+            'pos_user_type'   => ['required', 'string', 'in:' . implode(',', array_keys(self::USER_TYPE_ROLES))],
+            'pos_store_id' => 'required|integer',
+            'title' => 'required|string|max:255',
+            'mname' => 'nullable|string|max:255',
+            'suffix' => 'nullable|string|max:255',
+        ]);
+
+        $user->update([
+            'name' => trim($validatedData['fname'] . ' ' . ($validatedData['mname'] ?? '') . ' ' . $validatedData['lname'] . ' ' . ($validatedData['suffix'] ?? '')),
+            'fname' => $validatedData['fname'],
+            'mname' => $validatedData['mname'] ?? null,
+            'lname' => $validatedData['lname'],
+            'email' => $validatedData['email'],
+            'position' => $validatedData['title'],
+            'pos_store_id' => $validatedData['pos_store_id'],
+            'pos_user_type' => $validatedData['pos_user_type'],
+            'role' => self::USER_TYPE_ROLES[$validatedData['pos_user_type']],
+        ]);
+
+        return response()->json([
+            'message' => 'User updated successfully',
+            'data'    => $user,
+        ], 200);
+    }
+
+    public function destroy(User $user)
+    {
+        // Ensure users can only delete accounts within their own subscriber
+        if ($user->subscriber_id !== Auth::user()->subscriber_id) {
+            abort(403);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'User deleted successfully',
         ], 200);
     }
 }

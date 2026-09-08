@@ -4,25 +4,24 @@ import Modal from "@/app/_components/modal";
 import Select from "@/app/_components/select";
 import { setAlert } from "@/app/redux/app-slice";
 import { get_pos_users_thunk } from "@/app/redux/pos/pos-thunk";
-import { add_user_service } from "@/app/services/app-service";
+import { update_user_service } from "@/app/services/app-service";
 import store from "@/app/store/store";
-import { Plus, User } from "lucide-react";
+import { Edit2, User } from "lucide-react";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { FcShop } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function AddUserSection() {
-    const { app } = useSelector((store) => store.app)
+export default function EditUserSection({ user }) {
+    const { app } = useSelector((store) => store.app);
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
-    const [error, setError] = useState('')
+    const [error, setError] = useState("");
 
     const {
         register,
         handleSubmit,
         reset,
-        control, // Added control here for the Select Controller
+        control,
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
@@ -30,7 +29,6 @@ export default function AddUserSection() {
             mname: "",
             lname: "",
             suffix: "",
-            title: "",
             email: "",
             pos_user_type: "",
             pos_store_id: "",
@@ -38,39 +36,48 @@ export default function AddUserSection() {
         },
     });
 
+    const handleOpen = () => {
+        setError("");
+        reset({
+            fname: user?.fname || "",
+            mname: user?.mname || "",
+            lname: user?.lname || "",
+            suffix: user?.suffix || "",
+            email: user?.email || "",
+            pos_user_type: user?.pos_user_type || "",
+            pos_store_id: user?.pos_store_id || "",
+            title: user?.position || "",
+        });
+        setOpen(true);
+    };
+
     const onSubmit = async (formData) => {
         try {
-            setError('')
-            await add_user_service(formData);
+            setError("");
+            await update_user_service(user?.id, formData);
             await store.dispatch(get_pos_users_thunk());
             setOpen(false);
-            reset();
             dispatch(
                 setAlert({
                     type: "success",
-                    title: "User created successfully!",
+                    title: "User updated successfully!",
                 })
             );
         } catch (error) {
-            setError(error?.response?.data?.message)
-            console.error("Error creating user:", error?.response?.data?.message);
+            setError(error?.response?.data?.message);
+            console.error("Error updating user:", error?.response?.data?.message);
         }
     };
 
     return (
-        <>
-            <Button
-                onClick={() => {
-                    setOpen(true);
-                    reset();
-                }}
-                className="text-white border-white shadow-sm hover:bg-blue-500"
-                outlined
+        <div>
+            <button
+                type="button"
+                onClick={handleOpen}
+                className="text-blue-500 hover:text-blue-700"
             >
-                <div className="flex gap-2 items-center justify-center">
-                    <Plus size={18} /> Add User
-                </div>
-            </Button>
+                <Edit2 size={16} />
+            </button>
 
             <Modal
                 title=""
@@ -78,7 +85,6 @@ export default function AddUserSection() {
                 isOpen={open}
                 onClose={() => setOpen(false)}
             >
-                {/* Custom Form Header */}
                 <div className="flex items-center gap-2 mb-6 text-[#5c6e82] font-semibold text-lg">
                     <User className="text-blue-500 w-5 h-5 fill-current" />
                     User Information
@@ -97,14 +103,8 @@ export default function AddUserSection() {
                         })}
                         error={errors.email}
                     />
-                    {
-                        error && <div className="text-red-500">
-                            {error}
-                        </div>
-                    }
+                    {error && <div className="text-red-500">{error}</div>}
 
-
-                    {/* Custom Select Component via Controller */}
                     <Controller
                         name="pos_user_type"
                         control={control}
@@ -112,12 +112,11 @@ export default function AddUserSection() {
                         render={({ field: { onChange, value, ...restField } }) => (
                             <Select
                                 label="Select User Type"
-                                // Formatted labels to have capital letters for the UI, but lowercase values for the backend
                                 options={[
-                                    { value: 'Admin', label: 'Admin' },
-                                    { value: 'Inventory', label: 'Inventory' },
-                                    { value: 'Cashier', label: 'Cashier' },
-                                    { value: 'Encoder', label: 'Encoder' }
+                                    { value: "Admin", label: "Admin" },
+                                    { value: "Inventory", label: "Inventory" },
+                                    { value: "Cashier", label: "Cashier" },
+                                    { value: "Encoder", label: "Encoder" },
                                 ]}
                                 value={value}
                                 onChange={onChange}
@@ -134,11 +133,12 @@ export default function AddUserSection() {
                             <Select
                                 label="Select Store"
                                 name="pos_store_id"
-                                // 4. Added optional chaining safety for the map array
-                                options={app?.stores?.map(res => ({
-                                    value: res.id,
-                                    label: res.name
-                                })) || []}
+                                options={
+                                    app?.stores?.map((res) => ({
+                                        value: res.id,
+                                        label: res.name,
+                                    })) || []
+                                }
                                 value={value}
                                 {...restField}
                                 onChange={onChange}
@@ -146,7 +146,6 @@ export default function AddUserSection() {
                         )}
                     />
 
-                    {/* First Name */}
                     <Input
                         label="First name"
                         name="fname"
@@ -156,7 +155,6 @@ export default function AddUserSection() {
                         error={errors.fname}
                     />
 
-                    {/* Middle Name */}
                     <Input
                         label="Middle name"
                         name="mname"
@@ -164,7 +162,6 @@ export default function AddUserSection() {
                         error={errors.mname}
                     />
 
-                    {/* Last Name */}
                     <Input
                         label="Last name"
                         name="lname"
@@ -174,7 +171,6 @@ export default function AddUserSection() {
                         error={errors.lname}
                     />
 
-                    {/* Suffix */}
                     <Input
                         label="Suffix"
                         name="suffix"
@@ -182,8 +178,6 @@ export default function AddUserSection() {
                         error={errors.suffix}
                     />
 
-
-                    {/* Position */}
                     <Input
                         label="Position"
                         name="title"
@@ -193,12 +187,6 @@ export default function AddUserSection() {
                         error={errors.title}
                     />
 
-                    {/* Footer Note */}
-                    <p className="text-[13px] text-gray-500 italic mt-2 leading-tight">
-                        <span className="font-semibold">Note:</span> Default password is "egiespos" and can be changed after the user is created via settings.
-                    </p>
-
-                    {/* Actions */}
                     <div className="flex justify-end gap-3 mt-4">
                         <Button
                             type="button"
@@ -218,6 +206,6 @@ export default function AddUserSection() {
                     </div>
                 </form>
             </Modal>
-        </>
+        </div>
     );
 }
