@@ -78,9 +78,10 @@ export default function EditUserSection({ user }) {
                 title="Edit user"
                 type="button"
                 onClick={handleOpen}
-                className="text-blue-500 hover:text-blue-700"
+                className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-700"
             >
-                <Edit2 size={16} />
+                <Edit2 size={14} />
+                Edit
             </button>
 
             <Modal

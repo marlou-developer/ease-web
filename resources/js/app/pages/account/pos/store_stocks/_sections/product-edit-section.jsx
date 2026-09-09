@@ -4,7 +4,10 @@ import Input from "@/app/_components/input";
 import Modal from "@/app/_components/modal";
 import Select from "@/app/_components/select";
 import { setAlert } from "@/app/redux/app-slice";
-import { get_pos_product_stocks_thunk, get_pos_warehouse_stock_thunk } from "@/app/redux/pos/pos-thunk";
+import {
+    get_pos_product_stocks_thunk,
+    get_pos_warehouse_stock_thunk,
+} from "@/app/redux/pos/pos-thunk";
 import { edit_pos_category_service } from "@/app/services/pos/pos-categories-service";
 import { edit_pos_product_stocks_product_service } from "@/app/services/pos/pos-product-service";
 import { edit_pos_warehouse_stocks_product_service } from "@/app/services/pos/pos-warehouse-service";
@@ -31,7 +34,7 @@ export default function ProductEditSection({ props_data }) {
             cost_price: props_data?.cost_price || "",
             stocks: props_data?.stocks || 0,
             selling_price: props_data?.selling_price || 0,
-            pos_store_id: props_data?.pos_store_id || 0
+            pos_store_id: props_data?.pos_store_id || 0,
         },
     });
 
@@ -48,7 +51,7 @@ export default function ProductEditSection({ props_data }) {
                 setAlert({
                     type: "success",
                     title: "Product Updated Successfully!",
-                })
+                }),
             );
         } catch (error) {
             setOpen(false);
@@ -56,7 +59,7 @@ export default function ProductEditSection({ props_data }) {
                 setAlert({
                     type: "danger",
                     title: "Product Update Unsuccessful!",
-                })
+                }),
             );
             console.error("Error updating product:", error);
         }
@@ -69,22 +72,21 @@ export default function ProductEditSection({ props_data }) {
             cost_price: props_data?.cost_price || "",
             stocks: props_data?.stocks || 0,
             selling_price: props_data?.selling_price || 0,
-            pos_store_id: props_data?.pos_store_id || 0
+            pos_store_id: props_data?.pos_store_id || 0,
         });
         setOpen(true);
     };
 
     return (
         <>
-            <Button
+            <button
+                type="button"
                 onClick={handleOpen}
-                variant="purple"
-                outlined
+                className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-700"
             >
-                <div className="flex gap-2 items-center justify-center">
-                    <Pencil size={18} />Edit
-                </div>
-            </Button>
+                <Pencil size={14} />
+                Edit
+            </button>
             <Modal
                 width="max-w-4xl"
                 isOpen={open}
@@ -96,21 +98,33 @@ export default function ProductEditSection({ props_data }) {
                 >
                     <div className="grid grid-cols-2 gap-2 animate-fade-in my-5">
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Product Name</p>
-                            <p className="text-gray-800 font-medium">{props_data.product?.name}</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                Product Name
+                            </p>
+                            <p className="text-gray-800 font-medium">
+                                {props_data.product?.name}
+                            </p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Barcode</p>
-                            <p className="text-gray-800 font-medium">{props_data.product?.barcode}</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                Barcode
+                            </p>
+                            <p className="text-gray-800 font-medium">
+                                {props_data.product?.barcode}
+                            </p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Category</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                Category
+                            </p>
                             <p className="text-gray-800 font-medium">
                                 {props_data?.product?.category?.name}
                             </p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Unit</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                Unit
+                            </p>
                             <p className="text-gray-800 font-medium">
                                 {props_data?.product?.unit?.name}
                             </p>
@@ -127,7 +141,9 @@ export default function ProductEditSection({ props_data }) {
                             {...register("cost_price", {
                                 required: "Cost price is required",
                                 validate: (value, formValues) =>
-                                    parseFloat(value) <= parseFloat(formValues.selling_price) || "Cost price cannot be higher than selling price"
+                                    parseFloat(value) <=
+                                        parseFloat(formValues.selling_price) ||
+                                    "Cost price cannot be higher than selling price",
                             })}
                             name="cost_price"
                             error={errors.cost_price?.message}
@@ -142,7 +158,9 @@ export default function ProductEditSection({ props_data }) {
                             {...register("selling_price", {
                                 required: "Selling price is required",
                                 validate: (value, formValues) =>
-                                    parseFloat(value) >= parseFloat(formValues.cost_price) || "Selling price cannot be lower than cost price"
+                                    parseFloat(value) >=
+                                        parseFloat(formValues.cost_price) ||
+                                    "Selling price cannot be lower than cost price",
                             })}
                             name="selling_price"
                             error={errors.selling_price?.message}

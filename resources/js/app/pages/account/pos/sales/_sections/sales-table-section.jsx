@@ -11,13 +11,13 @@ import SalesUpdateStatus from "./sales-update-status";
 
 export default function SalesTableSection() {
     const { searchTerm, category, currentPage, sales } = useSelector(
-        (store) => store.pos
-    );;
+        (store) => store.pos,
+    );
     const itemsPerPage = 10;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-    console.log('sales', sales)
+    console.log("sales", sales);
 
     const filteredProducts = sales?.filter((p) => {
         const matchesSearch = p?.invoice_no
@@ -30,113 +30,151 @@ export default function SalesTableSection() {
 
     const currentItems = filteredProducts?.slice(
         indexOfFirstItem,
-        indexOfLastItem
+        indexOfLastItem,
     );
 
     const columns = [
         {
-            header: 'INVOICE #',
-            accessor: 'invoice_no'
+            header: "INVOICE #",
+            accessor: "invoice_no",
         },
         {
-            header: 'Cashier',
-            accessor: 'cashier',
-            className: 'font-bold text-gray-700',
-            render: (row) => row.cashier?.name
+            header: "Cashier",
+            accessor: "cashier",
+            className: "font-bold text-gray-700",
+            render: (row) => row.cashier?.name,
         },
         {
-            header: 'Total Cost Price',
-            accessor: 'cost_price',
-            className: 'font-bold text-gray-700',
+            header: "Total Cost Price",
+            accessor: "cost_price",
+            className: "font-bold text-gray-700",
             render: (row) => {
-                const total_cost_price = row?.sale_items?.reduce((accumulator, currentItem) => {
-                    return (accumulator + Number(currentItem.cost_price)) * currentItem.quantity;
-                }, 0);
+                const total_cost_price = row?.sale_items?.reduce(
+                    (accumulator, currentItem) => {
+                        return (
+                            (accumulator + Number(currentItem.cost_price)) *
+                            currentItem.quantity
+                        );
+                    },
+                    0,
+                );
                 return peso_value(total_cost_price);
-            }
+            },
         },
         {
-            header: 'Total Selling Price',
-            accessor: 'selling_price',
-            className: 'font-bold text-gray-700',
+            header: "Total Selling Price",
+            accessor: "selling_price",
+            className: "font-bold text-gray-700",
             render: (row) => {
-                const total_selling_price = row?.sale_items?.reduce((accumulator, currentItem) => {
-                    return (accumulator + Number(currentItem.selling_price)) * currentItem.quantity;
-                }, 0);
+                const total_selling_price = row?.sale_items?.reduce(
+                    (accumulator, currentItem) => {
+                        return (
+                            (accumulator + Number(currentItem.selling_price)) *
+                            currentItem.quantity
+                        );
+                    },
+                    0,
+                );
                 return peso_value(total_selling_price);
-            }
+            },
         },
         {
-            header: 'Total Discount',
-            accessor: 'total_discount',
-            className: 'font-bold text-gray-700',
+            header: "Total Discount",
+            accessor: "total_discount",
+            className: "font-bold text-gray-700",
             render: (row) => {
-                const total_total_discount = row?.sale_items?.reduce((accumulator, currentItem) => {
-                    return (accumulator + Number(currentItem.discount));
-                }, 0);
+                const total_total_discount = row?.sale_items?.reduce(
+                    (accumulator, currentItem) => {
+                        return accumulator + Number(currentItem.discount);
+                    },
+                    0,
+                );
                 return peso_value(total_total_discount);
-            }
+            },
         },
         {
-            header: 'Total Discounted Price',
-            accessor: 'total',
-            className: 'font-bold text-gray-700',
+            header: "Total Discounted Price",
+            accessor: "total",
+            className: "font-bold text-gray-700",
             render: (row) => {
-                const total_discounted_price = row?.sale_items?.reduce((accumulator, currentItem) => {
-                    return (accumulator + Number(currentItem.discounted_price));
-                }, 0);
+                const total_discounted_price = row?.sale_items?.reduce(
+                    (accumulator, currentItem) => {
+                        return (
+                            accumulator + Number(currentItem.discounted_price)
+                        );
+                    },
+                    0,
+                );
                 return peso_value(total_discounted_price);
-            }
+            },
         },
         {
-            header: 'Total Profit',
-            accessor: 'profit',
-            className: 'font-bold text-gray-700',
+            header: "Total Profit",
+            accessor: "profit",
+            className: "font-bold text-gray-700",
             render: (row) => {
-                const total_profit = row?.sale_items?.reduce((accumulator, currentItem) => {
-                    return (accumulator + Number(currentItem.profit));
-                }, 0);
+                const total_profit = row?.sale_items?.reduce(
+                    (accumulator, currentItem) => {
+                        return accumulator + Number(currentItem.profit);
+                    },
+                    0,
+                );
                 return peso_value(total_profit);
-            }
+            },
         },
         {
-            header: 'Total Item',
-            accessor: 'total_item',
-            className: 'font-bold text-gray-700',
+            header: "Total Item",
+            accessor: "total_item",
+            className: "font-bold text-gray-700",
             render: (row) => {
                 return row?.sale_items?.length;
-            }
-        },
-  {
-            header: 'Status',
-            accessor: 'status',
-            className: 'font-bold text-gray-700',
-            render: (row) => {
-                return row?.status;
-            }
+            },
         },
         {
-            header: 'Action',
-            accessor: 'action',
-            align: 'center',
-            className: 'font-bold text-gray-700',
+            header: "Status",
+            accessor: "status",
+            className: "font-bold text-gray-700",
             render: (row) => {
-                return <div className="flex gap-2">
-                    <SalesUpdateStatus props_data={row} />
-                    <Button
-                        variant="primary"
-                        onClick={() => router.visit(`/account/pos/sales/${row.id}`)}
-                    >
-                        <Eye />
-                    </Button>
-                    <Button
-                        variant="purple"
-                        onClick={() => window.open(`/account/pos/invoice/${row.id}`, '_blank')}
-                    >
-                        <Receipt />
-                    </Button>
-                </div>
-            }
+                return row?.status;
+            },
+        },
+        {
+            header: "Action",
+            accessor: "action",
+            align: "center",
+            className: "font-bold text-gray-700",
+            render: (row) => {
+                return (
+                    <div className="flex gap-2">
+                        <SalesUpdateStatus props_data={row} />
+                        <div>
+                            <button
+                                className="flex items-center gap-1 bg-violet-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-violet-700"
+                                onClick={() =>
+                                    router.visit(`/account/pos/sales/${row.id}`)
+                                }
+                            >
+                                <Eye size={14} />
+                                View
+                            </button>
+                        </div>
+                        <div>
+                            <button
+                                className="flex items-center gap-1 bg-amber-500 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-amber-600"
+                                onClick={() =>
+                                    window.open(
+                                        `/account/pos/invoice/${row.id}`,
+                                        "_blank",
+                                    )
+                                }
+                            >
+                                <Receipt size={14} />
+                                Invoice
+                            </button>
+                        </div>
+                    </div>
+                );
+            },
         },
         // {
         //     header: 'Status',
@@ -148,15 +186,11 @@ export default function SalesTableSection() {
         //         </span>
         //     )
         // },
-
     ];
 
     return (
         <>
-            <Table
-                columns={columns}
-                data={currentItems}
-            />
+            <Table columns={columns} data={currentItems} />
         </>
     );
 }

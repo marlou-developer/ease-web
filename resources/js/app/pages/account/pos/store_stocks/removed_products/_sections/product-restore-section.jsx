@@ -1,60 +1,54 @@
-import React, { useState } from "react";
-import { Trash2 } from "lucide-react";
-import Modal from "@/app/_components/modal";
 import Button from "@/app/_components/button";
+import Modal from "@/app/_components/modal";
 import { setAlert } from "@/app/redux/app-slice";
-import { get_pos_users_thunk } from "@/app/redux/pos/pos-thunk";
-import { delete_user_service } from "@/app/services/app-service";
+import { get_removed_pos_product_stocks_thunk } from "@/app/redux/pos/pos-thunk";
+import { restore_pos_product_stocks_service } from "@/app/services/pos/pos-product-stock";
 import store from "@/app/store/store";
+import { RotateCcw } from "lucide-react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
-export default function DeleteUserSection({ user }) {
+export default function ProductRestoreSection({ props_data }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
 
-    const handleDelete = async () => {
+    const handleRestore = async () => {
         setLoading(true);
         try {
-            await delete_user_service(user?.id);
-            await store.dispatch(get_pos_users_thunk());
-            setIsModalOpen(false);
+            await restore_pos_product_stocks_service(props_data?.id);
+            await store.dispatch(get_removed_pos_product_stocks_thunk());
             dispatch(
                 setAlert({
                     type: "success",
-                    title: "User deleted successfully!",
+                    title: "Product restored successfully!",
                 }),
             );
+            setIsModalOpen(false);
         } catch (error) {
-            console.error(
-                "Error deleting user:",
-                error?.response?.data?.message,
-            );
             dispatch(
                 setAlert({
                     type: "danger",
-                    title: "User deletion unsuccessful!",
+                    title: "Failed to restore product.",
                 }),
             );
+            console.error("Error restoring product:", error);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div>
+        <>
             <button
-                title="Delete user"
                 type="button"
                 onClick={() => setIsModalOpen(true)}
-                className="flex items-center gap-1 bg-red-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-red-700"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white rounded text-xs font-bold hover:bg-green-600 transition"
             >
-                <Trash2 size={14} />
-                Delete
+                <RotateCcw size={14} /> Restore
             </button>
-
             <Modal
-                title="Delete User"
+                title="Restore Product"
                 width="max-w-md"
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
@@ -62,13 +56,13 @@ export default function DeleteUserSection({ user }) {
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
-                        handleDelete();
+                        handleRestore();
                     }}
                     className="flex flex-col gap-4"
                 >
                     <h1 className="text-lg font-semibold">
-                        Are you sure you want to delete{" "}
-                        {user?.name || "this user"}?
+                        Restore {props_data?.product?.name || "this product"}{" "}
+                        back to your active products?
                     </h1>
                     <hr className="my-2" />
                     <div className="flex justify-end gap-2">
@@ -85,11 +79,11 @@ export default function DeleteUserSection({ user }) {
                             variant="primary"
                             loading={loading}
                         >
-                            Delete User
+                            Restore Product
                         </Button>
                     </div>
                 </form>
             </Modal>
-        </div>
+        </>
     );
 }

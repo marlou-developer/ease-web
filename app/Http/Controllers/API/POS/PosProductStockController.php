@@ -63,7 +63,7 @@ class PosProductStockController extends Controller
     {
         $stocks = PosProductStock::where('pos_store_id', session('pos_store_id'))
             ->where('subscriber_id', Auth::user()->subscriber_id)
-            ->with('product')->orderBy('stocks', 'desc')->get();
+            ->with('product', 'pos_store')->orderBy('stocks', 'desc')->get();
         $customers = PosCustomer::where('subscriber_id', Auth::user()->subscriber_id)->get();
         $pos_store = PosStore::where('id', session('pos_store_id'))
             ->where('subscriber_id', Auth::user()->subscriber_id)->with(['pos_warehouse'])->first();
@@ -331,7 +331,7 @@ class PosProductStockController extends Controller
         ]);
     }
     /**
-     * Delete a product stock.
+     * Delete a product stock (soft delete).
      */
     public function destroy(PosProductStock $posProductStock)
     {
@@ -339,7 +339,40 @@ class PosProductStockController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Product stock deleted successfully'
+            'message' => 'Product stock removed successfully'
+        ]);
+    }
+
+    /**
+     * List soft-deleted (removed) product stocks for the current store.
+     */
+    public function removed()
+    {
+        $removed = PosProductStock::onlyTrashed()
+            ->with('product.category', 'product.unit', 'pos_store')
+            ->where('pos_store_id', session('pos_store_id'))
+            ->where('subscriber_id', Auth::user()->subscriber_id)
+            ->latest('deleted_at')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $removed
+        ]);
+    }
+
+    /**
+     * Restore a soft-deleted product stock.
+     */
+    public function restore($id)
+    {
+        $posProductStock = PosProductStock::onlyTrashed()->findOrFail($id);
+        $posProductStock->restore();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product stock restored successfully',
+            'data' => $posProductStock
         ]);
     }
 }

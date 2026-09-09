@@ -13,9 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function EditStockSection({ props_data }) {
-    const { categories, units,suppliers } = useSelector(
-        (store) => store.pos
-    );
+    const { categories, units, suppliers } = useSelector((store) => store.pos);
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
     const {
@@ -39,11 +37,11 @@ export default function EditStockSection({ props_data }) {
             cost_price: props_data?.cost_price || "",
             stocks: props_data?.stocks || 0,
             image: "",
-            selling_price: props_data?.selling_price || 0
+            selling_price: props_data?.selling_price || 0,
         },
     });
-    console.log('props_datassssssssss', suppliers)
-    const watchValues = watch()
+    console.log("props_datassssssssss", suppliers);
+    const watchValues = watch();
     const onSubmit = async (data) => {
         try {
             const formData = new FormData();
@@ -59,9 +57,13 @@ export default function EditStockSection({ props_data }) {
                 formData.append("image", image[0]);
             }
 
-            await edit_pos_warehouse_stocks_product_service(props_data?.id, formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
+            await edit_pos_warehouse_stocks_product_service(
+                props_data?.id,
+                formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                },
+            );
             await store.dispatch(get_pos_warehouse_stock_thunk());
             await setOpen(false);
             await reset();
@@ -69,7 +71,7 @@ export default function EditStockSection({ props_data }) {
                 setAlert({
                     type: "success",
                     title: "Product Created Successfully!",
-                })
+                }),
             );
             console.log("Product created successfully!");
         } catch (error) {
@@ -78,7 +80,7 @@ export default function EditStockSection({ props_data }) {
                 setAlert({
                     type: "danger",
                     title: "Product Created Unsuccessful!",
-                })
+                }),
             );
             console.error("Error creating product:", error);
         }
@@ -86,18 +88,17 @@ export default function EditStockSection({ props_data }) {
 
     return (
         <>
-            <Button
+            <button
+                type="button"
                 onClick={() => {
                     setOpen(true);
                     reset();
                 }}
-                variant="purple"
-                outlined
+                className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-700"
             >
-                <div className="flex gap-2 items-center justify-center">
-                    <Pencil size={18} />Edit
-                </div>
-            </Button>
+                <Pencil size={14} />
+                Edit
+            </button>
             <Modal
                 title="Update Warehouse Stocks"
                 width="max-w-4xl"
@@ -135,7 +136,7 @@ export default function EditStockSection({ props_data }) {
                     <div className="flex gap-3">
                         {/* Category */}
 
-                         <Controller
+                        <Controller
                             name="pos_supplier_id"
                             control={control}
                             rules={{ required: "Supplier is required" }}
@@ -143,9 +144,9 @@ export default function EditStockSection({ props_data }) {
                                 <Select
                                     label="Select Supplier"
                                     disabled={watchValues.pos_supplier_id}
-                                    options={suppliers?.map(res => ({
+                                    options={suppliers?.map((res) => ({
                                         label: res.name,
-                                        value: res.id
+                                        value: res.id,
                                     }))}
                                     error={errors.pos_supplier_id}
                                     {...field}
@@ -161,9 +162,9 @@ export default function EditStockSection({ props_data }) {
                                 <Select
                                     label="Select Category"
                                     disabled={watchValues.category_id}
-                                    options={categories?.map(res => ({
+                                    options={categories?.map((res) => ({
                                         label: res.name,
-                                        value: res.id
+                                        value: res.id,
                                     }))}
                                     error={errors.category_id}
                                     {...field}
@@ -179,9 +180,9 @@ export default function EditStockSection({ props_data }) {
                                 <Select
                                     label="Select Unit"
                                     disabled={watchValues.unit_id}
-                                    options={units?.map(res => ({
+                                    options={units?.map((res) => ({
                                         label: res.name,
-                                        value: res.id
+                                        value: res.id,
                                     }))}
                                     error={errors.unit_id}
                                     {...field} // passes value & onChange
@@ -212,7 +213,6 @@ export default function EditStockSection({ props_data }) {
                             name="selling_price"
                             error={errors.selling_price}
                         />
-
 
                         {/* Stocks */}
                         <Input

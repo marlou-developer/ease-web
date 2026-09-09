@@ -10,7 +10,8 @@ const columns = [
     {
         header: "Date & Time",
         accessor: "login_at",
-        render: (row) => (row?.login_at ? moment(row.login_at).format("LLL") : "-"),
+        render: (row) =>
+            row?.login_at ? moment(row.login_at).format("LLL") : "-",
     },
     {
         header: "Branch",
@@ -20,7 +21,8 @@ const columns = [
     {
         header: "Logout",
         accessor: "logout_at",
-        render: (row) => (row?.logout_at ? moment(row.logout_at).format("LLL") : "Active"),
+        render: (row) =>
+            row?.logout_at ? moment(row.logout_at).format("LLL") : "Active",
     },
 ];
 
@@ -39,7 +41,9 @@ export default function UserLogsSection({ userId }) {
             setLogs(response?.data?.data || []);
             setPagination(response?.data);
         } catch (error) {
-            setError(error?.response?.data?.message || "Failed to load login logs.");
+            setError(
+                error?.response?.data?.message || "Failed to load login logs.",
+            );
         } finally {
             setLoading(false);
         }
@@ -52,15 +56,29 @@ export default function UserLogsSection({ userId }) {
 
     return (
         <div>
-            <button title="Login logs" type="button" onClick={handleOpen} className="text-gray-500 hover:text-gray-700">
-                <Logs size={16} />
+            <button
+                title="Login logs"
+                type="button"
+                onClick={handleOpen}
+                className="flex items-center gap-1 bg-gray-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-gray-700"
+            >
+                <Logs size={14} />Logs
             </button>
 
-            <Modal title="Login Logs" width="max-w-2xl" isOpen={open} onClose={() => setOpen(false)}>
-                {error && <div className="mb-4 text-sm text-red-500">{error}</div>}
+            <Modal
+                title="Login Logs"
+                width="max-w-2xl"
+                isOpen={open}
+                onClose={() => setOpen(false)}
+            >
+                {error && (
+                    <div className="mb-4 text-sm text-red-500">{error}</div>
+                )}
 
                 {loading ? (
-                    <div className="py-8 text-center text-sm text-gray-400">Loading...</div>
+                    <div className="py-8 text-center text-sm text-gray-400">
+                        Loading...
+                    </div>
                 ) : (
                     <>
                         <Table columns={columns} data={logs} />
@@ -70,18 +88,26 @@ export default function UserLogsSection({ userId }) {
                                     type="button"
                                     variant="white"
                                     disabled={pagination.current_page <= 1}
-                                    onClick={() => fetchLogs(pagination.current_page - 1)}
+                                    onClick={() =>
+                                        fetchLogs(pagination.current_page - 1)
+                                    }
                                 >
                                     Previous
                                 </Button>
                                 <span className="text-sm text-gray-500">
-                                    Page {pagination.current_page} of {pagination.last_page}
+                                    Page {pagination.current_page} of{" "}
+                                    {pagination.last_page}
                                 </span>
                                 <Button
                                     type="button"
                                     variant="white"
-                                    disabled={pagination.current_page >= pagination.last_page}
-                                    onClick={() => fetchLogs(pagination.current_page + 1)}
+                                    disabled={
+                                        pagination.current_page >=
+                                        pagination.last_page
+                                    }
+                                    onClick={() =>
+                                        fetchLogs(pagination.current_page + 1)
+                                    }
                                 >
                                     Next
                                 </Button>

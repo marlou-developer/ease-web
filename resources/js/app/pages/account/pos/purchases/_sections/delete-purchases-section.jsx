@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Trash2 } from "lucide-react";
 import Modal from "@/app/_components/modal";
 import Button from "@/app/_components/button";
-import { setAlert } from "@/app/redux/app-slice";
-import { get_pos_users_thunk } from "@/app/redux/pos/pos-thunk";
-import { delete_user_service } from "@/app/services/app-service";
-import store from "@/app/store/store";
 import { useDispatch } from "react-redux";
+import { setAlert } from "@/app/redux/app-slice";
+import { get_pos_purchases_thunk } from "@/app/redux/pos/pos-thunk";
+import { delete_pos_purchases_service } from "@/app/services/pos/pos-purchases-service";
+import store from "@/app/store/store";
 
-export default function DeleteUserSection({ user }) {
+export default function DeletePurchasesSection({ props_data }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
@@ -16,24 +16,21 @@ export default function DeleteUserSection({ user }) {
     const handleDelete = async () => {
         setLoading(true);
         try {
-            await delete_user_service(user?.id);
-            await store.dispatch(get_pos_users_thunk());
+            await delete_pos_purchases_service(props_data?.id);
+            await store.dispatch(get_pos_purchases_thunk());
             setIsModalOpen(false);
             dispatch(
                 setAlert({
                     type: "success",
-                    title: "User deleted successfully!",
+                    title: "Purchase deleted successfully!",
                 }),
             );
         } catch (error) {
-            console.error(
-                "Error deleting user:",
-                error?.response?.data?.message,
-            );
+            console.error("Error deleting purchase:", error);
             dispatch(
                 setAlert({
                     type: "danger",
-                    title: "User deletion unsuccessful!",
+                    title: "Purchase deletion unsuccessful!",
                 }),
             );
         } finally {
@@ -44,18 +41,16 @@ export default function DeleteUserSection({ user }) {
     return (
         <div>
             <button
-                title="Delete user"
                 type="button"
+                className="flex items-center gap-1 bg-red-500 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-red-600 transition-colors"
                 onClick={() => setIsModalOpen(true)}
-                className="flex items-center gap-1 bg-red-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-red-700"
             >
-                <Trash2 size={14} />
-                Delete
+                <Trash2 size={14} /> Delete
             </button>
 
             <Modal
-                title="Delete User"
-                width="max-w-md"
+                title="Delete Purchase"
+                width="max-w-2xl"
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
             >
@@ -66,11 +61,10 @@ export default function DeleteUserSection({ user }) {
                     }}
                     className="flex flex-col gap-4"
                 >
-                    <h1 className="text-lg font-semibold">
-                        Are you sure you want to delete{" "}
-                        {user?.name || "this user"}?
-                    </h1>
-                    <hr className="my-2" />
+                    <p>
+                        Are you sure you want to delete purchase{" "}
+                        {props_data?.reference_no || "this purchase"}?
+                    </p>
                     <div className="flex justify-end gap-2">
                         <Button
                             type="button"
@@ -85,7 +79,7 @@ export default function DeleteUserSection({ user }) {
                             variant="primary"
                             loading={loading}
                         >
-                            Delete User
+                            <Trash2 size={14} /> Delete
                         </Button>
                     </div>
                 </form>

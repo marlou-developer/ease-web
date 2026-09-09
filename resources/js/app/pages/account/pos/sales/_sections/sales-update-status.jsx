@@ -13,7 +13,7 @@ import {
     Tag,
     Percent,
     Banknote,
-    Wallet
+    Wallet,
 } from "lucide-react";
 import { pos_sales_change_status_service } from "@/app/services/pos/pos-sales-service";
 import store from "@/app/store/store";
@@ -43,9 +43,9 @@ export default function SalesUpdateStatus({ props_data }) {
             await pos_sales_change_status_service({
                 id: props_data.id,
                 status: formData.status,
-                items: props_data?.sale_items ?? []
+                items: props_data?.sale_items ?? [],
             });
-            store.dispatch(get_pos_sales_thunk())
+            store.dispatch(get_pos_sales_thunk());
             setOpen(false);
             reset();
             dispatch(
@@ -67,27 +67,28 @@ export default function SalesUpdateStatus({ props_data }) {
 
     // Helper to format date if available
     const formattedDate = props_data?.created_at
-        ? new Date(props_data.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-        : 'N/A';
+        ? new Date(props_data.created_at).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+          })
+        : "N/A";
 
     return (
-        <>
-            <Button
+        <div>
+            <button
                 onClick={() => {
                     setOpen(true);
                     setActiveTab("payment"); // Reset to first tab on open
                     reset();
                 }}
-                variant="info"
-                className="group"
+                className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-700"
             >
-                <div className="flex gap-2 items-center justify-center transition-all duration-200">
-                    <Pencil size={18} />
-                </div>
-            </Button>
+                <Pencil size={14} /> Update
+            </button>
 
             <Modal
-                title={`Update Sales Status - ${props_data?.invoice_no || ''}`}
+                title={`Update Sales Status - ${props_data?.invoice_no || ""}`}
                 width="max-w-2xl"
                 isOpen={open}
                 onClose={() => setOpen(false)}
@@ -97,20 +98,22 @@ export default function SalesUpdateStatus({ props_data }) {
                     <button
                         type="button"
                         onClick={() => setActiveTab("payment")}
-                        className={`py-2 px-6 text-sm font-semibold border-b-2 outline-none transition-colors duration-200 ${activeTab === "payment"
+                        className={`py-2 px-6 text-sm font-semibold border-b-2 outline-none transition-colors duration-200 ${
+                            activeTab === "payment"
                                 ? "border-blue-500 text-blue-600"
                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                            }`}
+                        }`}
                     >
                         Payment Details
                     </button>
                     <button
                         type="button"
                         onClick={() => setActiveTab("items")}
-                        className={`py-2 px-6 text-sm font-semibold border-b-2 outline-none transition-colors duration-200 ${activeTab === "items"
+                        className={`py-2 px-6 text-sm font-semibold border-b-2 outline-none transition-colors duration-200 ${
+                            activeTab === "items"
                                 ? "border-blue-500 text-blue-600"
                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                            }`}
+                        }`}
                     >
                         Sale Items
                     </button>
@@ -136,61 +139,89 @@ export default function SalesUpdateStatus({ props_data }) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-3 text-gray-500">
-                                        <CreditCard size={18} className="text-blue-500" />
-                                        <span className="text-sm">Payment Type</span>
+                                        <CreditCard
+                                            size={18}
+                                            className="text-blue-500"
+                                        />
+                                        <span className="text-sm">
+                                            Payment Type
+                                        </span>
                                     </div>
                                     <span className="text-gray-800 font-medium text-sm">
-                                        {props_data?.payment_type || 'N/A'}
+                                        {props_data?.payment_type || "N/A"}
                                     </span>
                                 </div>
 
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-3 text-gray-500">
-                                        <Receipt size={18} className="text-blue-500" />
-                                        <span className="text-sm">Total Amount</span>
+                                        <Receipt
+                                            size={18}
+                                            className="text-blue-500"
+                                        />
+                                        <span className="text-sm">
+                                            Total Amount
+                                        </span>
                                     </div>
                                     <span className="text-gray-800 font-medium text-sm">
-                                        ₱{props_data?.total_amount || '0.00'}
+                                        ₱{props_data?.total_amount || "0.00"}
                                     </span>
                                 </div>
 
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-3 text-gray-500">
-                                        <Tag size={18} className="text-blue-500" />
-                                        <span className="text-sm">Discount</span>
+                                        <Tag
+                                            size={18}
+                                            className="text-blue-500"
+                                        />
+                                        <span className="text-sm">
+                                            Discount
+                                        </span>
                                     </div>
                                     <span className="text-gray-800 font-medium text-sm">
-                                        ₱{props_data?.discount || '0.00'}
+                                        ₱{props_data?.discount || "0.00"}
                                     </span>
                                 </div>
 
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-3 text-gray-500">
-                                        <Percent size={18} className="text-blue-500" />
+                                        <Percent
+                                            size={18}
+                                            className="text-blue-500"
+                                        />
                                         <span className="text-sm">Tax</span>
                                     </div>
                                     <span className="text-gray-800 font-medium text-sm">
-                                        ₱{props_data?.tax || '0.00'}
+                                        ₱{props_data?.tax || "0.00"}
                                     </span>
                                 </div>
 
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-3 text-gray-500">
-                                        <Banknote size={18} className="text-blue-500" />
-                                        <span className="text-sm">Amount Paid</span>
+                                        <Banknote
+                                            size={18}
+                                            className="text-blue-500"
+                                        />
+                                        <span className="text-sm">
+                                            Amount Paid
+                                        </span>
                                     </div>
                                     <span className="text-gray-800 font-medium text-sm">
-                                        ₱{props_data?.amount_paid || '0.00'}
+                                        ₱{props_data?.amount_paid || "0.00"}
                                     </span>
                                 </div>
 
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-3 text-gray-500">
-                                        <Wallet size={18} className="text-blue-500" />
+                                        <Wallet
+                                            size={18}
+                                            className="text-blue-500"
+                                        />
                                         <span className="text-sm">Balance</span>
                                     </div>
-                                    <span className={`font-medium text-sm ${parseFloat(props_data?.balance) > 0 ? 'text-red-600' : 'text-gray-800'}`}>
-                                        ₱{props_data?.balance || '0.00'}
+                                    <span
+                                        className={`font-medium text-sm ${parseFloat(props_data?.balance) > 0 ? "text-red-600" : "text-gray-800"}`}
+                                    >
+                                        ₱{props_data?.balance || "0.00"}
                                     </span>
                                 </div>
                             </div>
@@ -209,14 +240,22 @@ export default function SalesUpdateStatus({ props_data }) {
                                         >
                                             <div className="flex flex-col">
                                                 <span className="font-medium text-gray-800 transition-colors duration-200">
-                                                    {item?.pos_product_stock?.product?.name || `Product ID: ${item.pos_product_stock_id}`}
+                                                    {item?.pos_product_stock
+                                                        ?.product?.name ||
+                                                        `Product ID: ${item.pos_product_stock_id}`}
                                                 </span>
                                                 <span className="text-xs text-gray-500 mt-0.5">
-                                                    Qty: <strong className="text-gray-700">{item.quantity}</strong> @ ₱{item.selling_price}
+                                                    Qty:{" "}
+                                                    <strong className="text-gray-700">
+                                                        {item.quantity}
+                                                    </strong>{" "}
+                                                    @ ₱{item.selling_price}
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <span className="text-xs text-gray-400 font-medium">Total</span>
+                                                <span className="text-xs text-gray-400 font-medium">
+                                                    Total
+                                                </span>
                                                 <span className="font-semibold text-gray-800 text-lg">
                                                     ₱{item.total}
                                                 </span>
@@ -226,7 +265,9 @@ export default function SalesUpdateStatus({ props_data }) {
                                 </ul>
                             ) : (
                                 <div className="bg-gray-50 border border-dashed border-gray-300 rounded-md p-8 text-center mt-4">
-                                    <p className="text-sm text-gray-500 italic">No items found for this sale.</p>
+                                    <p className="text-sm text-gray-500 italic">
+                                        No items found for this sale.
+                                    </p>
                                 </div>
                             )}
                         </div>
@@ -244,18 +285,23 @@ export default function SalesUpdateStatus({ props_data }) {
                         <Controller
                             name="status"
                             control={control}
-                            rules={{ required: "Status is required to proceed." }}
+                            rules={{
+                                required: "Status is required to proceed.",
+                            }}
                             render={({ field, fieldState: { error } }) => (
                                 <div className="flex flex-col w-full">
                                     <Select
                                         {...field}
                                         label="Select Status"
-                                        options={["Paid", "Returned", "Pending", "Partial"].map(
-                                            (res) => ({
-                                                value: res,
-                                                label: res,
-                                            })
-                                        )}
+                                        options={[
+                                            "Paid",
+                                            "Returned",
+                                            "Pending",
+                                            "Partial",
+                                        ].map((res) => ({
+                                            value: res,
+                                            label: res,
+                                        }))}
                                     />
 
                                     {error && (
@@ -267,9 +313,16 @@ export default function SalesUpdateStatus({ props_data }) {
                                     {/* Conditional Note for "Returned" status */}
                                     {selectedStatus === "Returned" && (
                                         <div className="flex gap-2 items-start mt-3 p-3 bg-amber-50 border border-amber-200 rounded-md text-amber-800 animate-in fade-in slide-in-from-top-2 duration-300">
-                                            <AlertCircle size={18} className="mt-0.5 shrink-0 text-amber-600" />
+                                            <AlertCircle
+                                                size={18}
+                                                className="mt-0.5 shrink-0 text-amber-600"
+                                            />
                                             <p className="text-sm font-medium">
-                                                Note: Setting this status to "Returned" will mark all items in this transaction as returned. Are you sure you want to return all items?
+                                                Note: Setting this status to
+                                                "Returned" will mark all items
+                                                in this transaction as returned.
+                                                Are you sure you want to return
+                                                all items?
                                             </p>
                                         </div>
                                     )}
@@ -299,6 +352,6 @@ export default function SalesUpdateStatus({ props_data }) {
                     </div>
                 </form>
             </Modal>
-        </>
+        </div>
     );
 }

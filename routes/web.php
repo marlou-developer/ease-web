@@ -98,6 +98,9 @@ Route::prefix('account')->middleware('auth')->group(function () {
             Route::get('/my_product_requests', function () {
                 return Inertia::render('account/pos/store_stocks/my_product_requests/page');
             });
+            Route::get('/removed_products', function () {
+                return Inertia::render('account/pos/store_stocks/removed_products/page');
+            });
         });
         Route::get('/stock_movements', function () {
             return Inertia::render('account/pos/stock_movements/page');

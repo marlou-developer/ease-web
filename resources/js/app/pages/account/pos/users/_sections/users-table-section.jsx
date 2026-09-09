@@ -85,11 +85,11 @@ export default function UsersTableSection() {
             accessor: "actions",
             className: "font-bold text-gray-700",
             render: (row) => (
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                     <EditUserSection user={row} />
                     <DeleteUserSection user={row} />
-                    <LockProfileSection user={row} />
                     <UserLogsSection userId={row?.id} />
+                    <LockProfileSection user={row} />
                 </div>
             ),
         },

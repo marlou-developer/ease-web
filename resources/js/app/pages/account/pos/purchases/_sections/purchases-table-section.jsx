@@ -5,6 +5,7 @@ import moment from "moment";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ViewPurchasesSection from "./view-purchases-section";
+import DeletePurchasesSection from "./delete-purchases-section";
 // import StockingSection from "..."; // Make sure to import this if you use it!
 
 
@@ -93,9 +94,7 @@ export default function ProductTableSection() {
             render: (row) => (
                 <div className="flex justify-end gap-2">
                     <ViewPurchasesSection props_data={row} />
-                    <button className="flex items-center gap-1 bg-red-500 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-red-600 transition-colors">
-                        <Trash2 size={14} /> Delete
-                    </button>
+                    <DeletePurchasesSection props_data={row} />
                 </div>
             )
         }

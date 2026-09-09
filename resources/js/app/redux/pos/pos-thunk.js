@@ -13,6 +13,7 @@ import { get_pos_store_transaction_service } from "@/app/services/pos/pos-store-
 import { get_pos_store_requests_service } from "@/app/services/pos/pos-store-requests-service";
 import { get_pos_expenses_service } from "@/app/services/pos/pos-expense-service";
 import { get_pos_expense_categories_service } from "@/app/services/pos/pos-expense-category-service";
+import { get_removed_pos_product_stocks_service } from "@/app/services/pos/pos-product-stock";
 
 export function get_pos_suppliers_thunk() {
     return async function (dispatch, getState) {
@@ -80,6 +81,14 @@ export function get_pos_product_stocks_thunk() {
         dispatch(posSlice.actions.setProducts(res.warehouse_products));
         dispatch(posSlice.actions.setCountProcessingStocks(res.count_processing_stocks));
         
+    };
+}
+
+export function get_removed_pos_product_stocks_thunk() {
+    return async function (dispatch, getState) {
+        const res = await get_removed_pos_product_stocks_service();
+        dispatch(posSlice.actions.setSearchTerm(""));
+        dispatch(posSlice.actions.setRemovedStocks(res.data));
     };
 }
 

@@ -23,6 +23,7 @@ export const posSlice = createSlice({
         },
         heldSales: [],
         store_stocks: [],
+        removed_stocks: [],
         sales: [],
         sale: {},
         units: [],
@@ -42,6 +43,9 @@ export const posSlice = createSlice({
     reducers: {
         setStoreStocks: (state, action) => {
             state.store_stocks = action.payload;
+        },
+        setRemovedStocks: (state, action) => {
+            state.removed_stocks = action.payload;
         },
         setSuppliers: (state, action) => {
             state.suppliers = action.payload;
@@ -141,6 +145,7 @@ export const {
     setReports,
     setCategories,
     setStoreStocks,
+    setRemovedStocks,
     setCartDetail,
     setHeldSales,
     setSuppliers,

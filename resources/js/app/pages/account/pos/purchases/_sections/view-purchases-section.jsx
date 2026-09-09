@@ -6,6 +6,7 @@ import { setAlert } from "@/app/redux/app-slice";
 import { get_pos_purchases_thunk } from "@/app/redux/pos/pos-thunk";
 import { received_pos_product_stocks_service } from "@/app/services/pos/pos-product-stock";
 import store from "@/app/store/store";
+import { List } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -28,7 +29,7 @@ export default function ViewPurchasesSection({ props_data }) {
     // Dynamically pre-fill the form whenever the modal opens
     useEffect(() => {
         if (open && props_data?.items) {
-            const defaultPurchases = props_data.items.map(item => ({
+            const defaultPurchases = props_data.items.map((item) => ({
                 ...item, // <-- CRITICAL: Keep all the original data (IDs, quantity, etc)
                 selling_price: item.selling_price || "",
                 cost_price: item.cost_price || "",
@@ -43,7 +44,7 @@ export default function ViewPurchasesSection({ props_data }) {
             // Reconstruct the payload so the backend gets the full object with the NEW prices
             const payload = {
                 ...props_data,
-                items: formData.purchases
+                items: formData.purchases,
             };
 
             await received_pos_product_stocks_service(payload);
@@ -55,28 +56,30 @@ export default function ViewPurchasesSection({ props_data }) {
                 setAlert({
                     type: "success",
                     title: "Product Received successfully!",
-                })
+                }),
             );
         } catch (error) {
             dispatch(
                 setAlert({
                     type: "danger",
                     title: "Failed to add purchases.",
-                })
+                }),
             );
             console.error("Error creating purchase:", error);
         }
     };
 
-    console.log('props_data',props_data)
+    console.log("props_data", props_data);
     return (
         <>
-            <Button
+            <button
+                type="button"
                 onClick={() => setOpen(true)}
                 variant="primary"
+                className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-700"
             >
-                Show
-            </Button>
+                <List size={14} /> Show
+            </button>
 
             <Modal
                 title="List of Purchases"
@@ -93,12 +96,15 @@ export default function ViewPurchasesSection({ props_data }) {
                 >
                     <Table
                         columns={[
-                            { header: 'Product Name', accessor: 'name' },
-                            { header: 'Barcode', accessor: 'barcode' },
-                            { header: 'Supplier', accessor: 'supplier' },
-                            { header: 'Cost Price', accessor: 'cost_price' },
-                            { header: 'Selling Price', accessor: 'selling_price' },
-                            { header: 'Quantity', accessor: 'quantity' },
+                            { header: "Product Name", accessor: "name" },
+                            { header: "Barcode", accessor: "barcode" },
+                            { header: "Supplier", accessor: "supplier" },
+                            { header: "Cost Price", accessor: "cost_price" },
+                            {
+                                header: "Selling Price",
+                                accessor: "selling_price",
+                            },
+                            { header: "Quantity", accessor: "quantity" },
                         ]}
                         data={props_data?.items?.map((res, index) => ({
                             ...res,
@@ -110,20 +116,37 @@ export default function ViewPurchasesSection({ props_data }) {
                                     type="number"
                                     min="1"
                                     step="any"
-                                    {...register(`purchases.${index}.cost_price`, {
-                                        required: "Required",
-                                        min: { value: 1, message: "Min 1" },
-                                        validate: (value) => {
-                                            const sellingPrice = Number(getValues(`purchases.${index}.selling_price`));
-                                            if (sellingPrice && Number(value) >= sellingPrice) {
-                                                return "Cost must be lower";
-                                            }
-                                            return true;
+                                    {...register(
+                                        `purchases.${index}.cost_price`,
+                                        {
+                                            required: "Required",
+                                            min: { value: 1, message: "Min 1" },
+                                            validate: (value) => {
+                                                const sellingPrice = Number(
+                                                    getValues(
+                                                        `purchases.${index}.selling_price`,
+                                                    ),
+                                                );
+                                                if (
+                                                    sellingPrice &&
+                                                    Number(value) >=
+                                                        sellingPrice
+                                                ) {
+                                                    return "Cost must be lower";
+                                                }
+                                                return true;
+                                            },
+                                            // When cost changes, re-check selling price to clear any stuck errors
+                                            onChange: () =>
+                                                trigger(
+                                                    `purchases.${index}.selling_price`,
+                                                ),
                                         },
-                                        // When cost changes, re-check selling price to clear any stuck errors
-                                        onChange: () => trigger(`purchases.${index}.selling_price`)
-                                    })}
-                                    error={errors?.purchases?.[index]?.cost_price?.message}
+                                    )}
+                                    error={
+                                        errors?.purchases?.[index]?.cost_price
+                                            ?.message
+                                    }
                                 />
                             ),
                             selling_price: (
@@ -133,20 +156,36 @@ export default function ViewPurchasesSection({ props_data }) {
                                     type="number"
                                     min="1"
                                     step="any"
-                                    {...register(`purchases.${index}.selling_price`, {
-                                        required: "Required",
-                                        min: { value: 1, message: "Min 1" },
-                                        validate: (value) => {
-                                            const costPrice = Number(getValues(`purchases.${index}.cost_price`));
-                                            if (costPrice && Number(value) <= costPrice) {
-                                                return "Selling must be higher";
-                                            }
-                                            return true;
+                                    {...register(
+                                        `purchases.${index}.selling_price`,
+                                        {
+                                            required: "Required",
+                                            min: { value: 1, message: "Min 1" },
+                                            validate: (value) => {
+                                                const costPrice = Number(
+                                                    getValues(
+                                                        `purchases.${index}.cost_price`,
+                                                    ),
+                                                );
+                                                if (
+                                                    costPrice &&
+                                                    Number(value) <= costPrice
+                                                ) {
+                                                    return "Selling must be higher";
+                                                }
+                                                return true;
+                                            },
+                                            // When selling changes, re-check cost price to clear any stuck errors
+                                            onChange: () =>
+                                                trigger(
+                                                    `purchases.${index}.cost_price`,
+                                                ),
                                         },
-                                        // When selling changes, re-check cost price to clear any stuck errors
-                                        onChange: () => trigger(`purchases.${index}.cost_price`)
-                                    })}
-                                    error={errors?.purchases?.[index]?.selling_price?.message}
+                                    )}
+                                    error={
+                                        errors?.purchases?.[index]
+                                            ?.selling_price?.message
+                                    }
                                 />
                             ),
                             name: res?.pos_warehouse_stock?.product?.name,
@@ -159,12 +198,12 @@ export default function ViewPurchasesSection({ props_data }) {
                         <Button
                             type="button"
                             variant="danger"
-                            disabled={props_data?.status === 'received'}
+                            disabled={props_data?.status === "received"}
                         >
                             CANCEL ORDER
                         </Button>
                         <Button
-                            disabled={props_data?.status === 'received'}
+                            disabled={props_data?.status === "received"}
                             type="submit"
                             variant="success"
                             loading={isSubmitting}

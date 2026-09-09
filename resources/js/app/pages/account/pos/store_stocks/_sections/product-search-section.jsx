@@ -57,6 +57,13 @@ export default function ProductSearchSection() {
                                 {count_processing_stocks}
                             </span>
                         </button>
+
+                        <button
+                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-1"
+                            onClick={() => router.visit(`/account/pos/store_stocks/removed_products`)}
+                        >
+                            View Removed Products
+                        </button>
                     </div>
                 </div>
                 <div className=" flex-1">

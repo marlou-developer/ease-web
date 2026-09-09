@@ -33,7 +33,7 @@ class UserController extends Controller
     }
     public function get_pos_users()
     {
-        $users = User::with('store')->where('subscriber_id', Auth::user()->subscriber_id)->get();
+        $users = User::with('store')->where('subscriber_id', Auth::user()->subscriber_id)->orderBy('id', 'desc')->get();
         return response()->json([
             'data' => $users,
         ]);
