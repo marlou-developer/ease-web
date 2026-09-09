@@ -115,7 +115,7 @@ export default function POSCheckout() {
         if (cart.length === 0) return true;
         if (loading) return true;
         if (isCustomer && !watchedValues.customer_id) return true;
-        if (isCredit && !watchedValues.due_date) return true;
+        if (isCredit) return !watchedValues.due_date;
         const netTotal = Number(
             cartDetail.grandTotal -
                 (total_total_discount + (overall_all_product_discount || 0)),
@@ -254,55 +254,28 @@ export default function POSCheckout() {
                     </span>
                 </div>
 
-                <div className="flex flex-col gap-3">
-                    <div className="font-bold">Payment Method</div>
-                    <div className="flex gap-3 items-center justify-evenly">
-                        <div className="flex flex-col gap-2">
-                            <Radio
-                                name="payment_type"
-                                label="Cash"
-                                value="Cash"
-                                checked={paymentType === "Cash"}
-                                onChange={(e) => setPaymentType(e.target.value)}
-                            />
-                            <Radio
-                                name="payment_type"
-                                label="E-Wallet"
-                                value="E-Wallet"
-                                checked={paymentType === "E-Wallet"}
-                                onChange={(e) => setPaymentType(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                            <Radio
-                                name="payment_type"
-                                label="Bank Transfer"
-                                value="Bank Transfer"
-                                checked={paymentType === "Bank Transfer"}
-                                onChange={(e) => setPaymentType(e.target.value)}
-                            />
-                            <Radio
-                                name="payment_type"
-                                label="Credit/Debit Card"
-                                value="Credit/Debit Card"
-                                checked={paymentType === "Credit/Debit Card"}
-                                onChange={(e) => setPaymentType(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="my-5 flex flex-col gap-3 border-t pt-3">
-                        <div className="font-bold">Other Option</div>
+                <div className="my-5 flex flex-col gap-3 border-t pt-3">
+                    <div className="flex items-center mx-1">
                         <Checkbox
-                            onChange={(e) => setIsCustomer(e.target.checked)}
+                            onChange={(e) => {
+                                const checked = e.target.checked;
+                                setIsCustomer(checked);
+                                // uncheck credit and clear its fields when customer is unmarked
+                                if (!checked) {
+                                    setIsCredit(false);
+                                    setValue("customer_id", "");
+                                    setValue("due_date", "");
+                                }
+                            }}
                             name="is_customer"
                             label="Is Customer?"
                             checked={isCustomer}
                         />
+                    </div>
 
-                        {isCustomer && (
-                            <>
+                    {isCustomer && (
+                        <>
+                            <div className="flex items-center mx-1">
                                 <Checkbox
                                     onChange={(e) =>
                                         setIsCredit(e.target.checked)
@@ -311,56 +284,103 @@ export default function POSCheckout() {
                                     label="Is Credit?"
                                     checked={isCredit}
                                 />
-                                <div className="my-1" />
-                                <Controller
-                                    name="customer_id"
-                                    control={control}
-                                    rules={{ required: "Customer is required" }}
-                                    render={({
-                                        field: {
-                                            onChange,
-                                            value,
-                                            ...restField
-                                        },
-                                    }) => (
-                                        <Select
-                                            iconLeft={
-                                                <FcPortraitMode className="text-2xl" />
-                                            }
-                                            label={
-                                                <div className="ml-6">
-                                                    Select Customer
-                                                </div>
-                                            }
-                                            options={customers.map((res) => ({
-                                                label: res.name,
-                                                value: res.id,
-                                            }))} // Populate your customer options here
-                                            value={value}
-                                            onChange={onChange}
-                                            error={errors?.customer_id?.message}
-                                            {...restField}
-                                        />
-                                    )}
-                                />
-                            </>
-                        )}
-
-                        {/* ✅ Only show Due Date if it is a credit sale */}
-                        {isCredit && (
-                            <Input
-                                label="Due Date"
-                                type="date"
-                                name="due_date"
-                                {...register("due_date", {
-                                    required:
-                                        "Due Date is required for credit sales",
-                                })}
-                                error={errors?.due_date?.message}
+                            </div>
+                            <div className="my-1" />
+                            <Controller
+                                name="customer_id"
+                                control={control}
+                                rules={{ required: "Customer is required" }}
+                                render={({
+                                    field: { onChange, value, ...restField },
+                                }) => (
+                                    <Select
+                                        iconLeft={
+                                            <FcPortraitMode className="text-2xl" />
+                                        }
+                                        label={
+                                            <div className="ml-6">
+                                                Select Customer
+                                            </div>
+                                        }
+                                        options={customers.map((res) => ({
+                                            label: res.name,
+                                            value: res.id,
+                                        }))} // Populate your customer options here
+                                        value={value}
+                                        onChange={onChange}
+                                        error={errors?.customer_id?.message}
+                                        {...restField}
+                                    />
+                                )}
                             />
-                        )}
-                    </div>
+                        </>
+                    )}
+
+                    {isCredit && (
+                        <Input
+                            label="Due Date"
+                            type="date"
+                            name="due_date"
+                            {...register("due_date", {
+                                required:
+                                    "Due Date is required for credit sales",
+                            })}
+                            error={errors?.due_date?.message}
+                        />
+                    )}
                 </div>
+
+                {/* Credit sales are paid later, so no payment method is chosen now */}
+                {!isCredit && (
+                    <div className="flex flex-col gap-3">
+                        <div className="font-bold">Payment Method</div>
+                        <div className="flex gap-3 items-center justify-evenly">
+                            <div className="flex flex-col gap-2">
+                                <Radio
+                                    name="payment_type"
+                                    label="Cash"
+                                    value="Cash"
+                                    checked={paymentType === "Cash"}
+                                    onChange={(e) =>
+                                        setPaymentType(e.target.value)
+                                    }
+                                />
+                                <Radio
+                                    name="payment_type"
+                                    label="E-Wallet"
+                                    value="E-Wallet"
+                                    checked={paymentType === "E-Wallet"}
+                                    onChange={(e) =>
+                                        setPaymentType(e.target.value)
+                                    }
+                                />
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                                <Radio
+                                    name="payment_type"
+                                    label="Bank Transfer"
+                                    value="Bank Transfer"
+                                    checked={paymentType === "Bank Transfer"}
+                                    onChange={(e) =>
+                                        setPaymentType(e.target.value)
+                                    }
+                                />
+                                <Radio
+                                    name="payment_type"
+                                    label="Credit/Debit Card"
+                                    value="Credit/Debit Card"
+                                    checked={
+                                        paymentType === "Credit/Debit Card"
+                                    }
+                                    onChange={(e) =>
+                                        setPaymentType(e.target.value)
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* ✅ Changed to type="submit" so it triggers React Hook Form validations */}
                 <button
