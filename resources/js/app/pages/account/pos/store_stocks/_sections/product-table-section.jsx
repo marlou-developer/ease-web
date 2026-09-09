@@ -5,6 +5,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductEditSection from "./product-edit-section";
 import ProductDeleteSection from "./product-delete-section";
+import ProductRequestSection from "./product-request-section";
 // import StockingSection from "..."; // Make sure to import this if you use it!
 
 export default function ProductTableSection() {
@@ -124,6 +125,7 @@ export default function ProductTableSection() {
                 <div className="flex justify-center gap-2">
                     <ProductEditSection props_data={row} />
                     <ProductDeleteSection props_data={row} />
+                    <ProductRequestSection props_data={row} />
                 </div>
             ),
         },
