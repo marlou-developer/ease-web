@@ -44,6 +44,12 @@ export const posSlice = createSlice({
         setStoreStocks: (state, action) => {
             state.store_stocks = action.payload;
         },
+        updateStoreStockQuantities: (state, action) => {
+            action.payload.forEach(({ id, stocks }) => {
+                const stock = state.store_stocks.find((s) => s.id === id);
+                if (stock) stock.stocks = stocks;
+            });
+        },
         setRemovedStocks: (state, action) => {
             state.removed_stocks = action.payload;
         },
@@ -145,6 +151,7 @@ export const {
     setReports,
     setCategories,
     setStoreStocks,
+    updateStoreStockQuantities,
     setRemovedStocks,
     setCartDetail,
     setHeldSales,

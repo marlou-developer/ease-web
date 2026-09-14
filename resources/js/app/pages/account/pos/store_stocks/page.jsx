@@ -7,8 +7,10 @@ import ProductPaginationSection from "./_sections/product-pagination-section";
 import store from "@/app/store/store";
 import { get_pos_product_stocks_thunk } from "@/app/redux/pos/pos-thunk";
 import loadingApi from "@/app/lib/loading-api";
+import usePosRealtime from "@/app/lib/use-pos-realtime";
 
 export default function Page() {
+    usePosRealtime();
     useEffect(() => {
         loadingApi(store.dispatch(get_pos_product_stocks_thunk()))
     }, []);

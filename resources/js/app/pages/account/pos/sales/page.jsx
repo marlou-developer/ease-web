@@ -6,9 +6,10 @@ import SalesTableSection from './_sections/sales-table-section';
 import loadingApi from '@/app/lib/loading-api';
 import store from '@/app/store/store';
 import { get_pos_sales_thunk } from '@/app/redux/pos/pos-thunk';
+import usePosRealtime from '@/app/lib/use-pos-realtime';
 
 export default function Page() {
-
+    usePosRealtime();
     useEffect(() => {
         loadingApi(store.dispatch(get_pos_sales_thunk()))
     }, [])

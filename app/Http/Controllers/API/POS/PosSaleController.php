@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API\POS;
 
+use App\Events\PosSaleCreated;
+use App\Events\PosStockUpdated;
 use App\Http\Controllers\Controller;
 use App\Models\POS\PosProductStock;
 use App\Models\POS\PosSale;
@@ -38,6 +40,10 @@ class PosSaleController extends Controller
                     $pos_store_transaction->update([
                         'transaction_id' => $transaction_id
                     ]);
+
+                    broadcast(new PosStockUpdated($pos_product_stock->pos_store_id, [
+                        ['id' => $pos_product_stock->id, 'stocks' => $pos_product_stock->fresh()->stocks],
+                    ]));
                 }
             }
         }
@@ -162,6 +168,10 @@ class PosSaleController extends Controller
             $product_stock = PosProductStock::lockForUpdate()->find($item['pos_product_stock_id']);
             if ($product_stock) {
                 $product_stock->decrement('stocks', $quantity);
+
+                broadcast(new PosStockUpdated($product_stock->pos_store_id, [
+                    ['id' => $product_stock->id, 'stocks' => $product_stock->fresh()->stocks],
+                ]));
             }
 
             // 3. Create Store Transaction
@@ -197,6 +207,8 @@ class PosSaleController extends Controller
                 'payment_type' => $request->payment_type ?? $pos_sales->payment_type,
                 'balance' => $pos_sales->balance + $addedTotalAmount,
             ]);
+
+            broadcast(new PosSaleCreated($pos_sales->fresh()));
         }
 
         return response()->json([
@@ -299,6 +311,10 @@ class PosSaleController extends Controller
             $product_stock = PosProductStock::find($item['pos_product_stock_id']);
             if ($product_stock) {
                 $product_stock->decrement('stocks', $quantity);
+
+                broadcast(new PosStockUpdated($product_stock->pos_store_id, [
+                    ['id' => $product_stock->id, 'stocks' => $product_stock->fresh()->stocks],
+                ]));
             }
 
 
@@ -315,6 +331,9 @@ class PosSaleController extends Controller
                 'transaction_id' => $transaction_id
             ]);
         }
+
+        broadcast(new PosSaleCreated($sale->fresh()));
+
         return response()->json([
             'success' => true,
             'message' => 'Sale created successfully',

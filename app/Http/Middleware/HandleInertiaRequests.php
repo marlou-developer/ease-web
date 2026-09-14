@@ -34,6 +34,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'pos_store_id' => $request->session()->get('pos_store_id'),
         ];
     }
 }
