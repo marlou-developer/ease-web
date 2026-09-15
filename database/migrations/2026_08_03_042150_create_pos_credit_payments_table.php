@@ -13,16 +13,15 @@ return new class extends Migration
     {
         Schema::create('pos_credit_payments', function (Blueprint $table) {
             $table->id();
+            $table->unsignedInteger('subscriber_id')->nullable();
 
-            // Explicitly define unsigned big integer if referencing bigIncrements
-            $table->unsignedBigInteger('subscriber_id')->nullable();
-            $table->foreign('subscriber_id')->references('id')->on('pos_subscribers')->nullOnDelete();
-
-            // Repeat for others if necessary...
+            $table->foreign('subscriber_id')
+                ->references('id')
+                ->on('pos_subscribers')
+                ->nullOnDelete();
             $table->foreignId('pos_sales_id')->nullable()->constrained('pos_sales');
             $table->foreignId('payee_id')->nullable()->constrained('users');
             $table->foreignId('customer_id')->nullable()->constrained('users');
-
             $table->decimal('amount', 10, 2)->nullable();
             $table->enum('payment_type', ['Cash', 'E-Wallet', 'Bank Transfer', 'Credit/Debit Card']);
             $table->timestamps();
