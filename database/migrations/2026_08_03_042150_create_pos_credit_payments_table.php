@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('pos_credit_payments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('subscriber_id')->nullable();
+            $table->unsignedBigInteger('subscriber_id')->nullable();
 
             $table->foreign('subscriber_id')
                 ->references('id')
-                ->on('pos_subscribers')
+                ->on('subscribers')
                 ->nullOnDelete();
             $table->foreignId('pos_sales_id')->nullable()->constrained('pos_sales');
             $table->foreignId('payee_id')->nullable()->constrained('users');
