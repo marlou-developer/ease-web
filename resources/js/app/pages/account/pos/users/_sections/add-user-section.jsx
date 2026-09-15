@@ -13,10 +13,10 @@ import { FcShop } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function AddUserSection() {
-    const { app } = useSelector((store) => store.app)
+    const { app } = useSelector((store) => store.app);
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
-    const [error, setError] = useState('')
+    const [error, setError] = useState("");
 
     const {
         register,
@@ -34,13 +34,12 @@ export default function AddUserSection() {
             email: "",
             pos_user_type: "",
             pos_store_id: "",
-            title: "",
         },
     });
 
     const onSubmit = async (formData) => {
         try {
-            setError('')
+            setError("");
             await add_user_service(formData);
             await store.dispatch(get_pos_users_thunk());
             setOpen(false);
@@ -49,11 +48,14 @@ export default function AddUserSection() {
                 setAlert({
                     type: "success",
                     title: "User created successfully!",
-                })
+                }),
             );
         } catch (error) {
-            setError(error?.response?.data?.message)
-            console.error("Error creating user:", error?.response?.data?.message);
+            setError(error?.response?.data?.message);
+            console.error(
+                "Error creating user:",
+                error?.response?.data?.message,
+            );
         }
     };
 
@@ -97,27 +99,24 @@ export default function AddUserSection() {
                         })}
                         error={errors.email}
                     />
-                    {
-                        error && <div className="text-red-500">
-                            {error}
-                        </div>
-                    }
-
+                    {error && <div className="text-red-500">{error}</div>}
 
                     {/* Custom Select Component via Controller */}
                     <Controller
                         name="pos_user_type"
                         control={control}
                         rules={{ required: "Role is required" }}
-                        render={({ field: { onChange, value, ...restField } }) => (
+                        render={({
+                            field: { onChange, value, ...restField },
+                        }) => (
                             <Select
                                 label="Select User Type"
                                 // Formatted labels to have capital letters for the UI, but lowercase values for the backend
                                 options={[
-                                    { value: 'Admin', label: 'Admin' },
-                                    { value: 'Inventory', label: 'Inventory' },
-                                    { value: 'Cashier', label: 'Cashier' },
-                                    { value: 'Encoder', label: 'Encoder' }
+                                    { value: "Admin", label: "Admin" },
+                                    { value: "Inventory", label: "Inventory" },
+                                    { value: "Cashier", label: "Cashier" },
+                                    { value: "Encoder", label: "Encoder" },
                                 ]}
                                 value={value}
                                 onChange={onChange}
@@ -130,15 +129,19 @@ export default function AddUserSection() {
                         name="pos_store_id"
                         control={control}
                         rules={{ required: "Store selection is required" }}
-                        render={({ field: { onChange, value, ...restField } }) => (
+                        render={({
+                            field: { onChange, value, ...restField },
+                        }) => (
                             <Select
                                 label="Select Store"
                                 name="pos_store_id"
                                 // 4. Added optional chaining safety for the map array
-                                options={app?.stores?.map(res => ({
-                                    value: res.id,
-                                    label: res.name
-                                })) || []}
+                                options={
+                                    app?.stores?.map((res) => ({
+                                        value: res.id,
+                                        label: res.name,
+                                    })) || []
+                                }
                                 value={value}
                                 {...restField}
                                 onChange={onChange}
@@ -182,7 +185,6 @@ export default function AddUserSection() {
                         error={errors.suffix}
                     />
 
-
                     {/* Position */}
                     <Input
                         label="Position"
@@ -195,7 +197,9 @@ export default function AddUserSection() {
 
                     {/* Footer Note */}
                     <p className="text-[13px] text-gray-500 italic mt-2 leading-tight">
-                        <span className="font-semibold">Note:</span> Default password is "egiespos" and can be changed after the user is created via settings.
+                        <span className="font-semibold">Note:</span> Default
+                        password is "egiespos" and can be changed after the user
+                        is created via settings.
                     </p>
 
                     {/* Actions */}
