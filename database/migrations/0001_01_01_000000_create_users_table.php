@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('subscriber_id')->nullable()->constrained('subscribers');
             $table->foreignId('pos_store_id')->nullable()->constrained('pos_stores');
+            $table->string('username')->unique();
             $table->string('name')->nullable();
             $table->string('email')->unique();
             $table->string('fname')->nullable();

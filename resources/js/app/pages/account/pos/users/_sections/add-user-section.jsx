@@ -26,6 +26,7 @@ export default function AddUserSection() {
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
+            username: "",
             fname: "",
             mname: "",
             lname: "",
@@ -90,6 +91,16 @@ export default function AddUserSection() {
                     onSubmit={handleSubmit(onSubmit)}
                     className="flex flex-col gap-4"
                 >
+                    <Input
+                        label="Username"
+                        name="username"
+                        type="text"
+                        {...register("username", {
+                            required: "Username is required",
+                        })}
+                        error={errors.username}
+                    />
+                    {error && <div className="text-red-500">{error}</div>}
                     <Input
                         label="Email"
                         name="email"

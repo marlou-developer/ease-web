@@ -54,6 +54,7 @@ class UserController extends Controller
     {
         // 1. Validate the incoming request data
         $validatedData = $request->validate([
+            'username' => 'required|string|max:255|unique:users,username',
             'fname'  => 'required|string|max:255',
             'lname'   => 'required|string|max:255',
             'email'       => 'required|email|unique:users,email',
@@ -68,6 +69,7 @@ class UserController extends Controller
         // role is derived from pos_user_type server-side, never trusted from the client
         $user = User::create([
             'subscriber_id' => Auth::user()->subscriber_id,
+            'username' => $validatedData['username'],
             'name' => trim($validatedData['fname'] . ' ' . ($validatedData['mname'] ?? '') . ' ' . $validatedData['lname'] . ' ' . ($validatedData['suffix'] ?? '')),
             'fname' => $validatedData['fname'],
             'mname' => $validatedData['mname'] ?? null,
@@ -95,6 +97,7 @@ class UserController extends Controller
         }
 
         $validatedData = $request->validate([
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'fname'  => 'required|string|max:255',
             'lname'   => 'required|string|max:255',
             'email'       => 'required|email|unique:users,email,' . $user->id,
@@ -106,6 +109,7 @@ class UserController extends Controller
         ]);
 
         $user->update([
+            'username' => $validatedData['username'],
             'name' => trim($validatedData['fname'] . ' ' . ($validatedData['mname'] ?? '') . ' ' . $validatedData['lname'] . ' ' . ($validatedData['suffix'] ?? '')),
             'fname' => $validatedData['fname'],
             'mname' => $validatedData['mname'] ?? null,
