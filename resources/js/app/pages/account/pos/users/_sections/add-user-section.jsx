@@ -84,7 +84,7 @@ export default function AddUserSection() {
                 {/* Custom Form Header */}
                 <div className="flex items-center gap-2 mb-6 text-[#5c6e82] font-semibold text-lg">
                     <User className="text-blue-500 w-5 h-5 fill-current" />
-                    User Informations
+                    User Information
                 </div>
 
                 <form
