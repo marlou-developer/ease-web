@@ -23,7 +23,7 @@ class EnsureAccountNotLocked
                 return response()->json(['message' => 'Your account has been locked.'], 403);
             }
 
-            return redirect()->route('login')->withErrors(['email' => 'Your account has been locked.']);
+            return redirect()->route('login')->withErrors(['login' => 'Your account has been locked.']);
         }
 
         return $next($request);

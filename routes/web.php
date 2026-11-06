@@ -16,10 +16,11 @@ use Inertia\Inertia;
 function resolve_home_redirect(?\App\Models\User $user)
 {
     return match ((int) $user?->role) {
-        1 => redirect('/administrator/dashboard'),
+        // 1 => redirect('/administrator/dashboard'),
         2 => redirect('/account/pos/dashboard'),
+        1 => redirect('/account/pos/dashboard'),
         default => $user
-            ? tap(redirect('/account/pos/dashboard'), fn () => Log::warning('Authenticated user has an unrecognized role, defaulting to POS dashboard.', [
+            ? tap(redirect('/account/pos/dashboard'), fn() => Log::warning('Authenticated user has an unrecognized role, defaulting to POS dashboard.', [
                 'user_id' => $user->id,
                 'role' => $user->role,
             ]))

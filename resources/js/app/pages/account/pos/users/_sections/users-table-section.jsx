@@ -56,6 +56,11 @@ export default function UsersTableSection() {
             render: (row) => row?.store?.name || "-",
         },
         {
+            header: "Username",
+            accessor: "username",
+            className: "font-bold text-gray-700",
+        },
+        {
             header: "Email",
             accessor: "email",
             className: "font-bold text-gray-700",

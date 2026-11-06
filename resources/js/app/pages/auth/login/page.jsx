@@ -5,7 +5,7 @@ import { Head, Link, useForm } from "@inertiajs/react";
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        email: "",
+        login: "",
         password: "",
         remember: false,
     });
@@ -34,26 +34,26 @@ export default function Login({ status, canResetPassword }) {
             </h2>
 
             <form onSubmit={submit} className="space-y-5">
-                {/* Email */}
+                {/* Email or Username */}
                 <div>
                     <label
-                        htmlFor="email"
+                        htmlFor="login"
                         className="block text-sm font-medium text-pink-700 mb-1"
                     >
-                        Email Address
+                        Email or Username
                     </label>
                     <input
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
+                        id="login"
+                        type="text"
+                        name="login"
+                        value={data.login}
                         autoComplete="username"
                         autoFocus
-                        placeholder="you@example.com"
-                        onChange={(e) => setData("email", e.target.value)}
+                        placeholder="you@example.com or username"
+                        onChange={(e) => setData("login", e.target.value)}
                         className="w-full px-4 py-2.5 rounded-xl border border-pink-200 bg-pink-50/60 text-gray-700 placeholder-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition"
                     />
-                    <InputError message={errors.email} className="mt-1.5" />
+                    <InputError message={errors.login} className="mt-1.5" />
                 </div>
 
                 {/* Password */}
