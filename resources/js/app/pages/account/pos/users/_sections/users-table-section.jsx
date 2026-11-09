@@ -66,7 +66,7 @@ export default function UsersTableSection() {
             className: "font-bold text-gray-700",
         },
         {
-            header: "User Type",
+            header: "User Type",    
             accessor: "pos_user_type",
             className: "font-bold text-gray-700",
             render: (row) => (
